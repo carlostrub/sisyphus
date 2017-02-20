@@ -1,4 +1,6 @@
-hash: e01a94e522ffe651c39d713d40e62bf312605f2504949b92a96797dab5faf2f3
-updated: 2017-02-20T22:22:08.238892736Z
-imports: []
+hash: 0fbdb475136d5d29feb99b15dafd533580a8bbbf4fcfd801ddeeeb24e9a840c0
+updated: 2017-02-20T22:35:31.503897743Z
+imports:
+- name: github.com/luksen/maildir
+  version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
 testImports: []
