@@ -1,3 +1,4 @@
 package: github.com/carlostrub/sisyphus
 import:
 - package: github.com/luksen/maildir
+- package: github.com/jbrukh/bayesian

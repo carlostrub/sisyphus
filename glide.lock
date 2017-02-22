@@ -1,6 +1,8 @@
-hash: 0fbdb475136d5d29feb99b15dafd533580a8bbbf4fcfd801ddeeeb24e9a840c0
-updated: 2017-02-20T22:35:31.503897743Z
+hash: d18ff656d998425dece8d9d7fbdf5e7c0dd9a2a41b0fc791d55b242d1f8915e7
+updated: 2017-02-22T20:04:09.761903217Z
 imports:
+- name: github.com/jbrukh/bayesian
+  version: bf3f261f9a9c61145c60d47665b0518cc32c774f
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
 testImports: []
