@@ -14,6 +14,8 @@ install:
   - go get -v github.com/Masterminds/glide 
   - cd $GOPATH/src/github.com/Masterminds/glide && go install && cd -
   - glide install
+  - go get github.com/onsi/gomega
+  - go get github.com/onsi/ginkgo/ginkgo
 
 script:
-  - go test
+  - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --compilers=2
