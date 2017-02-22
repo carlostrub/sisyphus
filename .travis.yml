@@ -11,6 +11,7 @@ cache:
     - $GOPATH/pkg
 
 before_install:
+  - mkdir $GOPATH/bin
   - curl https://glide.sh/get | sh
   - glide install
 
