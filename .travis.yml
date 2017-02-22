@@ -5,7 +5,13 @@ go:
   - 1.8.x
   - master
 
+cache:
+  directories:
+    - $GOPATH/src
+    - $GOPATH/pkg
+
 before_install:
+  - mkdir $GOPATH
   - curl https://glide.sh/get | sh
   - glide install
 
