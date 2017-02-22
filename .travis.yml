@@ -10,9 +10,9 @@ cache:
     - $GOPATH/src
     - $GOPATH/pkg
 
-before_install:
-  - mkdir $GOPATH/bin
-  - curl https://glide.sh/get | sh
+install:
+  - go get -v github.com/Masterminds/glide 
+  - cd $GOPATH/src/github.com/Masterminds/glide && go install && cd -
   - glide install
 
 script:
