@@ -2,7 +2,10 @@ package main
 
 import (
 	"bufio"
+	"flag"
+	"fmt"
 	"log"
+	"os"
 	"strings"
 
 	"github.com/jbrukh/bayesian"
@@ -17,16 +20,15 @@ const (
 )
 
 var (
-	// Maildir holds a set of mail directories to handle.
-	Maildir = "/usr/home/cs/Maildir.TEST"
-
-	// processed is a map of e-mail IDs and true if processed already.
-	processed map[string]bool
+	// Processed is a map of e-mail IDs and the value set to true if Junk
+	Processed map[string]bool
 )
 
-// Mails contains the keys of all mails in the Junk.cur and cur directories.
-type Mails struct {
-	Junk, Good []string
+// Mail includes the key of a mail in Maildir
+type Mail struct {
+	Key           string
+	Subject, Body *string
+	Junk          bool
 }
 
 // Classifiers contains the classifiers for mail subjects and bodies
@@ -34,61 +36,84 @@ type Classifiers struct {
 	Subject, Body *bayesian.Classifier
 }
 
-// LoadMails loads all mail keys from the Maildir directory for processing.
-func LoadMails() (m Mails, err error) {
+// Index loads all mail keys from the Maildir directory for processing.
+func Index(d string) (m []Mail, err error) {
 
-	m.Junk, err = maildir.Dir(Maildir + "/.Junk").Keys()
+	g, err := maildir.Dir(d).Keys()
 	if err != nil {
 		return m, err
 	}
+	for _, val := range g {
+		var new Mail
+		new.Key = val
+		m = append(m, new)
+	}
 
-	m.Good, err = maildir.Dir(Maildir).Keys()
+	j, err := maildir.Dir(d + "/.Junk").Keys()
 	if err != nil {
 		return m, err
+	}
+	for _, val := range j {
+		var new Mail
+		new.Key = val
+		new.Junk = true
+		m = append(m, new)
 	}
 
 	return m, nil
 }
 
 // Learn initially classifies all mails and returns the respective classifiers.
-func (m Mails) Learn() (c Classifiers, err error) {
+func (m Mail) Learn() (c Classifiers, err error) {
 	return
 }
 
-func cleanText(t string) (c string, err error) {
-	return
+// Clean prepares the mail's subject and body for training
+func (m Mail) Clean() error {
+	return nil
 }
 
-// getContent reads mails' subjects and bodies and returns the respective
-// slices of strings
-func getContent(keys []string) (s, b []string, err error) {
-	for _, k := range keys {
+// Load reads a mail's subject and body
+func (m Mail) Load(d string) error {
 
-		message, err := maildir.Dir(Maildir).Message(k)
-		if err != nil {
-			return s, b, err
-		}
-
-		// get Subject
-		subject := message.Header.Get("Subject")
-		s = append(s, strings.Split(subject, " ")...)
-
-		// get Body
-		bScanner := bufio.NewScanner(message.Body)
-		for bScanner.Scan() {
-			b = append(b, strings.Split(bScanner.Text(), " ")...)
-		}
+	message, err := maildir.Dir(d).Message(m.Key)
+	if err != nil {
+		return err
 	}
 
-	return s, b, nil
+	// get Subject
+	subject := message.Header.Get("Subject")
+	m.Subject = &subject
+
+	// get Body
+	var b []string
+	bScanner := bufio.NewScanner(message.Body)
+	for bScanner.Scan() {
+		b = append(b, bScanner.Text())
+	}
+
+	body := strings.Join(b, " ")
+	m.Body = &body
+
+	return nil
 }
 
 func main() {
-
-	_, err := LoadMails()
+	// Get the Maildir to be handled
+	wd, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
+	maildir := flag.String("d", wd+"/Maildir", "Path of the Maildir to be handled")
+	flag.Parse()
+
+	// Load the Maildir content
+	mails, err := Index(*maildir)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(mails)
 
 	// Create a classifier
 	//classifier := bayesian.NewClassifier(Good, Junk)
