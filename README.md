@@ -2,3 +2,5 @@
 
 # sisyphus
 Intelligent, easy to configure Spam cleaner
+
+This software is work in progress. Wait for more to come.
