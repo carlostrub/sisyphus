@@ -1,0 +1,141 @@
+Return-Path: owner-ports-committers@freebsd.org
+Delivered-To: cs@carlostrub.ch
+Received: from mail.carlostrub.ch (localhost [127.0.0.1])
+	by mail.carlostrub.ch (OpenSMTPD) with ESMTP id d579dd4a
+	for <cs@carlostrub.ch>;
+	Mon, 27 Feb 2017 21:15:36 +0000 (UTC)
+Received: from mx2.freebsd.org (mx2.freebsd.org [8.8.178.116])
+	by mail.carlostrub.ch (OpenSMTPD) with ESMTPS id 3fae03cb (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO)
+	for <cs@carlostrub.ch>;
+	Mon, 27 Feb 2017 21:15:35 +0000 (UTC)
+Received: from mx1.freebsd.org (mx1.freebsd.org [8.8.178.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "mx1.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by mx2.freebsd.org (Postfix) with ESMTPS id F02BE6BE0C
+	for <cs@carlostrub.ch>; Mon, 27 Feb 2017 21:15:33 +0000 (UTC)
+	(envelope-from owner-ports-committers@freebsd.org)
+Received: from freefall.freebsd.org (freefall.freebsd.org [IPv6:2610:1c1:1:6074::16:84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "freefall.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by mx1.freebsd.org (Postfix) with ESMTPS id A00DB3D6
+	for <cs@carlostrub.ch>; Mon, 27 Feb 2017 21:15:33 +0000 (UTC)
+	(envelope-from owner-ports-committers@freebsd.org)
+Received: by freefall.freebsd.org (Postfix)
+	id 7BDA36D8; Mon, 27 Feb 2017 21:15:24 +0000 (UTC)
+Delivered-To: cs@localmail.freebsd.org
+Received: from mx1.freebsd.org (mx1.freebsd.org [IPv6:2001:1900:2254:206a::19:1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "mx1.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by freefall.freebsd.org (Postfix) with ESMTPS id 065086BE;
+	Mon, 27 Feb 2017 21:15:24 +0000 (UTC)
+	(envelope-from owner-ports-committers@freebsd.org)
+Received: from freefall.freebsd.org (freefall.freebsd.org [IPv6:2610:1c1:1:6074::16:84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "freefall.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by mx1.freebsd.org (Postfix) with ESMTPS id 9020D26D;
+	Mon, 27 Feb 2017 21:15:18 +0000 (UTC)
+	(envelope-from owner-ports-committers@freebsd.org)
+Received: by freefall.freebsd.org (Postfix, from userid 538)
+	id 0A6CA5CB; Mon, 27 Feb 2017 21:15:17 +0000 (UTC)
+Delivered-To: ports-committers@localmail.freebsd.org
+Received: from mx1.freebsd.org (mx1.freebsd.org [IPv6:2001:1900:2254:206a::19:1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "mx1.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by freefall.freebsd.org (Postfix) with ESMTPS id 5FC7C5AD
+	for <ports-committers@localmail.freebsd.org>; Mon, 27 Feb 2017 21:15:14 +0000 (UTC)
+	(envelope-from danfe@FreeBSD.org)
+Received: from repo.freebsd.org (repo.freebsd.org [IPv6:2610:1c1:1:6068::e6a:0])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client did not present a certificate)
+	by mx1.freebsd.org (Postfix) with ESMTPS id 66F3221C;
+	Mon, 27 Feb 2017 21:15:13 +0000 (UTC)
+	(envelope-from danfe@FreeBSD.org)
+Received: from repo.freebsd.org ([127.0.1.37])
+	by repo.freebsd.org (8.15.2/8.15.2) with ESMTP id v1RLFCfV075116;
+	Mon, 27 Feb 2017 21:15:12 GMT
+	(envelope-from danfe@FreeBSD.org)
+Received: (from danfe@localhost)
+	by repo.freebsd.org (8.15.2/8.15.2/Submit) id v1RLFCwh075114;
+	Mon, 27 Feb 2017 21:15:12 GMT
+	(envelope-from danfe@FreeBSD.org)
+Message-Id: <201702272115.v1RLFCwh075114@repo.freebsd.org>
+X-Authentication-Warning: repo.freebsd.org: danfe set sender to danfe@FreeBSD.org using -f
+From: Alexey Dokuchaev <danfe@FreeBSD.org>
+Date: Mon, 27 Feb 2017 21:15:12 +0000 (UTC)
+To: ports-committers@freebsd.org, svn-ports-all@freebsd.org,
+        svn-ports-head@freebsd.org
+Subject: svn commit: r434991 - head/graphics/glfw
+X-SVN-Group: ports-head
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+Precedence: bulk
+X-Loop: FreeBSD.org
+Sender: owner-ports-committers@freebsd.org
+List-Id: FreeBSD mail <ports-committers.freebsd.org>
+X-Virus-Scanned: ClamAV using ClamSMTP
+
+Author: danfe
+Date: Mon Feb 27 21:15:12 2017
+New Revision: 434991
+URL: https://svnweb.freebsd.org/changeset/ports/434991
+
+Log:
+  - Prefer to build and install shared library rather than static one
+  - Convert explicit LIB_DEPENDS to their USE_XORG equivalents
+  - Utilize USES+=localbase instead of manually amending CPPFLAGS/LDFLAGS
+  - Drop USE_GCC=yes: the port builds fine with both Clang and GCC 4.2.1
+    (e.g. on PowerPC)
+
+Modified:
+  head/graphics/glfw/Makefile
+  head/graphics/glfw/pkg-plist
+
+Modified: head/graphics/glfw/Makefile
+==============================================================================
+--- head/graphics/glfw/Makefile	Mon Feb 27 21:13:51 2017	(r434990)
++++ head/graphics/glfw/Makefile	Mon Feb 27 21:15:12 2017	(r434991)
+@@ -3,6 +3,7 @@
+ 
+ PORTNAME=	glfw
+ PORTVERSION=	3.2.1
++PORTREVISION=	1
+ CATEGORIES=	graphics
+ MASTER_SITES=	SF
+ 
+@@ -11,17 +12,11 @@ COMMENT=	Portable framework for OpenGL d
+ 
+ LICENSE=	ZLIB
+ 
+-LIB_DEPENDS=	libXinerama.so:x11/libXinerama \
+-		libXcursor.so:x11/libXcursor
+-
+-USES=		cmake zip
+-USE_XORG=	xi xrandr
++USES=		cmake localbase zip
++USE_XORG=	x11 xcursor xinerama xrandr xxf86vm
+ USE_GL=		glu
+-USE_GCC=	yes
+ USE_LDCONFIG=	yes
+-
+-CPPFLAGS+=	-I${LOCALBASE}/include
+-LDFLAGS+=	-L${LOCALBASE}/lib
++CMAKE_ARGS=	-DBUILD_SHARED_LIBS:BOOL=ON
+ 
+ PORTDOCS=	*
+ 
+
+Modified: head/graphics/glfw/pkg-plist
+==============================================================================
+--- head/graphics/glfw/pkg-plist	Mon Feb 27 21:13:51 2017	(r434990)
++++ head/graphics/glfw/pkg-plist	Mon Feb 27 21:15:12 2017	(r434991)
+@@ -4,5 +4,7 @@ lib/cmake/glfw3/glfw3Config.cmake
+ lib/cmake/glfw3/glfw3ConfigVersion.cmake
+ lib/cmake/glfw3/glfw3Targets-%%CMAKE_BUILD_TYPE%%.cmake
+ lib/cmake/glfw3/glfw3Targets.cmake
+-lib/libglfw3.a
++lib/libglfw.so
++lib/libglfw.so.3
++lib/libglfw.so.3.2
+ libdata/pkgconfig/glfw3.pc
+
