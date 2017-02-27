@@ -1,8 +1,47 @@
-hash: d18ff656d998425dece8d9d7fbdf5e7c0dd9a2a41b0fc791d55b242d1f8915e7
-updated: 2017-02-22T20:04:09.761903217Z
+hash: 18c4dbfd645c08604c86e8f380c30401998faf75714ecc3d891f272f992780b2
+updated: 2017-02-27T19:37:47.831565794Z
 imports:
 - name: github.com/jbrukh/bayesian
   version: bf3f261f9a9c61145c60d47665b0518cc32c774f
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
-testImports: []
+testImports:
+- name: github.com/onsi/ginkgo
+  version: bb93381d543b0e5725244abe752214a110791d01
+  subpackages:
+  - config
+  - internal/codelocation
+  - internal/containernode
+  - internal/failer
+  - internal/leafnodes
+  - internal/remote
+  - internal/spec
+  - internal/specrunner
+  - internal/suite
+  - internal/testingtproxy
+  - internal/writer
+  - reporters
+  - reporters/stenographer
+  - reporters/stenographer/support/go-colorable
+  - reporters/stenographer/support/go-isatty
+  - types
+- name: github.com/onsi/gomega
+  version: c463cd2a8578290d4be7a25cba69de81cf35785e
+  subpackages:
+  - format
+  - internal/assertion
+  - internal/asyncassertion
+  - internal/oraclematcher
+  - internal/testingtsupport
+  - matchers
+  - matchers/support/goraph/bipartitegraph
+  - matchers/support/goraph/edge
+  - matchers/support/goraph/node
+  - matchers/support/goraph/util
+  - types
+- name: golang.org/x/sys
+  version: e4594059fe4cde2daf423055a596c2cd1e6c9adf
+  subpackages:
+  - unix
+- name: gopkg.in/yaml.v2
+  version: a3f3340b5840cee44f372bddb5880fcbc419b46a
