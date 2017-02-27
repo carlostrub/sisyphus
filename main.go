@@ -2,9 +2,11 @@ package main
 
 import (
 	"bufio"
+	"errors"
 	"flag"
 	"fmt"
 	"log"
+	"mime/quotedprintable"
 	"os"
 	"strings"
 
@@ -37,7 +39,7 @@ type Classifiers struct {
 }
 
 // Index loads all mail keys from the Maildir directory for processing.
-func Index(d string) (m []Mail, err error) {
+func Index(d string) (m []*Mail, err error) {
 
 	g, err := maildir.Dir(d).Keys()
 	if err != nil {
@@ -46,7 +48,7 @@ func Index(d string) (m []Mail, err error) {
 	for _, val := range g {
 		var new Mail
 		new.Key = val
-		m = append(m, new)
+		m = append(m, &new)
 	}
 
 	j, err := maildir.Dir(d + "/.Junk").Keys()
@@ -57,24 +59,24 @@ func Index(d string) (m []Mail, err error) {
 		var new Mail
 		new.Key = val
 		new.Junk = true
-		m = append(m, new)
+		m = append(m, &new)
 	}
 
 	return m, nil
 }
 
 // Learn initially classifies all mails and returns the respective classifiers.
-func (m Mail) Learn() (c Classifiers, err error) {
+func (m *Mail) Learn() (c Classifiers, err error) {
 	return
 }
 
 // Clean prepares the mail's subject and body for training
-func (m Mail) Clean() error {
+func (m *Mail) Clean() error {
 	return nil
 }
 
 // Load reads a mail's subject and body
-func (m Mail) Load(d string) error {
+func (m *Mail) Load(d string) error {
 
 	message, err := maildir.Dir(d).Message(m.Key)
 	if err != nil {
@@ -82,17 +84,26 @@ func (m Mail) Load(d string) error {
 	}
 
 	// get Subject
+	if m.Subject != nil {
+		return errors.New("there is already a subject")
+	}
 	subject := message.Header.Get("Subject")
 	m.Subject = &subject
 
 	// get Body
+	bQ := quotedprintable.NewReader(message.Body)
 	var b []string
-	bScanner := bufio.NewScanner(message.Body)
+	bScanner := bufio.NewScanner(bQ)
 	for bScanner.Scan() {
-		b = append(b, bScanner.Text())
+		raw := bScanner.Text()
+		clean := strings.Replace(raw, "\\", "hallo", -1)
+		b = append(b, clean)
 	}
 
 	body := strings.Join(b, " ")
+	if m.Body != nil {
+		return errors.New("there is already a body")
+	}
 	m.Body = &body
 
 	return nil

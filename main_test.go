@@ -9,12 +9,12 @@ import (
 
 var _ = Describe("Main", func() {
 
-	Context("Index Maildir", func() {
+	Context("Maildir", func() {
 		It("Create a slice of mail keys", func() {
 			result, err := Index("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(result).Should(Equal(
-				[]Mail{
+				[]*Mail{
 
 					{
 						Key:     "1488230510.M141612P8565.mail.carlostrub.ch,S=5978,W=6119",
@@ -58,6 +58,30 @@ var _ = Describe("Main", func() {
 						Body:    nil,
 						Junk:    true,
 					},
+				}))
+		})
+	})
+
+	Context("Mail", func() {
+		It("Load mail content into struct", func() {
+			m := Mail{
+				Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir" + "/.Junk")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			subject := "hello"
+			body := "This is a multi00_0032_01D2912F.05324BC6--  "
+			Ω(m).Should(Equal(
+				Mail{
+					Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
+					Subject: &subject,
+					Body:    &body,
+					Junk:    true,
 				}))
 		})
 	})
