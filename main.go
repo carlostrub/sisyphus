@@ -70,8 +70,59 @@ func (m *Mail) Learn() (c Classifiers, err error) {
 	return
 }
 
+func cleanString(i string) (s string, err error) {
+	s = strings.ToLower(i)
+	s = strings.Replace(s, "!", " ", -1)
+	s = strings.Replace(s, "#", " ", -1)
+	s = strings.Replace(s, "$", " ", -1)
+	s = strings.Replace(s, "%", " ", -1)
+	s = strings.Replace(s, "&", " ", -1)
+	s = strings.Replace(s, "(", " ", -1)
+	s = strings.Replace(s, ")", " ", -1)
+	s = strings.Replace(s, "*", " ", -1)
+	s = strings.Replace(s, "+", " ", -1)
+	s = strings.Replace(s, ",", " ", -1)
+	s = strings.Replace(s, "-", " ", -1)
+	s = strings.Replace(s, ".", " ", -1)
+	s = strings.Replace(s, "/", " ", -1)
+	s = strings.Replace(s, ":", " ", -1)
+	s = strings.Replace(s, "<", " ", -1)
+	s = strings.Replace(s, "=", " ", -1)
+	s = strings.Replace(s, ">", " ", -1)
+	s = strings.Replace(s, "@", " ", -1)
+	s = strings.Replace(s, "[", " ", -1)
+	s = strings.Replace(s, "\"", " ", -1)
+	s = strings.Replace(s, "\\", " ", -1)
+	s = strings.Replace(s, "\n", " ", -1)
+	s = strings.Replace(s, "\t", " ", -1)
+	s = strings.Replace(s, "]", " ", -1)
+	s = strings.Replace(s, "^", " ", -1)
+	s = strings.Replace(s, "_", " ", -1)
+	s = strings.Replace(s, "{", " ", -1)
+	s = strings.Replace(s, "|", " ", -1)
+	s = strings.Replace(s, "}", " ", -1)
+	s = strings.Replace(s, ";", " ", -1)
+
+	return s, nil
+}
+
 // Clean prepares the mail's subject and body for training
 func (m *Mail) Clean() error {
+	if m.Subject != nil {
+		s, err := cleanString(*m.Subject)
+		if err != nil {
+			return err
+		}
+		m.Subject = &s
+	}
+
+	if m.Body != nil {
+		b, err := cleanString(*m.Body)
+		if err != nil {
+			return err
+		}
+		m.Body = &b
+	}
 	return nil
 }
 
@@ -96,8 +147,7 @@ func (m *Mail) Load(d string) error {
 	bScanner := bufio.NewScanner(bQ)
 	for bScanner.Scan() {
 		raw := bScanner.Text()
-		clean := strings.Replace(raw, "\\", "hallo", -1)
-		b = append(b, clean)
+		b = append(b, raw)
 	}
 
 	body := strings.Join(b, " ")
