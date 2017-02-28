@@ -86,6 +86,7 @@ func cleanString(i string) (s string, err error) {
 	s = strings.Replace(s, ".", " ", -1)
 	s = strings.Replace(s, "/", " ", -1)
 	s = strings.Replace(s, ":", " ", -1)
+	s = strings.Replace(s, ";", " ", -1)
 	s = strings.Replace(s, "<", " ", -1)
 	s = strings.Replace(s, "=", " ", -1)
 	s = strings.Replace(s, ">", " ", -1)
@@ -101,7 +102,6 @@ func cleanString(i string) (s string, err error) {
 	s = strings.Replace(s, "{", " ", -1)
 	s = strings.Replace(s, "|", " ", -1)
 	s = strings.Replace(s, "}", " ", -1)
-	s = strings.Replace(s, ";", " ", -1)
 
 	return s, nil
 }
