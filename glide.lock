@@ -1,10 +1,17 @@
-hash: 18c4dbfd645c08604c86e8f380c30401998faf75714ecc3d891f272f992780b2
-updated: 2017-02-28T21:30:19.789294511Z
+hash: ec8efbbfd183cdfa97087fa1ff3e6b3a1b7eb77eb129d66473ffbc8c97db2238
+updated: 2017-03-02T19:09:31.474686494Z
 imports:
 - name: github.com/jbrukh/bayesian
   version: bf3f261f9a9c61145c60d47665b0518cc32c774f
+- name: github.com/kennygrant/sanitize
+  version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
+- name: golang.org/x/net
+  version: 906cda9512f77671ab44f8c8563b13a8e707b230
+  subpackages:
+  - html
+  - html/atom
 testImports:
 - name: github.com/onsi/ginkgo
   version: bb93381d543b0e5725244abe752214a110791d01
@@ -40,7 +47,7 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: golang.org/x/sys
-  version: 21f2569f6feb83b68a25c98c1b20eca5d4e1e6ae
+  version: 76cc09b634294339fa19ec41b5f2a0b3932cea8b
   subpackages:
   - unix
 - name: gopkg.in/yaml.v2

@@ -11,6 +11,7 @@ import (
 	"strings"
 
 	"github.com/jbrukh/bayesian"
+	"github.com/kennygrant/sanitize"
 	"github.com/luksen/maildir"
 )
 
@@ -70,8 +71,19 @@ func (m *Mail) Learn() (c Classifiers, err error) {
 	return
 }
 
+func trimStringFromBase64(s string) string {
+	if idx := strings.Index(s, "Content-Transfer-Encoding: base64"); idx != -1 {
+		return s[:idx-1]
+	}
+	return s
+}
+
 func cleanString(i string) (s string, err error) {
-	s = strings.ToLower(i)
+
+	s = trimStringFromBase64(i)
+	s = sanitize.Accents(s)
+	s = sanitize.HTML(s)
+	s = strings.ToLower(s)
 	s = strings.Replace(s, "!", " ", -1)
 	s = strings.Replace(s, "#", " ", -1)
 	s = strings.Replace(s, "$", " ", -1)
@@ -102,6 +114,20 @@ func cleanString(i string) (s string, err error) {
 	s = strings.Replace(s, "{", " ", -1)
 	s = strings.Replace(s, "|", " ", -1)
 	s = strings.Replace(s, "}", " ", -1)
+
+	s = strings.Replace(s, "this is a multi part message in mime format", " ", -1)
+	s = strings.Replace(s, "nextpart", " ", -1)
+	s = strings.Replace(s, "content type", " ", -1)
+	s = strings.Replace(s, "text plain", " ", -1)
+	s = strings.Replace(s, "charset", " ", -1)
+	s = strings.Replace(s, "content transfer encoding", " ", -1)
+	s = strings.Replace(s, "quoted printable", " ", -1)
+	s = strings.Replace(s, "text html", " ", -1)
+	s = strings.Replace(s, "cp 850", " ", -1)
+
+	for i := 0; i < 10; i++ {
+		s = strings.Replace(s, "  ", " ", -1)
+	}
 
 	return s, nil
 }
