@@ -1,0 +1,8 @@
+site_name: Sisyphus Documentation
+pages:
+- Home: index.md
+- Getting Started: getting-started.md
+- Versions and Ranges: versions.md
+- Commands: commands.md
+- F.A.Q.: faq.md
+theme: readthedocs
