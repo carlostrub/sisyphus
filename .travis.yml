@@ -19,4 +19,4 @@ install:
   - go get -u github.com/onsi/ginkgo/ginkgo
 
 script:
-  - ginkgo -r --randomizeAllSpecs --randomizeSuites
+  - ginkgo --randomizeAllSpecs --randomizeSuites
