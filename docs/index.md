@@ -1,3 +1,0 @@
-# Sisyphus
-
-Hello to the documentation on Sisyphus. More to come...
