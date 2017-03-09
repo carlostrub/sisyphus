@@ -1,5 +1,5 @@
 hash: ec8efbbfd183cdfa97087fa1ff3e6b3a1b7eb77eb129d66473ffbc8c97db2238
-updated: 2017-03-02T19:09:31.474686494Z
+updated: 2017-03-09T19:12:30.674604839Z
 imports:
 - name: github.com/jbrukh/bayesian
   version: bf3f261f9a9c61145c60d47665b0518cc32c774f
@@ -8,13 +8,13 @@ imports:
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
 - name: golang.org/x/net
-  version: 906cda9512f77671ab44f8c8563b13a8e707b230
+  version: a6577fac2d73be281a500b310739095313165611
   subpackages:
   - html
   - html/atom
 testImports:
 - name: github.com/onsi/ginkgo
-  version: bb93381d543b0e5725244abe752214a110791d01
+  version: ab07225d112dc7a93c289ac5b2e12735c2c46035
   subpackages:
   - config
   - internal/codelocation
@@ -33,7 +33,7 @@ testImports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: c463cd2a8578290d4be7a25cba69de81cf35785e
+  version: 1de7ab2df9105aa5c15c4d7e14a8a514e3cb8d4b
   subpackages:
   - format
   - internal/assertion
@@ -47,7 +47,7 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: golang.org/x/sys
-  version: 76cc09b634294339fa19ec41b5f2a0b3932cea8b
+  version: 99f16d856c9836c42d24e7ab64ea72916925fa97
   subpackages:
   - unix
 - name: gopkg.in/yaml.v2
