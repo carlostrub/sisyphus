@@ -5,11 +5,11 @@ go:
   - 1.8.x
   - master
 
-cache:
-  directories:
-    - $GOPATH/src
-    - $GOPATH/pkg
-    - vendor
+#cache:
+#  directories:
+#    - $GOPATH/src
+#    - $GOPATH/pkg
+#    - vendor
 
 install:
   - go get -u github.com/Masterminds/glide 
