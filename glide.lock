@@ -1,5 +1,5 @@
-hash: ec8efbbfd183cdfa97087fa1ff3e6b3a1b7eb77eb129d66473ffbc8c97db2238
-updated: 2017-03-09T19:12:30.674604839Z
+hash: 05d37c1ae8f818b05d066dce22d2e3fa625b8cce35ddfe4d746eaf49b11320b2
+updated: 2017-03-10T19:22:40.441940049Z
 imports:
 - name: github.com/jbrukh/bayesian
   version: bf3f261f9a9c61145c60d47665b0518cc32c774f

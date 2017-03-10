@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"errors"
 	"mime/quotedprintable"
+	"regexp"
 	"strings"
 
 	"github.com/kennygrant/sanitize"
@@ -112,7 +113,42 @@ func cleanString(i string) (s string, err error) {
 	return s, nil
 }
 
-// Clean prepares the mail's subject and body for training
+// wordlist takes a string of space separated text and returns a list of unique
+// words in a space separated string
+func wordlist(s string) (l []string, err error) {
+	list := make(map[string]int)
+
+	raw := strings.Split(s, " ")
+
+	for _, i := range raw {
+
+		// no long or too short words
+		length := len(i)
+		if length < 4 || length > 10 {
+			continue
+		}
+
+		// no numbers, special characters, etc. -- only words
+		match, _ := regexp.MatchString("(^[a-z]+$)", i)
+		if !match {
+			continue
+		} else {
+			list[i]++
+		}
+	}
+
+	for word, count := range list {
+		if count > 10 {
+			continue
+		}
+
+		l = append(l, word)
+	}
+
+	return l, nil
+}
+
+// Clean cleans the mail's subject and body
 func (m *Mail) Clean() error {
 	if m.Subject != nil {
 		s, err := cleanString(*m.Subject)
@@ -130,6 +166,25 @@ func (m *Mail) Clean() error {
 		m.Body = &b
 	}
 	return nil
+}
+
+// Wordlists prepares the mail's subject and body for training
+func (m *Mail) Wordlists() (subject, body []string, err error) {
+	if m.Subject != nil {
+		subject, err = wordlist(*m.Subject)
+		if err != nil {
+			return subject, body, err
+		}
+	}
+
+	if m.Body != nil {
+		body, err = wordlist(*m.Body)
+		if err != nil {
+			return subject, body, err
+		}
+	}
+
+	return subject, body, nil
 }
 
 // Load reads a mail's subject and body

@@ -1,8 +1,8 @@
 package: github.com/carlostrub/sisyphus
 import:
 - package: github.com/jbrukh/bayesian
-- package: github.com/luksen/maildir
 - package: github.com/kennygrant/sanitize
+- package: github.com/luksen/maildir
 testImport:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega

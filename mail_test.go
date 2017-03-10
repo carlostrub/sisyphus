@@ -1,13 +1,15 @@
 package main_test
 
 import (
+	"sort"
+
 	s "github.com/carlostrub/sisyphus"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Main", func() {
+var _ = Describe("Mail", func() {
 
 	Context("Maildir", func() {
 		It("Create a slice of mail keys", func() {
@@ -261,6 +263,156 @@ var _ = Describe("Main", func() {
 					Body:    &bodyOutput,
 					Junk:    true,
 				}))
+		})
+
+		It("Wordlist 1", func() {
+			m := s.Mail{
+				Key:     "1488181583.M633084P4781.mail.carlostrub.ch,S=708375,W=720014:2,a",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir" + "/.Junk")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			subject, body, err := m.Wordlists()
+			sort.Strings(subject)
+			sort.Strings(body)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Ω(subject).Should(Equal(
+				[]string{"confirm", "remittance"}))
+			Ω(body).Should(Equal(
+				[]string{"accuracy", "addressed", "admin", "alliance", "alone", "bank", "been", "belong", "best", "boltas", "cobantur", "computer", "confirm", "contained", "copy", "copying", "date", "deleted", "detail", "director", "entity", "excludes", "expressed", "files", "forwarding", "hereby", "individual", "intended", "kind", "known", "liability", "makes", "message", "notified", "opinions", "payment", "prohibited", "reception", "recipient", "reflect", "regards", "scanned", "sender", "should", "solely", "storage", "strictly", "such", "thanks", "that", "therein", "they", "this", "value", "viruses", "warranty", "whatsoever", "whom", "with"}))
+		})
+
+		It("Wordlist 2", func() {
+			m := s.Mail{
+				Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730:2,Sa",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir" + "/.Junk")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			subject, body, err := m.Wordlists()
+			sort.Strings(subject)
+			sort.Strings(body)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Ω(subject).Should(Equal(
+				[]string{"hello"}))
+			Ω(body).Should(Equal(
+				[]string{"best", "company", "dear", "distance", "employees", "from", "home", "interested", "kari", "large", "looking", "manager", "most", "name", "offer", "personnel", "please", "regards", "remotely", "salary", "site", "that", "this", "visit", "work", "working"}))
+		})
+
+		It("Wordlist 3", func() {
+			m := s.Mail{
+				Key:     "1488226337.M327824P8269.mail.carlostrub.ch,S=8044,W=8167:2,Sa",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir" + "/.Junk")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			subject, body, err := m.Wordlists()
+			sort.Strings(subject)
+			sort.Strings(body)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Ω(subject).Should(Equal(
+				[]string{"herpes", "medical", "shocks", "world"}))
+			Ω(body).Should(Equal(
+				[]string{"alongside", "anxiety", "appointed", "authority", "awarded", "bacteria", "beard", "been", "came", "capital", "causes", "city", "civilian", "club", "combated", "creams", "crown", "cure", "cured", "dark", "devalued", "domed", "doukas", "doux", "dreamstime", "drug", "drugs", "earlier", "emperor", "erly", "exclusive", "extracts", "fast", "february", "finally", "forked", "from", "full", "genital", "girl", "give", "golden", "governors", "guard", "have", "held", "herpes", "history", "image", "influence", "instituted", "john", "largesse", "little", "local", "manuscript", "many", "members", "mental", "mice", "military", "mostly", "nicaea", "notables", "only", "other", "people", "portrait", "prevent", "provincial", "rachael", "relief", "remove", "rettner", "sebastos", "secure", "senior", "size", "starting", "studies", "such", "suggest", "that", "theodore", "there", "these", "this", "times", "title", "titles", "today", "topical", "treatment", "treatments", "tzakones", "under", "unlike", "used", "vatatzes", "view", "virus", "wearing", "were", "will", "with", "writer", "your", "zonaras"}))
+		})
+
+		It("Wordlist 4", func() {
+			m := s.Mail{
+				Key:     "1488226337.M327825P8269.mail.carlostrub.ch,S=802286,W=812785:2,Sa",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir" + "/.Junk")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			subject, body, err := m.Wordlists()
+			sort.Strings(subject)
+			sort.Strings(body)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Ω(subject).Should(Equal(
+				[]string{"cosan", "friday", "march", "york"}))
+			Ω(body).Should(Equal(
+				[]string{"ampudia", "avenue", "below", "between", "briget", "call", "cannot", "closing", "cosan", "download", "email", "friday", "here", "hyatt", "image", "invitation", "level", "limited", "listed", "lunch", "march", "mercado", "novo", "nyse", "online", "onyx", "park", "please", "program", "rafferty", "register", "room", "rsvp", "rumo", "second", "street", "taylor", "view", "west", "york"}))
+		})
+
+		It("Wordlist 5", func() {
+			m := s.Mail{
+				Key:     "1488226337.M327833P8269.mail.carlostrub.ch,S=6960,W=7161:2,Sa",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir" + "/.Junk")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			subject, body, err := m.Wordlists()
+			sort.Strings(subject)
+			sort.Strings(body)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Ω(subject).Should(Equal(
+				[]string{"eyes", "glasses", "headed", "serious", "trouble", "wear", "your"}))
+			Ω(body).Should(Equal(
+				[]string{"about", "associated", "aylesbury", "baron", "became", "being", "below", "brill", "bscribe", "buckingham", "building", "buildings", "built", "canada", "central", "clearing", "closure", "contacts", "converted", "despite", "discover", "duke", "email", "estate", "even", "extended", "ferdinand", "floor", "from", "full", "glasses", "goodness", "hour", "house", "improve", "improved", "initially", "junction", "know", "limited", "line", "link", "london", "manor", "marie", "marketing", "miles", "montreal", "near", "need", "next", "only", "other", "over", "ownership", "part", "passenger", "pictured", "place", "poor", "public", "quainton", "quality", "quebec", "railway", "renamed", "running", "self", "served", "short", "slow", "station", "success", "survive", "taken", "than", "that", "think", "today", "tramway", "trick", "unsu", "until", "very", "village", "ville", "vision", "wear", "weird", "were", "westcott", "will", "year", "youll", "your"}))
+		})
+
+		It("Wordlist 6", func() {
+			m := s.Mail{
+				Key:     "1488228352.M339670P8269.mail.carlostrub.ch,S=12659,W=12782:2,Sa",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir" + "/.Junk")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			subject, body, err := m.Wordlists()
+			sort.Strings(subject)
+			sort.Strings(body)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Ω(subject).Should(Equal(
+				[]string{"always", "form", "good", "super", "viagra", "with"}))
+			Ω(body).Should(Equal(
+				[]string{"amazon", "antiviral", "blockquote", "blood", "body", "canada", "cant", "check", "click", "deals", "delivery", "diabetes", "discount", "email", "emails", "europe", "following", "font", "herpes", "hola", "keep", "leading", "limited", "link", "longer", "medication", "message", "most", "north", "offer", "online", "other", "please", "popular", "presents", "pressure", "produced", "products", "read", "receive", "registered", "reserved", "rights", "service", "services", "simply", "span", "special", "states", "store", "subsidiary", "table", "terry", "these", "this", "time", "trademark", "united", "various", "view", "when", "wish", "with", "your"}))
 		})
 	})
 })
