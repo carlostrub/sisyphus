@@ -5,26 +5,12 @@ import (
 	"fmt"
 	"log"
 	"os"
-
-	"github.com/jbrukh/bayesian"
-)
-
-const (
-	// good is the class of good mails that are not supposed to be Spam
-	good bayesian.Class = "Good"
-	// junk is the class of Spam mails
-	junk bayesian.Class = "Junk"
 )
 
 var (
 	// Processed is a map of e-mail IDs and the value set to true if Junk
 	Processed map[string]bool
 )
-
-// Classifiers contains the classifiers for mail subjects and bodies
-type Classifiers struct {
-	Subject, Body *bayesian.Classifier
-}
 
 func main() {
 	// Get the Maildir to be handled
