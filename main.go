@@ -13,22 +13,29 @@ var (
 )
 
 func main() {
-	// Get the Maildir to be handled
+
+	// Get the Maildir to be handled and the DB
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		return log.Fatalf("get working directory: %s", err)
 	}
-	maildir := flag.String("d", wd+"/Maildir", "Path of the Maildir to be handled")
+	maildir := flag.String("maildir", wd+"/Maildir", "Path to the Maildir")
+	database := flag.String("database", wd+"/sisyphus.db", "Path to the sisyphus database")
 	flag.Parse()
 
-	// Load the Maildir content
+	// Load the Maildir
 	mails, err := Index(*maildir)
 	if err != nil {
-		log.Fatal(err)
+		return log.Fatalf("load Maildir content: %s", err)
 	}
 
 	fmt.Println(mails)
 
-	// Create a classifier
-	//classifier := bayesian.NewClassifier(Good, Junk)
+	// Open the database
+	db, err := openDB("sisyphus.db", 0600, nil)
+	if err != nil {
+		return log.Fatalf("open database: %s", err)
+	}
+	defer db.Close()
+
 }
