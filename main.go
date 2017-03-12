@@ -20,7 +20,7 @@ func main() {
 		panic(err)
 	}
 
-	var maildir *string
+	var maildir []string
 
 	// Define App
 	app := cli.NewApp()
@@ -32,6 +32,7 @@ func main() {
 	without any need for configuration or active operation.`
 	app.HelpName = "Intelligent Junk and Spam Mail Handler"
 	app.Version = "0.0.0"
+	app.Copyright = "(c) 2017, Carlo Strub. All rights reserved. This binary is licensed under a BSD 3-Clause License."
 	app.Authors = []cli.Author{
 		cli.Author{
 			Name:  "Carlo Strub",
@@ -39,12 +40,16 @@ func main() {
 		},
 	}
 
+	maildirPaths := cli.StringSlice([]string{
+		wd + "/Maildir",
+	})
 	app.Flags = []cli.Flag{
-		cli.StringFlag{
-			Name:        "maildir",
-			Value:       wd + "/Maildir",
-			Usage:       "Path to the Maildir directory",
-			Destination: maildir,
+
+		cli.StringSliceFlag{
+			Name:   "maildirs, d",
+			Value:  &maildirPaths,
+			EnvVar: "SISYPHUS_DIRS",
+			Usage:  "Comma separated list of paths to the Maildir directories",
 		},
 	}
 
@@ -59,7 +64,7 @@ func main() {
 				}
 
 				// Load the Maildir
-				mails, err := Index(*maildir)
+				mails, err := Index(maildirPaths[0])
 				if err != nil {
 					return cli.NewExitError(err, 66)
 				}
@@ -67,7 +72,7 @@ func main() {
 				fmt.Println(mails)
 
 				// Open the database
-				db, err := openDB(*maildir)
+				db, err := openDB(maildirPaths[0])
 				if err != nil {
 					return cli.NewExitError(err, 66)
 				}
