@@ -20,7 +20,7 @@ func main() {
 		panic(err)
 	}
 
-	var maildir, database *string
+	var maildir *string
 
 	// Define App
 	app := cli.NewApp()
@@ -46,12 +46,6 @@ func main() {
 			Usage:       "Path to the Maildir directory",
 			Destination: maildir,
 		},
-		cli.StringFlag{
-			Name:        "database",
-			Value:       wd + "/sisyphus.db",
-			Usage:       "Path to the sisyphus database",
-			Destination: database,
-		},
 	}
 
 	app.Commands = []cli.Command{
@@ -60,9 +54,6 @@ func main() {
 			Aliases: []string{"s"},
 			Usage:   "start sisyphus daemon",
 			Action: func(c *cli.Context) error {
-				if database == nil {
-					return errors.New("no database selected")
-				}
 				if maildir == nil {
 					return errors.New("no maildir selected")
 				}
@@ -76,7 +67,7 @@ func main() {
 				fmt.Println(mails)
 
 				// Open the database
-				db, err := openDB(*database)
+				db, err := openDB(*maildir)
 				if err != nil {
 					return cli.NewExitError(err, 66)
 				}
