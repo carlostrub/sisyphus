@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"log"
 	"os"
 
 	"github.com/urfave/cli"
@@ -18,7 +17,7 @@ func main() {
 	// Get working directory
 	wd, err := os.Getwd()
 	if err != nil {
-		log.Fatal(err)
+		panic(err)
 	}
 
 	var maildir, database *string
@@ -27,11 +26,10 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Sisyphus"
 	app.Usage = "Intelligent Junk and Spam Mail Handler"
-	app.UsageText = `This application applies artificial intelligence to
-	filter Junk mail in an unobtrusive way. Both, classification and
-	learning operate directly on the Maildir of a user in a fully
-	transparent mode, without any need for configuration or active
-	operation.`
+	app.UsageText = `Sisyphus applies artificial intelligence to filter
+	Junk mail in an unobtrusive way. Both, classification and learning
+	operate directly on the Maildir of a user in a fully transparent mode,
+	without any need for configuration or active operation.`
 	app.HelpName = "Intelligent Junk and Spam Mail Handler"
 	app.Version = "0.0.0"
 	app.Authors = []cli.Author{
@@ -72,7 +70,7 @@ func main() {
 				// Load the Maildir
 				mails, err := Index(*maildir)
 				if err != nil {
-					log.Fatalf("load Maildir content: %s", err)
+					return cli.NewExitError(err, 66)
 				}
 
 				fmt.Println(mails)
@@ -80,7 +78,7 @@ func main() {
 				// Open the database
 				db, err := openDB(*database)
 				if err != nil {
-					log.Fatalf("open database: %s", err)
+					return cli.NewExitError(err, 66)
 				}
 				defer db.Close()
 
