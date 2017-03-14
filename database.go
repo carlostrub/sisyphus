@@ -60,9 +60,6 @@ func openDB(maildir string) (db *bolt.DB, err error) {
 		}
 		return nil
 	})
-	if err != nil {
-		return db, err
-	}
 
-	return db, nil
+	return db, err
 }
