@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -78,7 +79,16 @@ func main() {
 					log.Fatal("sisyphus running or " + *pidfile + " file exists.")
 				}
 
-				log.Print("App runs..........")
+				fmt.Print(`
+
+	███████╗██╗███████╗██╗   ██╗██████╗ ██╗  ██╗██╗   ██╗███████╗
+	██╔════╝██║██╔════╝╚██╗ ██╔╝██╔══██╗██║  ██║██║   ██║██╔════╝
+	███████╗██║███████╗ ╚████╔╝ ██████╔╝███████║██║   ██║███████╗
+	╚════██║██║╚════██║  ╚██╔╝  ██╔═══╝ ██╔══██║██║   ██║╚════██║
+	███████║██║███████║   ██║   ██║     ██║  ██║╚██████╔╝███████║
+	╚══════╝╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+                                                          
+				`)
 				// Make arrangement to remove PID file upon receiving the SIGTERM from kill command
 				ch := make(chan os.Signal, 1)
 				signal.Notify(ch, os.Interrupt, os.Kill, syscall.SIGTERM)
