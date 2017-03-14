@@ -9,23 +9,55 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+type mailBy func(m1, m2 *s.Mail) bool
+
+func (by mailBy) Sort(mails []*s.Mail) {
+	ms := &mailSorter{
+		mails: mails,
+		by:    by,
+	}
+	sort.Sort(ms)
+}
+
+type mailSorter struct {
+	mails []*s.Mail
+	by    func(m1, m2 *s.Mail) bool
+}
+
+func (ms *mailSorter) Len() int {
+	return len(ms.mails)
+}
+
+func (ms *mailSorter) Swap(i, j int) {
+	ms.mails[i], ms.mails[j] = ms.mails[j], ms.mails[i]
+}
+
+func (ms *mailSorter) Less(i, j int) bool {
+	return ms.by(ms.mails[i], ms.mails[j])
+}
+
 var _ = Describe("Mail", func() {
 
 	Context("Maildir", func() {
 		It("Create a slice of mail keys", func() {
 			result, err := s.Index("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
+
+			name := func(m1, m2 *s.Mail) bool {
+				return m1.Key < m2.Key
+			}
+			mailBy(name).Sort(result)
 			Ω(result).Should(Equal(
 				[]*s.Mail{
 
 					{
-						Key:     "1488230510.M141612P8565.mail.carlostrub.ch,S=5978,W=6119",
+						Key:     "1488181583.M633084P4781.mail.carlostrub.ch,S=708375,W=720014",
 						Subject: nil,
 						Body:    nil,
-						Junk:    false,
+						Junk:    true,
 					},
 					{
-						Key:     "1488181583.M633084P4781.mail.carlostrub.ch,S=708375,W=720014",
+						Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
 						Subject: nil,
 						Body:    nil,
 						Junk:    true,
@@ -43,22 +75,22 @@ var _ = Describe("Mail", func() {
 						Junk:    true,
 					},
 					{
+						Key:     "1488226337.M327833P8269.mail.carlostrub.ch,S=6960,W=7161",
+						Subject: nil,
+						Body:    nil,
+						Junk:    true,
+					},
+					{
 						Key:     "1488228352.M339670P8269.mail.carlostrub.ch,S=12659,W=12782",
 						Subject: nil,
 						Body:    nil,
 						Junk:    true,
 					},
 					{
-						Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
+						Key:     "1488230510.M141612P8565.mail.carlostrub.ch,S=5978,W=6119",
 						Subject: nil,
 						Body:    nil,
-						Junk:    true,
-					},
-					{
-						Key:     "1488226337.M327833P8269.mail.carlostrub.ch,S=6960,W=7161",
-						Subject: nil,
-						Body:    nil,
-						Junk:    true,
+						Junk:    false,
 					},
 				}))
 		})
