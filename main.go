@@ -73,6 +73,11 @@ func main() {
 			Usage:   "run sisyphus",
 			Action: func(c *cli.Context) {
 
+				// check if daemon already running.
+				if _, err := os.Stat(*pidfile); err == nil {
+					log.Fatal("sisyphus running or " + *pidfile + " file exists.")
+				}
+
 				log.Print("App runs..........")
 				// Make arrangement to remove PID file upon receiving the SIGTERM from kill command
 				ch := make(chan os.Signal, 1)
