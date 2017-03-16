@@ -225,3 +225,9 @@ func (m *Mail) Load(d string) error {
 
 	return nil
 }
+
+// Classify identifies whether a mail is junk and then learns its words for the
+// respective category
+func (m *Mail) Classify() error {
+	return nil
+}

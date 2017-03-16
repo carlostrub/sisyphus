@@ -3,12 +3,12 @@ package main
 import (
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
 	"github.com/boltdb/bolt"
+	"github.com/fsnotify/fsnotify"
 	"github.com/urfave/cli"
 )
 
@@ -83,6 +83,8 @@ func main() {
 	███████║██║███████║   ██║   ██║     ██║  ██║╚██████╔╝███████║
 	╚══════╝╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
 
+	by Carlo Strub <cs@carlostrub.ch>
+
 
 `)
 				// Make arrangement to remove PID file upon receiving the SIGTERM from kill command
@@ -113,8 +115,11 @@ func main() {
 					log.Fatal("Sorry... only one Maildir supported as of today.")
 				}
 
-				log.Println("create empty junk directory if required")
+				log.Println("create directories if missing")
 				os.MkdirAll(maildirPaths[0]+"/.Junk/cur", 0700)
+				os.MkdirAll(maildirPaths[0]+"/new", 0700)
+				os.MkdirAll(maildirPaths[0]+"/cur", 0700)
+
 				log.Println("loading mails")
 				mails, err := Index(maildirPaths[0])
 				if err != nil {
@@ -131,26 +136,64 @@ func main() {
 				defer db.Close()
 				log.Println("database loaded")
 
-				// Check for unprocessed mail
-				var unprocessedGood []string
+				// Handle all mails initially
 				for i := range mails {
 					db.View(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte("Processed"))
 						v := b.Get([]byte(mails[i].Key))
 						if len(v) == 0 {
-							unprocessedGood = append(unprocessedGood, mails[i].Key)
+							mails[i].Classify()
 						}
-						if string(v) == junk {
-							unprocessedGood = append(unprocessedGood, mails[i].Key)
+						if string(v) == good && mails[i].Junk == true {
+							mails[i].Classify()
+						}
+						if string(v) == junk && mails[i].Junk == false {
+							mails[i].Classify()
 						}
 						return nil
 					})
 				}
 
-				// Classify and learn unprocessed mail
+				// Handle mails as the arrive
+				watcher, err := fsnotify.NewWatcher()
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer watcher.Close()
 
-				mux := http.NewServeMux()
-				log.Fatalln(http.ListenAndServe(":8080", mux))
+				done := make(chan bool)
+				go func() {
+					for {
+						select {
+						case event := <-watcher.Events:
+							if event.Op&fsnotify.Create == fsnotify.Create {
+								log.Println("new mail:", event.Name)
+								m := s.Mail{
+									Key: "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
+								}
+
+								err := m.Classify()
+
+							}
+						case err := <-watcher.Errors:
+							log.Println("error:", err)
+						}
+					}
+				}()
+
+				err = watcher.Add(maildirPaths[0] + "/cur")
+				if err != nil {
+					log.Fatal(err)
+				}
+				err = watcher.Add(maildirPaths[0] + "/new")
+				if err != nil {
+					log.Fatal(err)
+				}
+				err = watcher.Add(maildirPaths[0] + "/.Junk/cur")
+				if err != nil {
+					log.Fatal(err)
+				}
+				<-done
 			},
 		},
 		{
