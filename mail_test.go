@@ -122,7 +122,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			subject := "hello"
@@ -144,7 +144,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).Should(HaveOccurred())
 		})
 		It("Fail if Body has already content", func() {
@@ -156,7 +156,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).Should(HaveOccurred())
 		})
 
@@ -168,7 +168,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -193,7 +193,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -218,7 +218,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -243,7 +243,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -268,7 +268,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -293,7 +293,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -318,7 +318,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -343,7 +343,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -368,7 +368,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -393,7 +393,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -418,7 +418,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()
@@ -443,7 +443,7 @@ var _ = Describe("Mail", func() {
 				Junk:    true,
 			}
 
-			err := m.Load("test/Maildir" + "/.Junk")
+			err := m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Clean()

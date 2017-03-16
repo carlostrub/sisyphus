@@ -193,6 +193,9 @@ func (m *Mail) Wordlists() (subject, body []string, err error) {
 // Load reads a mail's subject and body
 func (m *Mail) Load(d string) error {
 
+	if m.Junk {
+		d = d + "/.Junk"
+	}
 	message, err := maildir.Dir(d).Message(m.Key)
 	if err != nil {
 		return err
