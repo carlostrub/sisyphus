@@ -22,10 +22,11 @@ type Mail struct {
 // Index loads all mail keys from the Maildir directory for processing.
 func Index(d string, junk bool) (m []*Mail, err error) {
 
+	var j []string
 	if junk {
-		j, err := maildir.Dir(d + "/.Junk").Keys()
+		j, err = maildir.Dir(d + "/.Junk").Keys()
 	} else {
-		j, err := maildir.Dir(d).Keys()
+		j, err = maildir.Dir(d).Keys()
 	}
 	if err != nil {
 		return m, err

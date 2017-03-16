@@ -140,12 +140,12 @@ func main() {
 				for i := range mailsGood {
 					db.View(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte("Processed"))
-						v := b.Get([]byte(mails[i].Key))
+						v := b.Get([]byte(mailsGood[i].Key))
 						if len(v) == 0 {
-							unprocessedGood = append(unprocessedGood, mails[i].Key)
+							unprocessedGood = append(unprocessedGood, mailsGood[i].Key)
 						}
 						if string(v) == junk {
-							unprocessedGood = append(unprocessedGood, mails[i].Key)
+							unprocessedGood = append(unprocessedGood, mailsGood[i].Key)
 						}
 						return nil
 					})
@@ -153,12 +153,12 @@ func main() {
 				for i := range mailsJunk {
 					db.View(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte("Processed"))
-						v := b.Get([]byte(mails[i].Key))
+						v := b.Get([]byte(mailsJunk[i].Key))
 						if len(v) == 0 {
-							unprocessedJunk = append(unprocessedJunk, mails[i].Key)
+							unprocessedJunk = append(unprocessedJunk, mailsJunk[i].Key)
 						}
 						if string(v) == good {
-							unprocessedJunk = append(unprocessedJunk, mails[i].Key)
+							unprocessedJunk = append(unprocessedJunk, mailsJunk[i].Key)
 						}
 						return nil
 					})

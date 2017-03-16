@@ -40,7 +40,7 @@ var _ = Describe("Mail", func() {
 
 	Context("Maildir", func() {
 		It("Create a slice of mail keys", func() {
-			result, err := s.Index("test/Maildir")
+			result, err := s.Index("test/Maildir", true)
 			Ω(err).ShouldNot(HaveOccurred())
 
 			name := func(m1, m2 *s.Mail) bool {
@@ -86,6 +86,19 @@ var _ = Describe("Mail", func() {
 						Body:    nil,
 						Junk:    true,
 					},
+				}))
+		})
+		It("Create a slice of mail keys", func() {
+			result, err := s.Index("test/Maildir", false)
+			Ω(err).ShouldNot(HaveOccurred())
+
+			name := func(m1, m2 *s.Mail) bool {
+				return m1.Key < m2.Key
+			}
+			mailBy(name).Sort(result)
+			Ω(result).Should(Equal(
+				[]*s.Mail{
+
 					{
 						Key:     "1488230510.M141612P8565.mail.carlostrub.ch,S=5978,W=6119",
 						Subject: nil,
@@ -95,7 +108,7 @@ var _ = Describe("Mail", func() {
 				}))
 		})
 		It("Fail if Maildir does not exist", func() {
-			_, err := s.Index("test/DOESNOTEXIST")
+			_, err := s.Index("test/DOESNOTEXIST", false)
 			Ω(err).Should(HaveOccurred())
 		})
 	})
