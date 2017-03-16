@@ -5,6 +5,7 @@ import:
 - package: github.com/boltdb/bolt
   version: ^1.3.0
 - package: github.com/urfave/cli
+- package: github.com/fsnotify/fsnotify
 testImport:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega
