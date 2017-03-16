@@ -1,41 +1,41 @@
 Sisyphus
 ========
 
-$project will solve your problem of where to start with documentation,
-by providing a basic explanation of how to do it easily.
-
-Look how easy it is to use:
-
-    import project
-    # Get your stuff done
-    project.do_stuff()
+Sisyphus is a modern, fully automized junk mail handler. It requires no
+configuration and no user interaction to improve the accuracy of its learning
+algorithm.
 
 Features
 --------
 
-- Be awesome
-- Make things faster
+- no configuration required
+- no user interaction
+- real-time filtering and learning
+- handles multiple mail directories
+- compatible with Maildir
+- daemonized
 
 Installation
 ------------
 
-Install $project by running:
+Install sisyphus by running:
 
     install project
 
 Contribute
 ----------
 
-- Issue Tracker: github.com/$project/$project/issues
-- Source Code: github.com/$project/$project
+- Issue Tracker: github.com/carlostrub/sisyphus/issus
+- Source Code: github.com/carlostrub/sisyphus
 
 Support
 -------
 
-If you are having issues, please let us know.
-We have a mailing list located at: project@google-groups.com
+If you are having issues, please let me know via issue tracker.
 
 License
 -------
+Copyright 2017, Carlo Strub <cs@carlostrub.ch>
 
-The project is licensed under the BSD license.
+This project is licensed under a 3-clause BSD license. See the LICENSE file for
+details.
