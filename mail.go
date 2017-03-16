@@ -20,22 +20,22 @@ type Mail struct {
 }
 
 // Index loads all mail keys from the Maildir directory for processing.
-func Index(d string, junk bool) (m []*Mail, err error) {
+func Index(d string) (m []*Mail, err error) {
 
-	var j []string
-	if junk {
-		j, err = maildir.Dir(d + "/.Junk").Keys()
-	} else {
-		j, err = maildir.Dir(d).Keys()
-	}
-	if err != nil {
-		return m, err
-	}
-	for _, val := range j {
-		var new Mail
-		new.Key = val
-		new.Junk = junk
-		m = append(m, &new)
+	dirs := []string{d, d + "/.Junk"}
+	for _, dir := range dirs {
+		j, err := maildir.Dir(dir).Keys()
+		if err != nil {
+			return m, err
+		}
+		for _, val := range j {
+			var new Mail
+			new.Key = val
+			if dir == d+"/.Junk" {
+				new.Junk = true
+			}
+			m = append(m, &new)
+		}
 	}
 
 	return m, nil

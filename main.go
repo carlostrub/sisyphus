@@ -113,18 +113,14 @@ func main() {
 					log.Fatal("Sorry... only one Maildir supported as of today.")
 				}
 
-				log.Println("loading mails")
-				mailsGood, err := Index(maildirPaths[0], false)
-				if err != nil {
-					log.Fatal("Wrong path to Maildir")
-				}
-				log.Println("good mails loaded")
+				log.Println("create empty junk directory if required")
 				os.MkdirAll(maildirPaths[0]+"/.Junk/cur", 0700)
-				mailsJunk, err := Index(maildirPaths[0], true)
+				log.Println("loading mails")
+				mails, err := Index(maildirPaths[0])
 				if err != nil {
 					log.Fatal("Wrong path to Maildir")
 				}
-				log.Println("junk mails loaded")
+				log.Println("mails loaded")
 
 				// Open the database
 				log.Println("loading database")
@@ -136,29 +132,16 @@ func main() {
 				log.Println("database loaded")
 
 				// Check for unprocessed mail
-				var unprocessedJunk, unprocessedGood []string
-				for i := range mailsGood {
+				var unprocessedGood []string
+				for i := range mails {
 					db.View(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte("Processed"))
-						v := b.Get([]byte(mailsGood[i].Key))
+						v := b.Get([]byte(mails[i].Key))
 						if len(v) == 0 {
-							unprocessedGood = append(unprocessedGood, mailsGood[i].Key)
+							unprocessedGood = append(unprocessedGood, mails[i].Key)
 						}
 						if string(v) == junk {
-							unprocessedGood = append(unprocessedGood, mailsGood[i].Key)
-						}
-						return nil
-					})
-				}
-				for i := range mailsJunk {
-					db.View(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte("Processed"))
-						v := b.Get([]byte(mailsJunk[i].Key))
-						if len(v) == 0 {
-							unprocessedJunk = append(unprocessedJunk, mailsJunk[i].Key)
-						}
-						if string(v) == good {
-							unprocessedJunk = append(unprocessedJunk, mailsJunk[i].Key)
+							unprocessedGood = append(unprocessedGood, mails[i].Key)
 						}
 						return nil
 					})
