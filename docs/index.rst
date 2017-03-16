@@ -1,3 +1,4 @@
+========
 Sisyphus
 ========
 
@@ -18,15 +19,21 @@ Features
 Installation
 ------------
 
-Install sisyphus by running:
-
-    install project
+- Installation from binary:
+        1. download the sisyphus binary for your operating system
+        2. place the binary in your path
+        3. run sisyphus
+- Installation from source:
+        1. Clone git repository
+        2. Install glide
+        3. Run: glide install
+        4. Run: go install
 
 Contribute
 ----------
 
-- Issue Tracker: github.com/carlostrub/sisyphus/issus
-- Source Code: github.com/carlostrub/sisyphus
+- Issue Tracker: https://github.com/carlostrub/sisyphus/issus
+- Source Code: https://github.com/carlostrub/sisyphus
 
 Support
 -------
