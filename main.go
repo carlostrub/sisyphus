@@ -8,20 +8,16 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/boltdb/bolt"
 	"github.com/urfave/cli"
 )
 
-var (
-// Processed is a map of e-mail IDs and the value set to true if Junk
-// Processed map[string]bool
+const (
+	good = "0"
+	junk = "1"
 )
 
 func main() {
-	// Get working directory
-	wd, err := os.Getwd()
-	if err != nil {
-		panic(err)
-	}
 
 	// Define App
 	app := cli.NewApp()
@@ -43,9 +39,7 @@ func main() {
 		},
 	}
 
-	maildirPaths := cli.StringSlice([]string{
-		wd + "/Maildir",
-	})
+	maildirPaths := cli.StringSlice([]string{})
 
 	var pidfile *string
 	pidfile = new(string)
@@ -81,14 +75,16 @@ func main() {
 
 				fmt.Print(`
 
+
 	███████╗██╗███████╗██╗   ██╗██████╗ ██╗  ██╗██╗   ██╗███████╗
 	██╔════╝██║██╔════╝╚██╗ ██╔╝██╔══██╗██║  ██║██║   ██║██╔════╝
 	███████╗██║███████╗ ╚████╔╝ ██████╔╝███████║██║   ██║███████╗
 	╚════██║██║╚════██║  ╚██╔╝  ██╔═══╝ ██╔══██║██║   ██║╚════██║
 	███████║██║███████║   ██║   ██║     ██║  ██║╚██████╔╝███████║
 	╚══════╝╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
-                                                          
-				`)
+
+
+`)
 				// Make arrangement to remove PID file upon receiving the SIGTERM from kill command
 				ch := make(chan os.Signal, 1)
 				signal.Notify(ch, os.Interrupt, os.Kill, syscall.SIGTERM)
@@ -108,25 +104,67 @@ func main() {
 					os.Exit(0)
 
 				}()
-				// var maildir []string
-				//				if maildir == nil {
-				//					return errors.New("no maildir selected")
-				//				}
-				//
-				//				// Load the Maildir
-				//				mails, err := Index(maildirPaths[0])
-				//				if err != nil {
-				//					return cli.NewExitError(err, 66)
-				//				}
-				//
-				//				fmt.Println(mails)
-				//
-				//				// Open the database
-				//				db, err := openDB(maildirPaths[0])
-				//				if err != nil {
-				//					return cli.NewExitError(err, 66)
-				//				}
-				//				defer db.Close()
+
+				// Load the Maildir
+				if len(maildirPaths) < 1 {
+					log.Fatal("No Maildir set.")
+				}
+				if len(maildirPaths) > 1 {
+					log.Fatal("Sorry... only one Maildir supported as of today.")
+				}
+
+				log.Println("loading mails")
+				mailsGood, err := Index(maildirPaths[0], false)
+				if err != nil {
+					log.Fatal("Wrong path to Maildir")
+				}
+				log.Println("good mails loaded")
+				os.MkdirAll(maildirPaths[0]+"/.Junk/cur", 0700)
+				mailsJunk, err := Index(maildirPaths[0], true)
+				if err != nil {
+					log.Fatal("Wrong path to Maildir")
+				}
+				log.Println("junk mails loaded")
+
+				// Open the database
+				log.Println("loading database")
+				db, err := openDB(maildirPaths[0])
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer db.Close()
+				log.Println("database loaded")
+
+				// Check for unprocessed mail
+				var unprocessedJunk, unprocessedGood []string
+				for i := range mailsGood {
+					db.View(func(tx *bolt.Tx) error {
+						b := tx.Bucket([]byte("Processed"))
+						v := b.Get([]byte(mails[i].Key))
+						if len(v) == 0 {
+							unprocessedGood = append(unprocessedGood, mails[i].Key)
+						}
+						if string(v) == junk {
+							unprocessedGood = append(unprocessedGood, mails[i].Key)
+						}
+						return nil
+					})
+				}
+				for i := range mailsJunk {
+					db.View(func(tx *bolt.Tx) error {
+						b := tx.Bucket([]byte("Processed"))
+						v := b.Get([]byte(mails[i].Key))
+						if len(v) == 0 {
+							unprocessedJunk = append(unprocessedJunk, mails[i].Key)
+						}
+						if string(v) == good {
+							unprocessedJunk = append(unprocessedJunk, mails[i].Key)
+						}
+						return nil
+					})
+				}
+
+				// Classify and learn unprocessed mail
 
 				mux := http.NewServeMux()
 				log.Fatalln(http.ListenAndServe(":8080", mux))

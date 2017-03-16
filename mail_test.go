@@ -162,7 +162,7 @@ var _ = Describe("Mail", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 
 			subjectOutput := "hello"
-			bodyOutput := " ------ 000 0032 01d2912f.05324bc6 : ; : dear cs we are looking for employees working remotely my name is kari i am the personnel manager of a large international company most of the work you can do from home that is at a distance salary is 2000- 5300 if you are interested in this offer please visit our site best regards ------ 000 0032 01d2912f.05324bc6 : ; : dear cs we are looking for employees working remotely. my name is kari i am the personnel manager of a large international company. most of the work you can do from home that is at a distance. salary is 2000- 5300. if you are interested in this offer please visit our site best regards ------ 000 0032 01d2912f.05324bc6-- "
+			bodyOutput := " ------ 000 0032 01d2912f.05324bc6 : ; cp-850 : dear cs we are looking for employees working remotely my name is kari i am the personnel manager of a large international company most of the work you can do from home that is at a distance salary is 2000- 5300 if you are interested in this offer please visit our site best regards ------ 000 0032 01d2912f.05324bc6 : ; cp-850 : dear cs we are looking for employees working remotely. my name is kari i am the personnel manager of a large international company. most of the work you can do from home that is at a distance. salary is 2000- 5300. if you are interested in this offer please visit our site best regards ------ 000 0032 01d2912f.05324bc6-- "
 			Ω(m).Should(Equal(
 				s.Mail{
 					Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",

@@ -1,58 +1,16 @@
-hash: 1d7fb4b49ab9cebe25e4d605b7256849d2fb5550372e53dcf1a8dc030d32fce0
-updated: 2017-03-11T20:05:25.966344527Z
+hash: ad57db461a149fadda777f61bafa73ed65c46ef4f18e9f86b7e282070ea587e2
+updated: 2017-03-15T21:05:02.415303554Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
-- name: github.com/jbrukh/bayesian
-  version: bf3f261f9a9c61145c60d47665b0518cc32c774f
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
 - name: github.com/urfave/cli
   version: 9e5b04886c4bfee2ceba1465b8121057355c4e53
-- name: golang.org/x/net
-  version: a6577fac2d73be281a500b310739095313165611
-  subpackages:
-  - html
-  - html/atom
-- name: golang.org/x/sys
-  version: 99f16d856c9836c42d24e7ab64ea72916925fa97
-  subpackages:
-  - unix
 testImports:
 - name: github.com/onsi/ginkgo
-  version: ab07225d112dc7a93c289ac5b2e12735c2c46035
-  subpackages:
-  - config
-  - internal/codelocation
-  - internal/containernode
-  - internal/failer
-  - internal/leafnodes
-  - internal/remote
-  - internal/spec
-  - internal/specrunner
-  - internal/suite
-  - internal/testingtproxy
-  - internal/writer
-  - reporters
-  - reporters/stenographer
-  - reporters/stenographer/support/go-colorable
-  - reporters/stenographer/support/go-isatty
-  - types
+  version: 5ca121185e255e5041d7727d77992618545a93d2
 - name: github.com/onsi/gomega
   version: 1de7ab2df9105aa5c15c4d7e14a8a514e3cb8d4b
-  subpackages:
-  - format
-  - internal/assertion
-  - internal/asyncassertion
-  - internal/oraclematcher
-  - internal/testingtsupport
-  - matchers
-  - matchers/support/goraph/bipartitegraph
-  - matchers/support/goraph/edge
-  - matchers/support/goraph/node
-  - matchers/support/goraph/util
-  - types
-- name: gopkg.in/yaml.v2
-  version: a3f3340b5840cee44f372bddb5880fcbc419b46a

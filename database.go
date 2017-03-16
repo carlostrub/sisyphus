@@ -51,7 +51,7 @@ func openDB(maildir string) (db *bolt.DB, err error) {
 		return db, err
 	}
 
-	// Create DB bucket for Junk inside bucket Wordlists
+	// Create DB bucket for Good inside bucket Wordlists
 	err = db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("Wordlists"))
 		_, err := b.CreateBucketIfNotExists([]byte("Good"))

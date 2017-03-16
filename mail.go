@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"errors"
+	"math"
 	"mime/quotedprintable"
 	"regexp"
 	"strings"
@@ -19,26 +20,20 @@ type Mail struct {
 }
 
 // Index loads all mail keys from the Maildir directory for processing.
-func Index(d string) (m []*Mail, err error) {
+func Index(d string, junk bool) (m []*Mail, err error) {
 
-	g, err := maildir.Dir(d).Keys()
-	if err != nil {
-		return m, err
+	if junk {
+		j, err := maildir.Dir(d + "/.Junk").Keys()
+	} else {
+		j, err := maildir.Dir(d).Keys()
 	}
-	for _, val := range g {
-		var new Mail
-		new.Key = val
-		m = append(m, &new)
-	}
-
-	j, err := maildir.Dir(d + "/.Junk").Keys()
 	if err != nil {
 		return m, err
 	}
 	for _, val := range j {
 		var new Mail
 		new.Key = val
-		new.Junk = true
+		new.Junk = junk
 		m = append(m, &new)
 	}
 
@@ -63,7 +58,6 @@ func cleanString(i string) (s string, err error) {
 	s = strings.Replace(s, "charset", " ", -1)
 	s = strings.Replace(s, "content-transfer-encoding", " ", -1)
 	s = strings.Replace(s, "content-type", " ", -1)
-	s = strings.Replace(s, "cp-850", " ", -1)
 	s = strings.Replace(s, "image/jpeg", " ", -1)
 	s = strings.Replace(s, "multipart/alternative", " ", -1)
 	s = strings.Replace(s, "multipart/related", " ", -1)
@@ -119,22 +113,30 @@ func wordlist(s string) (l []string, err error) {
 	list := make(map[string]int)
 
 	raw := strings.Split(s, " ")
+	var clean []string
 
-	for _, i := range raw {
+	for _, w := range raw {
 
 		// no long or too short words
-		length := len(i)
+		length := len(w)
 		if length < 4 || length > 10 {
 			continue
 		}
 
 		// no numbers, special characters, etc. -- only words
-		match, _ := regexp.MatchString("(^[a-z]+$)", i)
+		match, _ := regexp.MatchString("(^[a-z]+$)", w)
 		if !match {
 			continue
 		} else {
-			list[i]++
+			clean = append(clean, w)
 		}
+	}
+
+	// only the first 200 words count
+	maxWords := int(math.Min(200, float64(len(clean))))
+	for i := 0; i < maxWords; i++ {
+		w := clean[i]
+		list[w]++
 	}
 
 	for word, count := range list {
