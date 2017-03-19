@@ -3,8 +3,10 @@ package main
 import (
 	"bufio"
 	"errors"
+	"log"
 	"math"
 	"mime/quotedprintable"
+	"os"
 	"regexp"
 	"strings"
 
@@ -19,9 +21,21 @@ type Mail struct {
 	Junk          bool
 }
 
+// CreateDirs creates all the required dirs -- if not already there.
+func CreateDirs(maildir string) {
+
+	log.Println("create missing directories")
+	os.MkdirAll(maildir+"/.Junk/cur", 0700)
+	os.MkdirAll(maildir+"/new", 0700)
+	os.MkdirAll(maildir+"/cur", 0700)
+
+	return
+}
+
 // Index loads all mail keys from the Maildir directory for processing.
 func Index(d string) (m []*Mail, err error) {
 
+	log.Println("loading mails")
 	dirs := []string{d, d + "/.Junk"}
 	for _, dir := range dirs {
 		j, err := maildir.Dir(dir).Keys()
@@ -38,7 +52,44 @@ func Index(d string) (m []*Mail, err error) {
 		}
 	}
 
+	log.Println("mails loaded")
 	return m, nil
+}
+
+// Load reads a mail's subject and body
+func (m *Mail) Load(d string) error {
+
+	if m.Junk {
+		d = d + "/.Junk"
+	}
+	message, err := maildir.Dir(d).Message(m.Key)
+	if err != nil {
+		return err
+	}
+
+	// get Subject
+	if m.Subject != nil {
+		return errors.New("there is already a subject")
+	}
+	subject := message.Header.Get("Subject")
+	m.Subject = &subject
+
+	// get Body
+	bQ := quotedprintable.NewReader(message.Body)
+	var b []string
+	bScanner := bufio.NewScanner(bQ)
+	for bScanner.Scan() {
+		raw := bScanner.Text()
+		b = append(b, raw)
+	}
+
+	body := strings.Join(b, " ")
+	if m.Body != nil {
+		return errors.New("there is already a body")
+	}
+	m.Body = &body
+
+	return nil
 }
 
 func trimStringFromBase64(s string) string {
@@ -48,64 +99,46 @@ func trimStringFromBase64(s string) string {
 	return s
 }
 
-func cleanString(i string) (s string, err error) {
+func cleanString(i string) (s string) {
 
-	s = trimStringFromBase64(i)
-	s = sanitize.Accents(s)
+	s = sanitize.Accents(i)
 	s = sanitize.HTML(s)
 	s = strings.ToLower(s)
 
-	s = strings.Replace(s, "boundary=", " ", -1)
-	s = strings.Replace(s, "charset", " ", -1)
-	s = strings.Replace(s, "content-transfer-encoding", " ", -1)
-	s = strings.Replace(s, "content-type", " ", -1)
-	s = strings.Replace(s, "image/jpeg", " ", -1)
-	s = strings.Replace(s, "multipart/alternative", " ", -1)
-	s = strings.Replace(s, "multipart/related", " ", -1)
-	s = strings.Replace(s, "name=", " ", -1)
-	s = strings.Replace(s, "nextpart", " ", -1)
-	s = strings.Replace(s, "quoted-printable", " ", -1)
-	s = strings.Replace(s, "text/html", " ", -1)
-	s = strings.Replace(s, "text/plain", " ", -1)
-	s = strings.Replace(s, "this email must be viewed in html mode", " ", -1)
-	s = strings.Replace(s, "this is a multi-part message in mime format", " ", -1)
-	s = strings.Replace(s, "windows-1251", " ", -1)
-	s = strings.Replace(s, "windows-1252", " ", -1)
-
-	s = strings.Replace(s, "!", " ", -1)
-	s = strings.Replace(s, "#", " ", -1)
-	s = strings.Replace(s, "$", " ", -1)
-	s = strings.Replace(s, "%", " ", -1)
-	s = strings.Replace(s, "&", " ", -1)
-	s = strings.Replace(s, "'", "", -1)
-	s = strings.Replace(s, "(", " ", -1)
-	s = strings.Replace(s, ")", " ", -1)
-	s = strings.Replace(s, "*", " ", -1)
-	s = strings.Replace(s, "+", " ", -1)
-	s = strings.Replace(s, ",", " ", -1)
-	s = strings.Replace(s, ". ", " ", -1)
-	s = strings.Replace(s, "<", " ", -1)
-	s = strings.Replace(s, "=", " ", -1)
-	s = strings.Replace(s, ">", " ", -1)
-	s = strings.Replace(s, "?", " ", -1)
-	s = strings.Replace(s, "@", " ", -1)
-	s = strings.Replace(s, "[", " ", -1)
-	s = strings.Replace(s, "\"", " ", -1)
-	s = strings.Replace(s, "\\", " ", -1)
-	s = strings.Replace(s, "\n", " ", -1)
-	s = strings.Replace(s, "\t", " ", -1)
-	s = strings.Replace(s, "]", " ", -1)
-	s = strings.Replace(s, "^", " ", -1)
-	s = strings.Replace(s, "_", " ", -1)
-	s = strings.Replace(s, "{", " ", -1)
-	s = strings.Replace(s, "|", " ", -1)
-	s = strings.Replace(s, "}", " ", -1)
-
+	bad := []string{
+		"boundary=", "charset", "content-transfer-encoding",
+		"content-type", "image/jpeg", "multipart/alternative",
+		"multipart/related", "name=", "nextpart", "quoted-printable",
+		"text/html", "text/plain", "this email must be viewed in html mode",
+		"this is a multi-part message in mime format",
+		"windows-1251", "windows-1252", "!", "#", "$", "%", "&", "'",
+		"(", ")", "*", "+", ",", ". ", "<", "=", ">", "?", "@", "[",
+		"\"", "\\", "\n", "\t", "]", "^", "_", "{", "|", "}",
+	}
+	for _, b := range bad {
+		s = strings.Replace(s, b, " ", -1)
+	}
 	for i := 0; i < 10; i++ {
 		s = strings.Replace(s, "  ", " ", -1)
 	}
 
-	return s, nil
+	return s
+}
+
+// Clean cleans the mail's subject and body
+func (m *Mail) Clean() error {
+	if m.Subject != nil {
+		s := trimStringFromBase64(*m.Subject)
+		s = cleanString(s)
+		m.Subject = &s
+	}
+
+	if m.Body != nil {
+		b := trimStringFromBase64(*m.Body)
+		b = cleanString(b)
+		m.Body = &b
+	}
+	return nil
 }
 
 // wordlist takes a string of space separated text and returns a list of unique
@@ -151,26 +184,6 @@ func wordlist(s string) (l []string, err error) {
 	return l, nil
 }
 
-// Clean cleans the mail's subject and body
-func (m *Mail) Clean() error {
-	if m.Subject != nil {
-		s, err := cleanString(*m.Subject)
-		if err != nil {
-			return err
-		}
-		m.Subject = &s
-	}
-
-	if m.Body != nil {
-		b, err := cleanString(*m.Body)
-		if err != nil {
-			return err
-		}
-		m.Body = &b
-	}
-	return nil
-}
-
 // Wordlists prepares the mail's subject and body for training
 func (m *Mail) Wordlists() (subject, body []string, err error) {
 	if m.Subject != nil {
@@ -190,44 +203,14 @@ func (m *Mail) Wordlists() (subject, body []string, err error) {
 	return subject, body, nil
 }
 
-// Load reads a mail's subject and body
-func (m *Mail) Load(d string) error {
-
-	if m.Junk {
-		d = d + "/.Junk"
-	}
-	message, err := maildir.Dir(d).Message(m.Key)
-	if err != nil {
-		return err
-	}
-
-	// get Subject
-	if m.Subject != nil {
-		return errors.New("there is already a subject")
-	}
-	subject := message.Header.Get("Subject")
-	m.Subject = &subject
-
-	// get Body
-	bQ := quotedprintable.NewReader(message.Body)
-	var b []string
-	bScanner := bufio.NewScanner(bQ)
-	for bScanner.Scan() {
-		raw := bScanner.Text()
-		b = append(b, raw)
-	}
-
-	body := strings.Join(b, " ")
-	if m.Body != nil {
-		return errors.New("there is already a body")
-	}
-	m.Body = &body
+// Classify analyses the mail and decides whether it is Junk or Good
+func (m *Mail) Classify() error {
 
 	return nil
 }
 
-// Classify identifies whether a mail is junk and then learns its words for the
-// respective category
-func (m *Mail) Classify() error {
+// Learn adds the words to the respective list and unlearns on the other, if
+// the mail has been moved from there.
+func (m *Mail) Learn() error {
 	return nil
 }

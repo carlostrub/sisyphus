@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/boltdb/bolt"
@@ -115,40 +116,46 @@ func main() {
 					log.Fatal("Sorry... only one Maildir supported as of today.")
 				}
 
-				log.Println("create directories if missing")
-				os.MkdirAll(maildirPaths[0]+"/.Junk/cur", 0700)
-				os.MkdirAll(maildirPaths[0]+"/new", 0700)
-				os.MkdirAll(maildirPaths[0]+"/cur", 0700)
+				CreateDirs(maildirPaths[0])
 
-				log.Println("loading mails")
 				mails, err := Index(maildirPaths[0])
 				if err != nil {
 					log.Fatal("Wrong path to Maildir")
 				}
-				log.Println("mails loaded")
 
 				// Open the database
-				log.Println("loading database")
 				db, err := openDB(maildirPaths[0])
 				if err != nil {
 					log.Fatal(err)
 				}
 				defer db.Close()
-				log.Println("database loaded")
 
-				// Handle all mails initially
+				// Handle all mails after startup
 				for i := range mails {
 					db.View(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte("Processed"))
 						v := b.Get([]byte(mails[i].Key))
 						if len(v) == 0 {
-							mails[i].Classify()
+							err = mails[i].Classify()
+							if err != nil {
+								log.Print(err)
+							}
+							err = mails[i].Learn()
+							if err != nil {
+								log.Print(err)
+							}
 						}
 						if string(v) == good && mails[i].Junk == true {
-							mails[i].Classify()
+							err = mails[i].Learn()
+							if err != nil {
+								log.Print(err)
+							}
 						}
 						if string(v) == junk && mails[i].Junk == false {
-							mails[i].Classify()
+							err = mails[i].Learn()
+							if err != nil {
+								log.Print(err)
+							}
 						}
 						return nil
 					})
@@ -167,12 +174,19 @@ func main() {
 						select {
 						case event := <-watcher.Events:
 							if event.Op&fsnotify.Create == fsnotify.Create {
-								log.Println("new mail:", event.Name)
-								m := s.Mail{
-									Key: "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
+								mailName := strings.Split(event.Name, "/")
+								m := Mail{
+									Key: mailName[len(mailName)-1],
 								}
 
-								err := m.Classify()
+								err = m.Classify()
+								if err != nil {
+									log.Print(err)
+								}
+								err = m.Learn()
+								if err != nil {
+									log.Print(err)
+								}
 
 							}
 						case err := <-watcher.Errors:
