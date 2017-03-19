@@ -20,7 +20,7 @@ import (
 type Mail struct {
 	Key           string
 	Subject, Body *string
-	Junk          bool
+	Junk, New     bool
 }
 
 // CreateDirs creates all the required dirs -- if not already there.
@@ -212,18 +212,63 @@ func (m *Mail) Classify(db *bolt.DB) error {
 	}
 
 	list := m.Wordlist()
-	scoreG, scoreJ, junk := LogScores(db, list)
-	m.Junk = junk
+	scoreG, scoreJ, ju := LogScores(db, list)
 
 	log.Print("Classified " + m.Key + " as Junk=" + strconv.FormatBool(m.Junk) +
 		" (good: " + strconv.FormatFloat(scoreG, 'f', 4, 64) +
 		", junk: " + strconv.FormatFloat(scoreJ, 'f', 4, 64) + ")")
+
+	// Move mails around after classification
+	if m.New && ju {
+		m.Junk = ju
+		err := os.Rename("./new/"+m.Key, "./.Junk/cur/"+m.Key)
+		if err != nil {
+			return err
+		}
+		log.Print("Moved " + m.Key + " from new to Junk folder")
+	}
+
+	if m.New == false && m.Junk && ju == false {
+		err := os.Rename("./.Junk/cur/"+m.Key, "./cur/"+m.Key)
+		if err != nil {
+			return err
+		}
+		m.Junk = ju
+		log.Print("Moved " + m.Key + " from Junk to Good folder")
+	}
+
+	if m.New == false && ju && m.Junk == false {
+		err := os.Rename("./cur/"+m.Key, "./.Junk/cur/"+m.Key)
+		if err != nil {
+			return err
+		}
+		m.Junk = ju
+		log.Print("Moved " + m.Key + " from Good to Junk folder")
+	}
+
+	// Inform the DB about a processed mail
+	db.Update(func(tx *bolt.Tx) error {
+		b := tx.Bucket([]byte("Processed"))
+		bMails := b.Bucket([]byte("Mails"))
+		if ju {
+			err := bMails.Put([]byte(m.Key), []byte(junk))
+			if err != nil {
+				return err
+			}
+		} else {
+			err := bMails.Put([]byte(m.Key), []byte(good))
+			if err != nil {
+				return err
+			}
+		}
+		return err
+	})
 
 	return nil
 }
 
 // Learn adds the words to the respective list and unlearns on the other, if
 // the mail has been moved from there.
-func (m *Mail) Learn() error {
+func (m *Mail) Learn(db *bolt.DB) error {
 	return nil
 }

@@ -134,25 +134,26 @@ func main() {
 				for i := range mails {
 					db.View(func(tx *bolt.Tx) error {
 						b := tx.Bucket([]byte("Processed"))
-						v := b.Get([]byte(mails[i].Key))
+						bMails := b.Bucket([]byte("Mails"))
+						v := bMails.Get([]byte(mails[i].Key))
 						if len(v) == 0 {
 							err = mails[i].Classify(db)
 							if err != nil {
 								log.Print(err)
 							}
-							err = mails[i].Learn()
+							err = mails[i].Learn(db)
 							if err != nil {
 								log.Print(err)
 							}
 						}
 						if string(v) == good && mails[i].Junk == true {
-							err = mails[i].Learn()
+							err = mails[i].Learn(db)
 							if err != nil {
 								log.Print(err)
 							}
 						}
 						if string(v) == junk && mails[i].Junk == false {
-							err = mails[i].Learn()
+							err = mails[i].Learn(db)
 							if err != nil {
 								log.Print(err)
 							}
@@ -179,13 +180,16 @@ func main() {
 									Key: mailName[len(mailName)-1],
 								}
 
-								err = m.Classify(db)
-								if err != nil {
-									log.Print(err)
-								}
-								err = m.Learn()
-								if err != nil {
-									log.Print(err)
+								if mailName[len(mailName)-2] == "new" {
+									err = m.Classify(db)
+									if err != nil {
+										log.Print(err)
+									}
+								} else {
+									err = m.Learn(db)
+									if err != nil {
+										log.Print(err)
+									}
 								}
 
 							}
