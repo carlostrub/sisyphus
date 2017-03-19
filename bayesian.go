@@ -18,12 +18,12 @@ func classificationPriors(db *bolt.DB) (g, j float64) {
 	db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("Wordlists"))
 		good := b.Bucket([]byte("Good"))
-		gN := good.Stats().KeyN
+		gN := float64(good.Stats().KeyN)
 		junk := b.Bucket([]byte("Junk"))
-		jN := junk.Stats().KeyN
+		jN := float64(junk.Stats().KeyN)
 
-		g = float64(gN) / (float64(gN) + float64(jN))
-		j = float64(jN) / (float64(gN) + float64(jN))
+		g = gN / (gN + jN)
+		j = jN / (gN + jN)
 
 		return nil
 	})

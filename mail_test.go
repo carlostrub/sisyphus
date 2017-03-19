@@ -311,15 +311,11 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			subject, body, err := m.Wordlists()
-			sort.Strings(subject)
-			sort.Strings(body)
-			Ω(err).ShouldNot(HaveOccurred())
+			list := m.Wordlist()
+			sort.Strings(list)
 
-			Ω(subject).Should(Equal(
-				[]string{"confirm", "remittance"}))
-			Ω(body).Should(Equal(
-				[]string{"accuracy", "addressed", "admin", "alliance", "alone", "bank", "been", "belong", "best", "boltas", "cobantur", "computer", "confirm", "contained", "copy", "copying", "date", "deleted", "detail", "director", "entity", "excludes", "expressed", "files", "forwarding", "hereby", "individual", "intended", "kind", "known", "liability", "makes", "message", "notified", "opinions", "payment", "prohibited", "reception", "recipient", "reflect", "regards", "scanned", "sender", "should", "solely", "storage", "strictly", "such", "thanks", "that", "therein", "they", "this", "value", "viruses", "warranty", "whatsoever", "whom", "with"}))
+			Ω(list).Should(Equal(
+				[]string{"accuracy", "addressed", "admin", "alliance", "alone", "bank", "been", "belong", "best", "boltas", "cobantur", "computer", "confirm", "contained", "copy", "copying", "date", "deleted", "detail", "director", "entity", "excludes", "expressed", "files", "forwarding", "hereby", "individual", "intended", "kind", "known", "liability", "makes", "message", "notified", "opinions", "payment", "prohibited", "reception", "recipient", "reflect", "regards", "remittance", "scanned", "sender", "should", "solely", "storage", "strictly", "such", "thanks", "that", "therein", "they", "this", "value", "viruses", "warranty", "whatsoever", "whom", "with"}))
 		})
 
 		It("Wordlist 2", func() {
@@ -336,15 +332,11 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			subject, body, err := m.Wordlists()
-			sort.Strings(subject)
-			sort.Strings(body)
-			Ω(err).ShouldNot(HaveOccurred())
+			list := m.Wordlist()
+			sort.Strings(list)
 
-			Ω(subject).Should(Equal(
-				[]string{"hello"}))
-			Ω(body).Should(Equal(
-				[]string{"best", "company", "dear", "distance", "employees", "from", "home", "interested", "kari", "large", "looking", "manager", "most", "name", "offer", "personnel", "please", "regards", "remotely", "salary", "site", "that", "this", "visit", "work", "working"}))
+			Ω(list).Should(Equal(
+				[]string{"best", "company", "dear", "distance", "employees", "from", "hello", "home", "interested", "kari", "large", "looking", "manager", "most", "name", "offer", "personnel", "please", "regards", "remotely", "salary", "site", "that", "this", "visit", "work", "working"}))
 		})
 
 		It("Wordlist 3", func() {
@@ -361,15 +353,11 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			subject, body, err := m.Wordlists()
-			sort.Strings(subject)
-			sort.Strings(body)
-			Ω(err).ShouldNot(HaveOccurred())
+			list := m.Wordlist()
+			sort.Strings(list)
 
-			Ω(subject).Should(Equal(
-				[]string{"herpes", "medical", "shocks", "world"}))
-			Ω(body).Should(Equal(
-				[]string{"alongside", "anxiety", "appointed", "authority", "awarded", "bacteria", "beard", "been", "came", "capital", "causes", "city", "civilian", "club", "combated", "creams", "crown", "cure", "cured", "dark", "devalued", "domed", "doukas", "doux", "dreamstime", "drug", "drugs", "earlier", "emperor", "erly", "exclusive", "extracts", "fast", "february", "finally", "forked", "from", "full", "genital", "girl", "give", "golden", "governors", "guard", "have", "held", "herpes", "history", "image", "influence", "instituted", "john", "largesse", "little", "local", "manuscript", "many", "members", "mental", "mice", "military", "mostly", "nicaea", "notables", "only", "other", "people", "portrait", "prevent", "provincial", "rachael", "relief", "remove", "rettner", "sebastos", "secure", "senior", "size", "starting", "studies", "such", "suggest", "that", "theodore", "there", "these", "this", "times", "title", "titles", "today", "topical", "treatment", "treatments", "tzakones", "under", "unlike", "used", "vatatzes", "view", "virus", "wearing", "were", "will", "with", "writer", "your", "zonaras"}))
+			Ω(list).Should(Equal(
+				[]string{"alongside", "anxiety", "appointed", "authority", "awarded", "bacteria", "beard", "been", "came", "capital", "causes", "city", "civilian", "club", "combated", "creams", "crown", "cure", "cured", "dark", "devalued", "domed", "doukas", "doux", "dreamstime", "drug", "drugs", "earlier", "emperor", "erly", "exclusive", "extracts", "fast", "february", "finally", "forked", "from", "full", "genital", "girl", "give", "golden", "governors", "guard", "have", "held", "herpes", "history", "image", "influence", "instituted", "john", "largesse", "little", "local", "manuscript", "many", "medical", "members", "mental", "mice", "military", "mostly", "nicaea", "notables", "only", "other", "people", "portrait", "prevent", "provincial", "rachael", "relief", "remove", "rettner", "sebastos", "secure", "senior", "shocks", "size", "starting", "studies", "such", "suggest", "that", "theodore", "there", "these", "this", "times", "title", "titles", "today", "topical", "treatment", "treatments", "tzakones", "under", "unlike", "used", "vatatzes", "view", "virus", "wearing", "were", "will", "with", "world", "writer", "your", "zonaras"}))
 		})
 
 		It("Wordlist 4", func() {
@@ -386,14 +374,10 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			subject, body, err := m.Wordlists()
-			sort.Strings(subject)
-			sort.Strings(body)
-			Ω(err).ShouldNot(HaveOccurred())
+			list := m.Wordlist()
+			sort.Strings(list)
 
-			Ω(subject).Should(Equal(
-				[]string{"cosan", "friday", "march", "york"}))
-			Ω(body).Should(Equal(
+			Ω(list).Should(Equal(
 				[]string{"ampudia", "avenue", "below", "between", "briget", "call", "cannot", "closing", "cosan", "download", "email", "friday", "here", "hyatt", "image", "invitation", "level", "limited", "listed", "lunch", "march", "mercado", "novo", "nyse", "online", "onyx", "park", "please", "program", "rafferty", "register", "room", "rsvp", "rumo", "second", "street", "taylor", "view", "west", "york"}))
 		})
 
@@ -411,15 +395,11 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			subject, body, err := m.Wordlists()
-			sort.Strings(subject)
-			sort.Strings(body)
-			Ω(err).ShouldNot(HaveOccurred())
+			list := m.Wordlist()
+			sort.Strings(list)
 
-			Ω(subject).Should(Equal(
-				[]string{"eyes", "glasses", "headed", "serious", "trouble", "wear", "your"}))
-			Ω(body).Should(Equal(
-				[]string{"about", "associated", "aylesbury", "baron", "became", "being", "below", "brill", "bscribe", "buckingham", "building", "buildings", "built", "canada", "central", "clearing", "closure", "contacts", "converted", "despite", "discover", "duke", "email", "estate", "even", "extended", "ferdinand", "floor", "from", "full", "glasses", "goodness", "hour", "house", "improve", "improved", "initially", "junction", "know", "limited", "line", "link", "london", "manor", "marie", "marketing", "miles", "montreal", "near", "need", "next", "only", "other", "over", "ownership", "part", "passenger", "pictured", "place", "poor", "public", "quainton", "quality", "quebec", "railway", "renamed", "rothschild", "running", "self", "served", "short", "slow", "station", "success", "survive", "taken", "than", "that", "think", "today", "tramway", "trick", "unsu", "until", "very", "village", "ville", "vision", "wear", "weird", "were", "westcott", "will", "year", "your"}))
+			Ω(list).Should(Equal(
+				[]string{"about", "associated", "aylesbury", "baron", "became", "being", "below", "brill", "bscribe", "buckingham", "building", "buildings", "built", "canada", "central", "clearing", "closure", "contacts", "converted", "despite", "discover", "duke", "email", "estate", "even", "extended", "eyes", "ferdinand", "floor", "from", "full", "glasses", "goodness", "headed", "hour", "house", "improve", "improved", "initially", "junction", "know", "limited", "line", "link", "london", "manor", "marie", "marketing", "miles", "montreal", "near", "need", "next", "only", "other", "over", "ownership", "part", "passenger", "pictured", "place", "poor", "public", "quainton", "quality", "quebec", "railway", "renamed", "rothschild", "running", "self", "serious", "served", "short", "slow", "station", "success", "survive", "taken", "than", "that", "think", "today", "tramway", "trick", "trouble", "unsu", "until", "very", "village", "ville", "vision", "wear", "weird", "were", "westcott", "will", "year", "your"}))
 		})
 
 		It("Wordlist 6", func() {
@@ -436,15 +416,11 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			subject, body, err := m.Wordlists()
-			sort.Strings(subject)
-			sort.Strings(body)
-			Ω(err).ShouldNot(HaveOccurred())
+			list := m.Wordlist()
+			sort.Strings(list)
 
-			Ω(subject).Should(Equal(
-				[]string{"always", "form", "good", "super", "viagra", "with"}))
-			Ω(body).Should(Equal(
-				[]string{"amazon", "antiviral", "blockquote", "blood", "body", "canada", "check", "click", "deals", "delivery", "diabetes", "discount", "email", "emails", "europe", "following", "font", "herpes", "hola", "keep", "leading", "limited", "link", "longer", "medication", "message", "most", "north", "offer", "online", "other", "please", "popular", "presents", "pressure", "produced", "products", "read", "receive", "registered", "reserved", "rights", "service", "services", "simply", "span", "special", "states", "store", "subsidiary", "table", "terry", "these", "this", "time", "trademark", "united", "various", "view", "when", "wish", "with", "your"}))
+			Ω(list).Should(Equal(
+				[]string{"always", "amazon", "antiviral", "blockquote", "blood", "body", "canada", "check", "click", "deals", "delivery", "diabetes", "discount", "email", "emails", "europe", "following", "font", "form", "good", "herpes", "hola", "keep", "leading", "limited", "link", "longer", "medication", "message", "most", "north", "offer", "online", "other", "please", "popular", "presents", "pressure", "produced", "products", "read", "receive", "registered", "reserved", "rights", "service", "services", "simply", "span", "special", "states", "store", "subsidiary", "super", "table", "terry", "these", "this", "time", "trademark", "united", "various", "viagra", "view", "when", "wish", "with", "your"}))
 		})
 	})
 })

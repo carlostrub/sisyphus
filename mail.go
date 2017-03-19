@@ -8,8 +8,10 @@ import (
 	"mime/quotedprintable"
 	"os"
 	"regexp"
+	"strconv"
 	"strings"
 
+	"github.com/boltdb/bolt"
 	"github.com/kennygrant/sanitize"
 	"github.com/luksen/maildir"
 )
@@ -143,7 +145,7 @@ func (m *Mail) Clean() error {
 
 // wordlist takes a string of space separated text and returns a list of unique
 // words in a space separated string
-func wordlist(s string) (l []string, err error) {
+func wordlist(s string) (l []string) {
 	list := make(map[string]int)
 
 	raw := strings.Split(s, " ")
@@ -181,30 +183,41 @@ func wordlist(s string) (l []string, err error) {
 		l = append(l, word)
 	}
 
-	return l, nil
+	return l
 }
 
-// Wordlists prepares the mail's subject and body for training
-func (m *Mail) Wordlists() (subject, body []string, err error) {
+// Wordlist prepares the mail for training
+func (m *Mail) Wordlist() (w []string) {
+	var s string
+
 	if m.Subject != nil {
-		subject, err = wordlist(*m.Subject)
-		if err != nil {
-			return subject, body, err
-		}
+		s = s + " " + *m.Subject
 	}
 
 	if m.Body != nil {
-		body, err = wordlist(*m.Body)
-		if err != nil {
-			return subject, body, err
-		}
+		s = s + " " + *m.Body
 	}
 
-	return subject, body, nil
+	w = wordlist(s)
+
+	return w
 }
 
 // Classify analyses the mail and decides whether it is Junk or Good
-func (m *Mail) Classify() error {
+func (m *Mail) Classify(db *bolt.DB) error {
+
+	err := m.Clean()
+	if err != nil {
+		return err
+	}
+
+	list := m.Wordlist()
+	scoreG, scoreJ, junk := LogScores(db, list)
+	m.Junk = junk
+
+	log.Print("Classified " + m.Key + " as Junk=" + strconv.FormatBool(m.Junk) +
+		" (good: " + strconv.FormatFloat(scoreG, 'f', 4, 64) +
+		", junk: " + strconv.FormatFloat(scoreJ, 'f', 4, 64) + ")")
 
 	return nil
 }

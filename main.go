@@ -136,7 +136,7 @@ func main() {
 						b := tx.Bucket([]byte("Processed"))
 						v := b.Get([]byte(mails[i].Key))
 						if len(v) == 0 {
-							err = mails[i].Classify()
+							err = mails[i].Classify(db)
 							if err != nil {
 								log.Print(err)
 							}
@@ -179,7 +179,7 @@ func main() {
 									Key: mailName[len(mailName)-1],
 								}
 
-								err = m.Classify()
+								err = m.Classify(db)
 								if err != nil {
 									log.Print(err)
 								}
