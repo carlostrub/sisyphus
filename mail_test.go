@@ -1,4 +1,4 @@
-package main_test
+package sisyphus_test
 
 import (
 	"sort"

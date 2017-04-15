@@ -2,7 +2,7 @@
 Part of this code is borrowed from github.com/jbrukh/bayesian published under a BSD3CLAUSE License
 */
 
-package main
+package sisyphus
 
 import (
 	"math"
