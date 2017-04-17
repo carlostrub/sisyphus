@@ -16,6 +16,13 @@ import (
 	"github.com/luksen/maildir"
 )
 
+const (
+	// Good holds a placeholder string for the database
+	Good = "0"
+	// Junk holds a placeholder string for the database
+	Junk = "1"
+)
+
 // Mail includes the key of a mail in Maildir
 type Mail struct {
 	Key           string
@@ -251,12 +258,12 @@ func (m *Mail) Classify(db *bolt.DB) error {
 		b := tx.Bucket([]byte("Processed"))
 		bMails := b.Bucket([]byte("Mails"))
 		if ju {
-			err := bMails.Put([]byte(m.Key), []byte(junk))
+			err := bMails.Put([]byte(m.Key), []byte(Junk))
 			if err != nil {
 				return err
 			}
 		} else {
-			err := bMails.Put([]byte(m.Key), []byte(good))
+			err := bMails.Put([]byte(m.Key), []byte(Good))
 			if err != nil {
 				return err
 			}

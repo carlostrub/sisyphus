@@ -9,13 +9,9 @@ import (
 	"syscall"
 
 	"github.com/boltdb/bolt"
+	"github.com/carlostrub/sisyphus"
 	"github.com/fsnotify/fsnotify"
 	"github.com/urfave/cli"
-)
-
-const (
-	good = "0"
-	junk = "1"
 )
 
 func main() {
@@ -116,15 +112,15 @@ func main() {
 					log.Fatal("Sorry... only one Maildir supported as of today.")
 				}
 
-				CreateDirs(maildirPaths[0])
+				sisyphus.CreateDirs(maildirPaths[0])
 
-				mails, err := Index(maildirPaths[0])
+				mails, err := sisyphus.Index(maildirPaths[0])
 				if err != nil {
 					log.Fatal("Wrong path to Maildir")
 				}
 
 				// Open the database
-				db, err := openDB(maildirPaths[0])
+				db, err := sisyphus.OpenDB(maildirPaths[0])
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -146,13 +142,13 @@ func main() {
 								log.Print(err)
 							}
 						}
-						if string(v) == good && mails[i].Junk == true {
+						if string(v) == sisyphus.Good && mails[i].Junk == true {
 							err = mails[i].Learn(db)
 							if err != nil {
 								log.Print(err)
 							}
 						}
-						if string(v) == junk && mails[i].Junk == false {
+						if string(v) == sisyphus.Junk && mails[i].Junk == false {
 							err = mails[i].Learn(db)
 							if err != nil {
 								log.Print(err)
@@ -176,7 +172,7 @@ func main() {
 						case event := <-watcher.Events:
 							if event.Op&fsnotify.Create == fsnotify.Create {
 								mailName := strings.Split(event.Name, "/")
-								m := Mail{
+								m := sisyphus.Mail{
 									Key: mailName[len(mailName)-1],
 								}
 
@@ -223,7 +219,7 @@ func main() {
 			Usage:   "start sisyphus daemon in the background",
 			Action: func(c *cli.Context) error {
 
-				err := daemonStart(*pidfile)
+				err := sisyphus.DaemonStart(*pidfile)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -237,7 +233,7 @@ func main() {
 			Usage:   "stop sisyphus daemon",
 			Action: func(c *cli.Context) error {
 
-				err := daemonStop(*pidfile)
+				err := sisyphus.DaemonStop(*pidfile)
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -251,7 +247,7 @@ func main() {
 			Usage:   "restart sisyphus daemon",
 			Action: func(c *cli.Context) error {
 
-				err := daemonRestart(*pidfile)
+				err := sisyphus.DaemonRestart(*pidfile)
 				if err != nil {
 					log.Fatal(err)
 				}

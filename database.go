@@ -6,8 +6,8 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-// openDB creates and opens a new database and its respective buckets (if required)
-func openDB(maildir string) (db *bolt.DB, err error) {
+// OpenDB creates and opens a new database and its respective buckets (if required)
+func OpenDB(maildir string) (db *bolt.DB, err error) {
 
 	log.Println("loading database")
 	// Open the sisyphus.db data file in your current directory.

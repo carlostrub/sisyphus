@@ -32,7 +32,8 @@ func savePID(pidfile string, p int) error {
 	return nil
 }
 
-func daemonStart(pidfile string) error {
+// DaemonStart starts sisyphus as a backgound process
+func DaemonStart(pidfile string) error {
 	// check if daemon already running.
 	if _, err := os.Stat(pidfile); err == nil {
 		return errors.New("sisyphus running or " + pidfile + " file exists.")
@@ -50,7 +51,8 @@ func daemonStart(pidfile string) error {
 	return nil
 }
 
-func daemonStop(pidfile string) error {
+// DaemonStop stops a running sisyphus background process
+func DaemonStop(pidfile string) error {
 
 	_, err := os.Stat(pidfile)
 	if err != nil {
@@ -92,7 +94,8 @@ func daemonStop(pidfile string) error {
 	return nil
 }
 
-func daemonRestart(pidfile string) error {
+// DaemonRestart restarts a running sisyphus background process
+func DaemonRestart(pidfile string) error {
 	_, err := os.Stat(pidfile)
 	if err != nil {
 		return errors.New("sisyphus is not running")
