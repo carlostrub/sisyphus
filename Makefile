@@ -5,14 +5,16 @@ VERSION_INCODE = $(shell perl -ne '/^var version.*"([^"]+)".*$$/ && print "v$$1\
 VERSION_INCHANGELOG = $(shell perl -ne '/^\# Release (\d+(\.\d+)+) / && print "$$1\n"' CHANGELOG.md | head -n1)
 
 build:
-	${SISYPHUS_GO_EXECUTABLE} build -o sisyphus -ldflags "-X main.version=${VERSION}" cmd/sisyphus.go
+	${SISYPHUS_GO_EXECUTABLE} build -o sisyphus/sisyphus -ldflags "-X main.version=${VERSION}" sisyphus/sisyphus.go
 
 install: build
 	install -d ${DESTDIR}/usr/local/bin/
-	install -m 755 ./sisyphus ${DESTDIR}/usr/local/bin/sisyphus
+	install -m 755 ./sisyphus/sisyphus ${DESTDIR}/usr/local/bin/sisyphus
 
 test:
-	${SISYPHUS_GO_EXECUTABLE} test .
+	${SISYPHUS_GO_EXECUTABLE} get -u github.com/onsi/ginkgo/ginkgo
+	${SISYPHUS_GO_EXECUTABLE} get -u github.com/onsi/gomega
+	${GOPATH}/bin/ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --progress
 
 integration-test:
 	${SISYPHUS_GO_EXECUTABLE} build
@@ -23,22 +25,17 @@ integration-test:
 	./sisyphus stop
 
 clean:
-	rm -f ./sisyphus.test
-	rm -f ./sisyphus
+	rm -f ./sisyphus/sisyphus
 	rm -rf ./dist
 
-bootstrap-dist:
-	${SISYPHUS_GO_EXECUTABLE} get -u github.com/franciscocpg/gox
-	cd ${GOPATH}/src/github.com/franciscocpg/gox && git checkout dc50315fc7992f4fa34a4ee4bb3d60052eeb038e
-	cd ${GOPATH}/src/github.com/franciscocpg/gox && ${SISYPHUS_GO_EXECUTABLE} install
-
 build-all:
-	gox -verbose \
+	${SISYPHUS_GO_EXECUTABLE} get -u github.com/franciscocpg/gox
+	${GOPATH}/bin/gox -verbose \
 	-ldflags "-X main.version=${VERSION}" \
 	-os="linux darwin windows freebsd openbsd netbsd" \
 	-arch="amd64 386 armv5 armv6 armv7 arm64" \
 	-osarch="!darwin/arm64" \
-	-output="dist/{{.OS}}-{{.Arch}}/{{.Dir}}" .
+	-output="dist/{{.OS}}-{{.Arch}}/{{.Dir}}" ./sisyphus
 
 dist: build-all
 	cd dist && \
@@ -60,5 +57,5 @@ verify-version:
 		exit 1; \
 	fi
 
-.PHONY: build test install clean bootstrap-dist build-all dist integration-test verify-version
+.PHONY: build test install clean build-all dist integration-test verify-version
 
