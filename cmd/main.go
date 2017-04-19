@@ -30,7 +30,7 @@ func main() {
 	app.Version = "0.0.0"
 	app.Copyright = "(c) 2017, Carlo Strub. All rights reserved. This binary is licensed under a BSD 3-Clause License."
 	app.Authors = []cli.Author{
-		cli.Author{
+		{
 			Name:  "Carlo Strub",
 			Email: "cs@carlostrub.ch",
 		},
