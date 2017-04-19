@@ -1,10 +1,23 @@
 SISYPHUS_GO_EXECUTABLE ?= go
 DIST_DIRS := find * -type d -exec
-VERSION ?= $(shell git describe --tags)
-VERSION_INCODE = $(shell perl -ne '/^var version.*"([^"]+)".*$$/ && print "v$$1\n"' sisyphus.go)
-VERSION_INCHANGELOG = $(shell perl -ne '/^\# Release (\d+(\.\d+)+) / && print "$$1\n"' CHANGELOG.md | head -n1)
+VERSION_GIT != git describe --tags
+VERSION_GIT_CLEAN != echo ${VERSION_GIT} | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'
+VERSION ?= ${VERSION_GIT_CLEAN}
+VERSION_INCHANGELOG != head -n1 CHANGELOG.md | sed -nre 's/^[^0-9]*(([0-9]+\.)*[0-9]+).*/\1/p'
 
-build:
+verify-version:
+	@if [ "$(VERSION)" = "$(VERSION_INCHANGELOG)" ]; then \
+		echo "sisyphus: $(VERSION_INCHANGELOG)"; \
+	elif [ "$(VERSION)" = "$(VERSION_INCHANGELOG)-dev" ]; then \
+		echo "sisyphus (development): $(VERSION_INCHANGELOG)"; \
+	else \
+		echo "Version number does not match CHANGELOG.md"; \
+		echo "Build Version: $(VERSION)"; \
+		echo "CHANGELOG : $(VERSION_INCHANGELOG)"; \
+		exit 1; \
+	fi
+
+build: verify-version
 	${SISYPHUS_GO_EXECUTABLE} build -o sisyphus/sisyphus -ldflags "-X main.version=${VERSION}" sisyphus/sisyphus.go
 
 install: build
@@ -44,18 +57,6 @@ dist: build-all
 	$(DIST_DIRS) tar -zcf sisyphus-${VERSION}-{}.tar.gz {} \; && \
 	$(DIST_DIRS) zip -r sisyphus-${VERSION}-{}.zip {} \; && \
 	cd ..
-
-verify-version:
-	@if [ "$(VERSION_INCODE)" = "v$(VERSION_INCHANGELOG)" ]; then \
-		echo "sisyphus: $(VERSION_INCHANGELOG)"; \
-	elif [ "$(VERSION_INCODE)" = "v$(VERSION_INCHANGELOG)-dev" ]; then \
-		echo "sisyphus (development): $(VERSION_INCHANGELOG)"; \
-	else \
-		echo "Version number in sisyphus.go does not match CHANGELOG.md"; \
-		echo "sisyphus.go: $(VERSION_INCODE)"; \
-		echo "CHANGELOG : $(VERSION_INCHANGELOG)"; \
-		exit 1; \
-	fi
 
 .PHONY: build test install clean build-all dist integration-test verify-version
 
