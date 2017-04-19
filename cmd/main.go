@@ -219,7 +219,7 @@ func main() {
 			Usage:   "start sisyphus daemon in the background",
 			Action: func(c *cli.Context) error {
 
-				err := sisyphus.DaemonStart(*pidfile)
+				err := sisyphus.Pidfile(*pidfile).DaemonStart()
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -233,7 +233,7 @@ func main() {
 			Usage:   "stop sisyphus daemon",
 			Action: func(c *cli.Context) error {
 
-				err := sisyphus.DaemonStop(*pidfile)
+				err := sisyphus.Pidfile(*pidfile).DaemonStop()
 				if err != nil {
 					log.Fatal(err)
 				}
@@ -247,7 +247,7 @@ func main() {
 			Usage:   "restart sisyphus daemon",
 			Action: func(c *cli.Context) error {
 
-				err := sisyphus.DaemonRestart(*pidfile)
+				err := sisyphus.Pidfile(*pidfile).DaemonRestart()
 				if err != nil {
 					log.Fatal(err)
 				}

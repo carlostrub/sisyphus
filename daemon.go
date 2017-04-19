@@ -14,15 +14,18 @@ import (
 // https://www.socketloop.com/tutorials/golang-daemonizing-a-simple-web-server-process-example
 // for the process we are using to daemonize
 
+// Pidfile holds the Process ID file of sisyphus
+type Pidfile string
+
 // savePID stores a pidfile
-func savePID(pidfile string, p int) error {
-	file, err := os.Create(pidfile)
+func (p Pidfile) savePID(process int) error {
+	file, err := os.Create(string(p))
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	_, err = file.WriteString(strconv.Itoa(p))
+	_, err = file.WriteString(strconv.Itoa(process))
 	if err != nil {
 		return err
 	}
@@ -33,17 +36,17 @@ func savePID(pidfile string, p int) error {
 }
 
 // DaemonStart starts sisyphus as a backgound process
-func DaemonStart(pidfile string) error {
+func (p Pidfile) DaemonStart() error {
 	// check if daemon already running.
-	if _, err := os.Stat(pidfile); err == nil {
-		return errors.New("sisyphus running or " + pidfile + " file exists.")
+	if _, err := os.Stat(string(p)); err == nil {
+		return errors.New("sisyphus running or " + string(p) + " file exists.")
 	}
 
 	cmd := exec.Command(os.Args[0], "run")
 	cmd.Start()
 	log.Printf("starting sisyphus process ID [%v]\n", cmd.Process.Pid)
 	log.Println("sisyphus started")
-	err := savePID(pidfile, cmd.Process.Pid)
+	err := (p).savePID(cmd.Process.Pid)
 	if err != nil {
 		return err
 	}
@@ -52,21 +55,21 @@ func DaemonStart(pidfile string) error {
 }
 
 // DaemonStop stops a running sisyphus background process
-func DaemonStop(pidfile string) error {
+func (p Pidfile) DaemonStop() error {
 
-	_, err := os.Stat(pidfile)
+	_, err := os.Stat(string(p))
 	if err != nil {
 		return errors.New("sisyphus is not running")
 	}
 
-	processIDRaw, err := ioutil.ReadFile(pidfile)
+	processIDRaw, err := ioutil.ReadFile(string(p))
 	if err != nil {
 		return errors.New("sisyphus is not running")
 	}
 
 	processID, err := strconv.Atoi(string(processIDRaw))
 	if err != nil {
-		return errors.New("unable to read and parse process id found in " + pidfile)
+		return errors.New("unable to read and parse process id found in " + string(p))
 	}
 
 	process, err := os.FindProcess(processID)
@@ -77,7 +80,7 @@ func DaemonStop(pidfile string) error {
 	}
 
 	// remove PID file
-	os.Remove(pidfile)
+	os.Remove(string(p))
 
 	log.Printf("stopping sisyphus process ID [%v]\n", processID)
 	// kill process and exit immediately
@@ -95,13 +98,13 @@ func DaemonStop(pidfile string) error {
 }
 
 // DaemonRestart restarts a running sisyphus background process
-func DaemonRestart(pidfile string) error {
-	_, err := os.Stat(pidfile)
+func (p Pidfile) DaemonRestart() error {
+	_, err := os.Stat(string(p))
 	if err != nil {
 		return errors.New("sisyphus is not running")
 	}
 
-	pid, err := ioutil.ReadFile(pidfile)
+	pid, err := ioutil.ReadFile(string(p))
 	if err != nil {
 		return errors.New("sisyphus is not running")
 	}
