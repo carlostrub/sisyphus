@@ -47,7 +47,7 @@ func classificationWordProb(db *bolt.DB, word string) (g, j float64) {
 		p := tx.Bucket([]byte("Processed"))
 		counters := p.Bucket([]byte("Counters"))
 		jString := string(counters.Get([]byte("Junk")))
-		j, _ := strconv.ParseFloat(jString, 64)
+		j, _ = strconv.ParseFloat(jString, 64)
 		mails := p.Bucket([]byte("Mails"))
 		pN := mails.Stats().KeyN
 
