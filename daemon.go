@@ -47,11 +47,8 @@ func (p Pidfile) DaemonStart() error {
 	log.Printf("starting sisyphus process ID [%v]\n", cmd.Process.Pid)
 	log.Println("sisyphus started")
 	err := (p).savePID(cmd.Process.Pid)
-	if err != nil {
-		return err
-	}
 
-	return nil
+	return err
 }
 
 // DaemonStop stops a running sisyphus background process

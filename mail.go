@@ -244,7 +244,7 @@ func (m *Mail) Classify(db *bolt.DB) error {
 		log.Print("Moved " + m.Key + " from new to Junk folder")
 	}
 
-	if m.New == false && m.Junk && ju == false {
+	if !m.New && m.Junk && !ju {
 		err := os.Rename("./.Junk/cur/"+m.Key, "./cur/"+m.Key)
 		if err != nil {
 			return err
@@ -253,7 +253,7 @@ func (m *Mail) Classify(db *bolt.DB) error {
 		log.Print("Moved " + m.Key + " from Junk to Good folder")
 	}
 
-	if m.New == false && ju && m.Junk == false {
+	if !m.New && ju && !m.Junk {
 		err := os.Rename("./cur/"+m.Key, "./.Junk/cur/"+m.Key)
 		if err != nil {
 			return err
