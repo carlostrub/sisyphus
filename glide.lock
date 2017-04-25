@@ -1,5 +1,5 @@
-hash: 98b1d5d433ae22acf88cde4521e9b16025e2fecf2ef43d9533cb3f3ab9d051b6
-updated: 2017-04-15T20:24:00.479342003Z
+hash: 1f1d6889f8a848554c80e8ea440adc2eebe9a1fe8f0f07676e8166b87c352e72
+updated: 2017-04-25T17:05:27.638691123Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
@@ -10,19 +10,19 @@ imports:
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
 - name: github.com/urfave/cli
-  version: 8ba6f23b6e36d03666a14bd9421f5e3efcb59aca
+  version: ab403a54a148f2d857920810291539e1f817ee7b
 - name: golang.org/x/net
-  version: 5602c733f70afc6dcec6766be0d5034d4c4f14de
+  version: da118f7b8e5954f39d0d2130ab35d4bf0e3cb344
   subpackages:
   - html
   - html/atom
 - name: golang.org/x/sys
-  version: f3918c30c5c2cb527c0b071a27c35120a6c0719a
+  version: 9f30dcbe5be197894515a338a9bda9253567ea8f
   subpackages:
   - unix
 testImports:
 - name: github.com/onsi/ginkgo
-  version: f40a49d81e5c12e90400620b6242fb29a8e7c9d9
+  version: 6adbc2648389a46e8ff0e96d07a07a9a9eb432de
   subpackages:
   - config
   - internal/codelocation
