@@ -114,9 +114,9 @@ func main() {
 					log.Fatal("Sorry... only one Maildir supported as of today.")
 				}
 
-				sisyphus.CreateDirs(maildirPaths[0])
+				sisyphus.Maildir(maildirPaths[0]).CreateDirs()
 
-				mails, err := sisyphus.Index(maildirPaths[0])
+				mails, err := sisyphus.Maildir(maildirPaths[0]).Index()
 				if err != nil {
 					log.Fatal("Wrong path to Maildir")
 				}

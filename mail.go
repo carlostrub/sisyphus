@@ -23,6 +23,9 @@ const (
 	Junk = "1"
 )
 
+// Maildir represents the address to a Maildir directory
+type Maildir string
+
 // Mail includes the key of a mail in Maildir
 type Mail struct {
 	Key           string
@@ -31,37 +34,43 @@ type Mail struct {
 }
 
 // CreateDirs creates all the required dirs -- if not already there.
-func CreateDirs(maildir string) {
+func (d Maildir) CreateDirs() {
 
-	log.Println("create missing directories")
-	os.MkdirAll(maildir+"/.Junk/cur", 0700)
-	os.MkdirAll(maildir+"/new", 0700)
-	os.MkdirAll(maildir+"/cur", 0700)
+	dir := string(d)
+
+	log.Println("create missing directories for Maildir " + dir)
+
+	os.MkdirAll(dir+"/.Junk/cur", 0700)
+	os.MkdirAll(dir+"/new", 0700)
+	os.MkdirAll(dir+"/cur", 0700)
 
 	return
 }
 
 // Index loads all mail keys from the Maildir directory for processing.
-func Index(d string) (m []*Mail, err error) {
+func (d Maildir) Index() (m []*Mail, err error) {
 
-	log.Println("loading mails")
-	dirs := []string{d, d + "/.Junk"}
-	for _, dir := range dirs {
-		j, err := maildir.Dir(dir).Keys()
+	dir := string(d)
+
+	log.Println("start indexing mails in " + dir)
+	dirs := []string{dir, dir + "/.Junk"}
+	for _, val := range dirs {
+		j, err := maildir.Dir(val).Keys()
 		if err != nil {
 			return m, err
 		}
-		for _, val := range j {
+		for _, v := range j {
 			var new Mail
-			new.Key = val
-			if dir == d+"/.Junk" {
+			new.Key = v
+			if val == dir+"/.Junk" {
 				new.Junk = true
 			}
 			m = append(m, &new)
 		}
 	}
 
-	log.Println("mails loaded")
+	log.Println("all mails in " + dir + " indexed")
+
 	return m, nil
 }
 
