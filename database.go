@@ -20,10 +20,7 @@ func OpenDB(maildir string) (db *bolt.DB, err error) {
 	// Create DB bucket for the map of processed e-mail IDs
 	err = db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("Processed"))
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		return db, err
@@ -33,10 +30,7 @@ func OpenDB(maildir string) (db *bolt.DB, err error) {
 	err = db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("Processed"))
 		_, err := b.CreateBucketIfNotExists([]byte("Mails"))
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		return db, err
@@ -46,10 +40,7 @@ func OpenDB(maildir string) (db *bolt.DB, err error) {
 	err = db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("Processed"))
 		_, err := b.CreateBucketIfNotExists([]byte("Counters"))
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		return db, err
@@ -58,10 +49,7 @@ func OpenDB(maildir string) (db *bolt.DB, err error) {
 	// Create DB bucket for word lists
 	err = db.Update(func(tx *bolt.Tx) error {
 		_, err := tx.CreateBucketIfNotExists([]byte("Wordlists"))
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		return db, err
@@ -71,10 +59,7 @@ func OpenDB(maildir string) (db *bolt.DB, err error) {
 	err = db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("Wordlists"))
 		_, err := b.CreateBucketIfNotExists([]byte("Junk"))
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 	if err != nil {
 		return db, err
@@ -84,10 +69,7 @@ func OpenDB(maildir string) (db *bolt.DB, err error) {
 	err = db.Update(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("Wordlists"))
 		_, err := b.CreateBucketIfNotExists([]byte("Good"))
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	})
 
 	log.Println("database loaded")

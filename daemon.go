@@ -30,9 +30,9 @@ func (p Pidfile) savePID(process int) error {
 		return err
 	}
 
-	file.Sync()
+	err = file.Sync()
 
-	return nil
+	return err
 }
 
 // DaemonStart starts sisyphus as a backgound process
@@ -43,10 +43,13 @@ func (p Pidfile) DaemonStart() error {
 	}
 
 	cmd := exec.Command(os.Args[0], "run")
-	cmd.Start()
+	err := cmd.Start()
+	if err != nil {
+		return err
+	}
 	log.Printf("starting sisyphus process ID [%v]\n", cmd.Process.Pid)
 	log.Println("sisyphus started")
-	err := (p).savePID(cmd.Process.Pid)
+	err = (p).savePID(cmd.Process.Pid)
 
 	return err
 }
@@ -77,7 +80,10 @@ func (p Pidfile) DaemonStop() error {
 	}
 
 	// remove PID file
-	os.Remove(string(p))
+	err = os.Remove(string(p))
+	if err != nil {
+		return err
+	}
 
 	log.Printf("stopping sisyphus process ID [%v]\n", processID)
 	// kill process and exit immediately

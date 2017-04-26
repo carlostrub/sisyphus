@@ -29,6 +29,11 @@ test:
 	${SISYPHUS_GO_EXECUTABLE} get -u github.com/onsi/gomega
 	${GOPATH}/bin/ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --progress
 
+static-test:
+	${SISYPHUS_GO_EXECUTABLE} get -u github.com/alecthomas/gometalinter
+	${GOPATH}/bin/gometalinter --install
+	${GOPATH}/bin/gometalinter --vendor --deadline=5m --disable-all --enable=gas --enable=goconst --enable=gocyclo --enable=unused --enable=interfacer --enable=lll --enable=misspell --enable=staticcheck --enable=aligncheck --enable=deadcode --enable=goimports --enable=ineffassign --enable=unconvert --enable=unparam --enable=varcheck --enable=dupl --enable=errcheck --enable=golint --enable=structcheck --enable=gosimple --enable=safesql --tests --json . > gometalinter.out
+
 integration-test:
 	${SISYPHUS_GO_EXECUTABLE} build
 	./sisyphus run

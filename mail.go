@@ -34,17 +34,23 @@ type Mail struct {
 }
 
 // CreateDirs creates all the required dirs -- if not already there.
-func (d Maildir) CreateDirs() {
+func (d Maildir) CreateDirs() error {
 
 	dir := string(d)
 
 	log.Println("create missing directories for Maildir " + dir)
 
-	os.MkdirAll(dir+"/.Junk/cur", 0700)
-	os.MkdirAll(dir+"/new", 0700)
-	os.MkdirAll(dir+"/cur", 0700)
+	err := os.MkdirAll(dir+"/.Junk/cur", 0700)
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(dir+"/new", 0700)
+	if err != nil {
+		return err
+	}
+	err = os.MkdirAll(dir+"/cur", 0700)
 
-	return
+	return err
 }
 
 // Index loads all mail keys from the Maildir directory for processing.
@@ -167,6 +173,9 @@ func wordlist(s string) (l []string) {
 	raw := strings.Split(s, " ")
 	var clean []string
 
+	// use regexp compile for use in the loop that follows
+	regexMatcher, _ := regexp.Compile("(^[a-z]+$)")
+
 	for _, w := range raw {
 
 		// no long or too short words
@@ -176,7 +185,7 @@ func wordlist(s string) (l []string) {
 		}
 
 		// no numbers, special characters, etc. -- only words
-		match, _ := regexp.MatchString("(^[a-z]+$)", w)
+		match := regexMatcher.MatchString(w)
 		if !match {
 			continue
 		} else {
