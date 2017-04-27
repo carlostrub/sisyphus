@@ -1,5 +1,5 @@
-hash: 1f1d6889f8a848554c80e8ea440adc2eebe9a1fe8f0f07676e8166b87c352e72
-updated: 2017-04-25T17:05:27.638691123Z
+hash: 3cee04040c8122c41e41716acbf51492c7e42ac3d7dc239556123e00101bfc17
+updated: 2017-04-27T14:31:05.878361997+02:00
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
@@ -9,6 +9,8 @@ imports:
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
+- name: github.com/retailnext/hllpp
+  version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
 - name: github.com/urfave/cli
   version: ab403a54a148f2d857920810291539e1f817ee7b
 - name: golang.org/x/net
