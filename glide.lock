@@ -1,5 +1,5 @@
 hash: 3cee04040c8122c41e41716acbf51492c7e42ac3d7dc239556123e00101bfc17
-updated: 2017-04-27T14:31:05.878361997+02:00
+updated: 2017-05-05T01:56:14.319028504Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
@@ -14,17 +14,17 @@ imports:
 - name: github.com/urfave/cli
   version: ab403a54a148f2d857920810291539e1f817ee7b
 - name: golang.org/x/net
-  version: da118f7b8e5954f39d0d2130ab35d4bf0e3cb344
+  version: feeb485667d1fdabe727840fe00adc22431bc86e
   subpackages:
   - html
   - html/atom
 - name: golang.org/x/sys
-  version: 9f30dcbe5be197894515a338a9bda9253567ea8f
+  version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
   subpackages:
   - unix
 testImports:
 - name: github.com/onsi/ginkgo
-  version: 6adbc2648389a46e8ff0e96d07a07a9a9eb432de
+  version: 83438ca4278f2f56757b9ab2cb15dd4f596d84e8
   subpackages:
   - config
   - internal/codelocation
@@ -44,7 +44,7 @@ testImports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: 9b8c753e8dfb382618ba8fa19b4197b5dcb0434c
+  version: da367351331c75190afec7ed3a0c61e0016942ed
   subpackages:
   - format
   - internal/assertion
