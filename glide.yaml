@@ -7,6 +7,7 @@ import:
 - package: github.com/urfave/cli
 - package: github.com/fsnotify/fsnotify
 - package: github.com/retailnext/hllpp
+- package: github.com/gonum/stat
 testImport:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega

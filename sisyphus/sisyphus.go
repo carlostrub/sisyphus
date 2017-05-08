@@ -8,13 +8,14 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/boltdb/bolt"
 	"github.com/carlostrub/sisyphus"
 	"github.com/fsnotify/fsnotify"
 	"github.com/urfave/cli"
 )
 
-var version string
+var (
+	version string
+)
 
 func main() {
 
@@ -106,61 +107,62 @@ func main() {
 
 				}()
 
-				// Load the Maildir
 				if len(maildirPaths) < 1 {
-					log.Fatal("No Maildir set.")
-				}
-				if len(maildirPaths) > 1 {
-					log.Fatal("Sorry... only one Maildir supported as of today.")
+					log.Fatal("No Maildir set. Please check the manual.")
 				}
 
-				sisyphus.Maildir(maildirPaths[0]).CreateDirs()
-
-				mails, err := sisyphus.Maildir(maildirPaths[0]).Index()
-				if err != nil {
-					log.Fatal("Wrong path to Maildir")
+				// Populate maildir with the maildirs given by setting the flag.
+				var maildirs []sisyphus.Maildir
+				for _, val := range maildirPaths {
+					maildirs = append(maildirs, sisyphus.Maildir(val))
 				}
 
-				// Open the database
-				db, err := sisyphus.OpenDB(maildirPaths[0])
+				// Load all mails
+				mails, err := sisyphus.LoadMails(maildirs)
 				if err != nil {
 					log.Fatal(err)
 				}
-				defer db.Close()
 
-				// Handle all mails after startup
-				for i := range mails {
-					db.View(func(tx *bolt.Tx) error {
-						b := tx.Bucket([]byte("Processed"))
-						bMails := b.Bucket([]byte("Mails"))
-						v := bMails.Get([]byte(mails[i].Key))
-						if len(v) == 0 {
-							err = mails[i].Classify(db)
-							if err != nil {
-								log.Print(err)
-							}
-							err = mails[i].Learn(db)
-							if err != nil {
-								log.Print(err)
-							}
-						}
-						if string(v) == sisyphus.Good && mails[i].Junk == true {
-							err = mails[i].Learn(db)
-							if err != nil {
-								log.Print(err)
-							}
-						}
-						if string(v) == sisyphus.Junk && mails[i].Junk == false {
-							err = mails[i].Learn(db)
-							if err != nil {
-								log.Print(err)
-							}
-						}
-						return nil
-					})
+				// Open all databases
+				dbs, err := sisyphus.LoadDatabases(maildirs)
+				if err != nil {
+					log.Fatal(err)
 				}
+				defer sisyphus.CloseDatabases(dbs)
 
-				// Handle mails as the arrive
+				// Learn at startup
+				//				for i := range mails {
+				//					db.View(func(tx *bolt.Tx) error {
+				//						b := tx.Bucket([]byte("Processed"))
+				//						bMails := b.Bucket([]byte("Mails"))
+				//						v := bMails.Get([]byte(mails[i].Key))
+				//						if len(v) == 0 {
+				//							err = mails[i].Classify(db)
+				//							if err != nil {
+				//								log.Print(err)
+				//							}
+				//							err = mails[i].Learn(db)
+				//							if err != nil {
+				//								log.Print(err)
+				//							}
+				//						}
+				//						if string(v) == sisyphus.Good && mails[i].Junk == true {
+				//							err = mails[i].Learn(db)
+				//							if err != nil {
+				//								log.Print(err)
+				//							}
+				//						}
+				//						if string(v) == sisyphus.Junk && mails[i].Junk == false {
+				//							err = mails[i].Learn(db)
+				//							if err != nil {
+				//								log.Print(err)
+				//							}
+				//						}
+				//						return nil
+				//					})
+				//				}
+
+				// Classify on arrival
 				watcher, err := fsnotify.NewWatcher()
 				if err != nil {
 					log.Fatal(err)

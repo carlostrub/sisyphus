@@ -1,100 +1,130 @@
-/*
-Part of this code is borrowed from github.com/jbrukh/bayesian published under a BSD3CLAUSE License
-*/
-
 package sisyphus
 
 import (
-	"math"
-	"strconv"
+	"errors"
 
 	"github.com/boltdb/bolt"
+	"github.com/gonum/stat"
+	"github.com/retailnext/hllpp"
 )
 
-// classificationPriors returns the prior probabilities for good and junk
+// classificationPrior returns the prior probabilities for good and junk
 // classes.
-func classificationPriors(db *bolt.DB) (g, j float64) {
+func classificationPrior(db *bolt.DB) (g float64, err error) {
 
-	db.View(func(tx *bolt.Tx) error {
+	err = db.View(func(tx *bolt.Tx) error {
 		b := tx.Bucket([]byte("Wordlists"))
+
 		good := b.Bucket([]byte("Good"))
 		gN := float64(good.Stats().KeyN)
+
 		junk := b.Bucket([]byte("Junk"))
 		jN := float64(junk.Stats().KeyN)
 
+		// division by zero means there are no learned mails so far
+		if (gN + jN) == 0 {
+			return errors.New("no mails have been classified so far")
+		}
+
 		g = gN / (gN + jN)
-		j = jN / (gN + jN)
 
 		return nil
 	})
 
-	return
+	return g, err
 }
 
-// classificationWordProb returns P(W|C_j) -- the probability of seeing
-// a particular word W in a document of this class.
-func classificationWordProb(db *bolt.DB, word string) (g, j float64) {
+// classificationLikelihood returns P(W|C_j) -- the probability of seeing a
+// particular word W in a document of this class.
+func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error) {
 
-	db.View(func(tx *bolt.Tx) error {
+	err = db.View(func(tx *bolt.Tx) error {
+		var gN, jN uint64
+
 		b := tx.Bucket([]byte("Wordlists"))
+
 		good := b.Bucket([]byte("Good"))
-		gNString := string(good.Get([]byte(word)))
-		gN, _ := strconv.ParseFloat(gNString, 64)
+		gWordRaw := good.Get([]byte(word))
+		if len(gWordRaw) != 0 {
+			gWordHLL, err := hllpp.Unmarshal(gWordRaw)
+			if err != nil {
+				return err
+			}
+			gN = gWordHLL.Count()
+		}
 		junk := b.Bucket([]byte("Junk"))
-		jNString := string(junk.Get([]byte(word)))
-		jN, _ := strconv.ParseFloat(jNString, 64)
+		jWordRaw := junk.Get([]byte(word))
+		if len(jWordRaw) != 0 {
+			jWordHLL, err := hllpp.Unmarshal(jWordRaw)
+			if err != nil {
+				return err
+			}
+			jN = jWordHLL.Count()
+		}
 
-		p := tx.Bucket([]byte("Processed"))
-		counters := p.Bucket([]byte("Counters"))
-		jString := string(counters.Get([]byte("Junk")))
-		j, _ = strconv.ParseFloat(jString, 64)
-		mails := p.Bucket([]byte("Mails"))
-		pN := mails.Stats().KeyN
+		p := tx.Bucket([]byte("Statistics"))
+		gHLL, err := hllpp.Unmarshal(p.Get([]byte("ProcessedGood")))
+		if err != nil {
+			return err
+		}
+		jHLL, err := hllpp.Unmarshal(p.Get([]byte("ProcessedJunk")))
+		if err != nil {
+			return err
+		}
 
-		g = gN / (float64(pN) - j)
-		j = jN / j
+		gTotal := gHLL.Count()
+		if gTotal == 0 {
+			return errors.New("no good mails have been classified so far")
+		}
+		jTotal := jHLL.Count()
+		if jTotal == 0 {
+			return errors.New("no junk mails have been classified so far")
+		}
+
+		g = float64(gN) / float64(gTotal)
+		j = float64(jN) / float64(jTotal)
 
 		return nil
 	})
 
-	return g, j
+	return g, j, nil
 }
 
-// LogScores produces "log-likelihood"-like scores that can
-// be used to classify documents into classes.
-//
-// The value of the score is proportional to the likelihood,
-// as determined by the classifier, that the given document
-// belongs to the given class. This is true even when scores
-// returned are negative, which they will be (since we are
-// taking logs of probabilities).
-//
-// The index j of the score corresponds to the class given
-// by c.Classes[j].
-//
-// Additionally returned are "inx" and "strict" values. The
-// inx corresponds to the maximum score in the array. If more
-// than one of the scores holds the maximum values, then
-// strict is false.
-//
-// Unlike c.Probabilities(), this function is not prone to
-// floating point underflow and is relatively safe to use.
-func LogScores(db *bolt.DB, wordlist []string) (scoreG, scoreJ float64, junk bool) {
+// classificationWord produces the conditional probability of a word belonging
+// to good or junk using the classic Bayes' rule.
+func classificationWord(db *bolt.DB, word string) (g float64, err error) {
 
-	priorG, priorJ := classificationPriors(db)
-
-	// calculate the scores
-	scoreG = math.Log(priorG)
-	scoreJ = math.Log(priorJ)
-	for _, word := range wordlist {
-		gP, jP := classificationWordProb(db, word)
-		scoreG += math.Log(gP)
-		scoreJ += math.Log(jP)
+	priorG, err := classificationPrior(db)
+	if err != nil {
+		return g, err
 	}
 
-	if scoreJ == math.Max(scoreG, scoreJ) {
-		junk = true
+	likelihoodG, likelihoodJ, err := classificationLikelihood(db, word)
+	if err != nil {
+		return g, err
 	}
 
-	return scoreG, scoreJ, junk
+	g = (likelihoodG * priorG) / (likelihoodG*priorG + likelihoodJ*(1-priorG))
+
+	return g, nil
+}
+
+// Junk returns true if the wordlist is classified as a junk mail using Bayes'
+// rule.
+func Junk(db *bolt.DB, wordlist []string) (bool, error) {
+	var probabilities []float64
+
+	for _, val := range wordlist {
+		p, err := classificationWord(db, val)
+		if err != nil {
+			return false, err
+		}
+		probabilities = append(probabilities, p)
+	}
+
+	if stat.HarmonicMean(probabilities, nil) < 0.5 {
+		return true, nil
+	}
+
+	return false, nil
 }

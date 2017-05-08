@@ -1,10 +1,34 @@
-hash: 3cee04040c8122c41e41716acbf51492c7e42ac3d7dc239556123e00101bfc17
-updated: 2017-05-05T01:56:14.319028504Z
+hash: 3c3cc20d232bb926c0eff2f838a575b28c9f8669a04af14079464608f74ea78b
+updated: 2017-05-08T03:21:39.033013152Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+- name: github.com/gonum/blas
+  version: 430a98d0f42f5d7b9a9535580771233386034848
+  subpackages:
+  - blas64
+  - native
+  - native/internal/math32
+- name: github.com/gonum/floats
+  version: a2cbc5c70616cd18491ef2843231f6ce28b2cb02
+- name: github.com/gonum/internal
+  version: abbe1115275b8ef5f1c4b73e2360c9e8177edcb2
+  subpackages:
+  - asm/f32
+  - asm/f64
+- name: github.com/gonum/lapack
+  version: b2c45d0a904f3d18ef419fd1c65c22f3749046fe
+  subpackages:
+  - lapack64
+  - native
+- name: github.com/gonum/matrix
+  version: 496fef53954ba166f5dbc5bbbf90b433c130cfb1
+  subpackages:
+  - mat64
+- name: github.com/gonum/stat
+  version: cd3537419d189410d273f890c4e8950c64b92df5
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/luksen/maildir
@@ -12,12 +36,13 @@ imports:
 - name: github.com/retailnext/hllpp
   version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
 - name: github.com/urfave/cli
-  version: ab403a54a148f2d857920810291539e1f817ee7b
+  version: d70f47eeca3afd795160003bc6e28b001d60c67c
 - name: golang.org/x/net
   version: feeb485667d1fdabe727840fe00adc22431bc86e
   subpackages:
   - html
   - html/atom
+  - html/charset
 - name: golang.org/x/sys
   version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
   subpackages:
@@ -44,7 +69,7 @@ testImports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: da367351331c75190afec7ed3a0c61e0016942ed
+  version: da1d0e434025dec4c843b8f05171992bb6c8dfcc
   subpackages:
   - format
   - internal/assertion
@@ -57,5 +82,23 @@ testImports:
   - matchers/support/goraph/node
   - matchers/support/goraph/util
   - types
+- name: golang.org/x/text
+  version: 470f45bf29f4147d6fbd7dfd0a02a848e49f5bf4
+  subpackages:
+  - encoding
+  - encoding/charmap
+  - encoding/htmlindex
+  - encoding/internal
+  - encoding/internal/identifier
+  - encoding/japanese
+  - encoding/korean
+  - encoding/simplifiedchinese
+  - encoding/traditionalchinese
+  - encoding/unicode
+  - internal/tag
+  - internal/utf8internal
+  - language
+  - runes
+  - transform
 - name: gopkg.in/yaml.v2
   version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b

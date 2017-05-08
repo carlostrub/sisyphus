@@ -16,13 +16,6 @@ import (
 	"github.com/luksen/maildir"
 )
 
-const (
-	// Good holds a placeholder string for the database
-	Good = "0"
-	// Junk holds a placeholder string for the database
-	Junk = "1"
-)
-
 // Maildir represents the address to a Maildir directory
 type Maildir string
 
@@ -228,7 +221,10 @@ func (m *Mail) Wordlist() (w []string) {
 	return w
 }
 
-// Classify analyses the mail and decides whether it is Junk or Good
+// Classify analyses a new mail (a mail that arrived in the "new" directory),
+// decides whether it is junk and -- if so -- moves it to the Junk folder. If
+// it is not junk, the mail is untouched so it can be handled by the mail
+// client.
 func (m *Mail) Classify(db *bolt.DB) error {
 
 	err := m.Clean()
@@ -237,57 +233,22 @@ func (m *Mail) Classify(db *bolt.DB) error {
 	}
 
 	list := m.Wordlist()
-	scoreG, scoreJ, ju := LogScores(db, list)
+	junk, err := Junk(db, list)
+	if err != nil {
+		return err
+	}
 
-	log.Print("Classified " + m.Key + " as Junk=" + strconv.FormatBool(m.Junk) +
-		" (good: " + strconv.FormatFloat(scoreG, 'f', 4, 64) +
-		", junk: " + strconv.FormatFloat(scoreJ, 'f', 4, 64) + ")")
+	log.Print("Classified " + m.Key + " as Junk=" + strconv.FormatBool(m.Junk))
 
-	// Move mails around after classification
-	if m.New && ju {
-		m.Junk = ju
+	// Move mail around if junk.
+	if junk {
+		m.Junk = junk
 		err := os.Rename("./new/"+m.Key, "./.Junk/cur/"+m.Key)
 		if err != nil {
 			return err
 		}
 		log.Print("Moved " + m.Key + " from new to Junk folder")
 	}
-
-	if !m.New && m.Junk && !ju {
-		err := os.Rename("./.Junk/cur/"+m.Key, "./cur/"+m.Key)
-		if err != nil {
-			return err
-		}
-		m.Junk = ju
-		log.Print("Moved " + m.Key + " from Junk to Good folder")
-	}
-
-	if !m.New && ju && !m.Junk {
-		err := os.Rename("./cur/"+m.Key, "./.Junk/cur/"+m.Key)
-		if err != nil {
-			return err
-		}
-		m.Junk = ju
-		log.Print("Moved " + m.Key + " from Good to Junk folder")
-	}
-
-	// Inform the DB about a processed mail
-	db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("Processed"))
-		bMails := b.Bucket([]byte("Mails"))
-		if ju {
-			err := bMails.Put([]byte(m.Key), []byte(Junk))
-			if err != nil {
-				return err
-			}
-		} else {
-			err := bMails.Put([]byte(m.Key), []byte(Good))
-			if err != nil {
-				return err
-			}
-		}
-		return err
-	})
 
 	return nil
 }
@@ -296,4 +257,28 @@ func (m *Mail) Classify(db *bolt.DB) error {
 // the mail has been moved from there.
 func (m *Mail) Learn(db *bolt.DB) error {
 	return nil
+}
+
+// LoadMails creates missing directories and then loads all mails from a given
+// slice of Maildirs
+func LoadMails(d []Maildir) (mails map[Maildir][]*Mail, err error) {
+	mails = make(map[Maildir][]*Mail)
+
+	// create missing directories and write index
+	for _, val := range d {
+		err := val.CreateDirs()
+		if err != nil {
+			return mails, err
+		}
+
+		var m []*Mail
+		m, err = val.Index()
+		if err != nil {
+			return mails, err
+		}
+
+		mails[val] = m
+	}
+
+	return mails, nil
 }

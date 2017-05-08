@@ -6,40 +6,20 @@ import (
 	"github.com/boltdb/bolt"
 )
 
-// OpenDB creates and opens a new database and its respective buckets (if required)
-func OpenDB(maildir string) (db *bolt.DB, err error) {
+// openDB creates and opens a new database and its respective buckets (if required)
+func openDB(m Maildir) (db *bolt.DB, err error) {
 
-	log.Println("loading database")
+	log.Println("loading database for " + string(m))
 	// Open the sisyphus.db data file in your current directory.
 	// It will be created if it doesn't exist.
-	db, err = bolt.Open(maildir+"/sisyphus.db", 0600, nil)
+	db, err = bolt.Open(string(m)+"/sisyphus.db", 0600, nil)
 	if err != nil {
 		return db, err
 	}
 
 	// Create DB bucket for the map of processed e-mail IDs
 	err = db.Update(func(tx *bolt.Tx) error {
-		_, err := tx.CreateBucketIfNotExists([]byte("Processed"))
-		return err
-	})
-	if err != nil {
-		return db, err
-	}
-
-	// Create DB bucket for Mails inside bucket Processed
-	err = db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("Processed"))
-		_, err := b.CreateBucketIfNotExists([]byte("Mails"))
-		return err
-	})
-	if err != nil {
-		return db, err
-	}
-
-	// Create DB bucket for Counters inside bucket Processed
-	err = db.Update(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("Processed"))
-		_, err := b.CreateBucketIfNotExists([]byte("Counters"))
+		_, err := tx.CreateBucketIfNotExists([]byte("Statistics"))
 		return err
 	})
 	if err != nil {
@@ -74,4 +54,29 @@ func OpenDB(maildir string) (db *bolt.DB, err error) {
 
 	log.Println("database loaded")
 	return db, err
+}
+
+// LoadDatabases loads all databases from a given slice of Maildirs
+func LoadDatabases(d []Maildir) (databases map[Maildir]*bolt.DB, err error) {
+	databases = make(map[Maildir]*bolt.DB)
+	for _, val := range d {
+		databases[val], err = openDB(val)
+		if err != nil {
+			return databases, err
+		}
+	}
+
+	return databases, nil
+}
+
+// CloseDatabases closes all databases from a given slice of Maildirs
+func CloseDatabases(databases map[Maildir]*bolt.DB) {
+	for _, val := range databases {
+		err := val.Close()
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	return
 }
