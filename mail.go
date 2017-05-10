@@ -158,14 +158,17 @@ func (m *Mail) Clean() error {
 
 // wordlist takes a string of space separated text and returns a list of unique
 // words in a space separated string
-func wordlist(s string) (l []string) {
+func wordlist(s string) (l []string, err error) {
 	list := make(map[string]int)
 
 	raw := strings.Split(s, " ")
 	var clean []string
 
 	// use regexp compile for use in the loop that follows
-	regexMatcher, _ := regexp.Compile("(^[a-z]+$)")
+	regexMatcher, err := regexp.Compile("(^[a-z]+$)")
+	if err != nil {
+		return l, err
+	}
 
 	for _, w := range raw {
 
@@ -199,11 +202,11 @@ func wordlist(s string) (l []string) {
 		l = append(l, word)
 	}
 
-	return l
+	return l, nil
 }
 
 // Wordlist prepares the mail for training
-func (m *Mail) Wordlist() (w []string) {
+func (m *Mail) Wordlist() (w []string, err error) {
 	var s string
 
 	if m.Subject != nil {
@@ -214,9 +217,9 @@ func (m *Mail) Wordlist() (w []string) {
 		s = s + " " + *m.Body
 	}
 
-	w = wordlist(s)
+	w, err = wordlist(s)
 
-	return w
+	return w, err
 }
 
 // LoadMails creates missing directories and then loads all mails from a given

@@ -90,7 +90,7 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 		return nil
 	})
 
-	return g, j, nil
+	return g, j, err
 }
 
 // classificationWord produces the conditional probability of a word belonging
@@ -123,7 +123,11 @@ func (m *Mail) Classify(db *bolt.DB) error {
 		return err
 	}
 
-	list := m.Wordlist()
+	list, err := m.Wordlist()
+	if err != nil {
+		return err
+	}
+
 	junk, err := Junk(db, list)
 	if err != nil {
 		return err

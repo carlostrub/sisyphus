@@ -17,7 +17,10 @@ func (m *Mail) Learn(db *bolt.DB) error {
 		return err
 	}
 
-	list := m.Wordlist()
+	list, err := m.Wordlist()
+	if err != nil {
+		return err
+	}
 
 	wordKey := "Good"
 	if m.Junk {
