@@ -5,11 +5,9 @@ import (
 	"log"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 
 	"github.com/carlostrub/sisyphus"
-	"github.com/fsnotify/fsnotify"
 	"github.com/urfave/cli"
 )
 
@@ -131,87 +129,67 @@ func main() {
 				defer sisyphus.CloseDatabases(dbs)
 
 				// Learn at startup
-				//				for i := range mails {
-				//					db.View(func(tx *bolt.Tx) error {
-				//						b := tx.Bucket([]byte("Processed"))
-				//						bMails := b.Bucket([]byte("Mails"))
-				//						v := bMails.Get([]byte(mails[i].Key))
-				//						if len(v) == 0 {
-				//							err = mails[i].Classify(db)
-				//							if err != nil {
-				//								log.Print(err)
-				//							}
-				//							err = mails[i].Learn(db)
-				//							if err != nil {
-				//								log.Print(err)
-				//							}
-				//						}
-				//						if string(v) == sisyphus.Good && mails[i].Junk == true {
-				//							err = mails[i].Learn(db)
-				//							if err != nil {
-				//								log.Print(err)
-				//							}
-				//						}
-				//						if string(v) == sisyphus.Junk && mails[i].Junk == false {
-				//							err = mails[i].Learn(db)
-				//							if err != nil {
-				//								log.Print(err)
-				//							}
-				//						}
-				//						return nil
-				//					})
-				//				}
-
-				// Classify on arrival
-				watcher, err := fsnotify.NewWatcher()
-				if err != nil {
-					log.Fatal(err)
-				}
-				defer watcher.Close()
-
-				done := make(chan bool)
-				go func() {
-					for {
-						select {
-						case event := <-watcher.Events:
-							if event.Op&fsnotify.Create == fsnotify.Create {
-								mailName := strings.Split(event.Name, "/")
-								m := sisyphus.Mail{
-									Key: mailName[len(mailName)-1],
-								}
-
-								if mailName[len(mailName)-2] == "new" {
-									err = m.Classify(db)
-									if err != nil {
-										log.Print(err)
-									}
-								} else {
-									err = m.Learn(db)
-									if err != nil {
-										log.Print(err)
-									}
-								}
-
-							}
-						case err := <-watcher.Errors:
-							log.Println("error:", err)
+				for _, d := range maildirs {
+					db := dbs[d]
+					m := mails[d]
+					for _, val := range m {
+						err := val.Learn(db)
+						if err != nil {
+							log.Fatal(err)
 						}
 					}
-				}()
+				}
 
-				err = watcher.Add(maildirPaths[0] + "/cur")
-				if err != nil {
-					log.Fatal(err)
-				}
-				err = watcher.Add(maildirPaths[0] + "/new")
-				if err != nil {
-					log.Fatal(err)
-				}
-				err = watcher.Add(maildirPaths[0] + "/.Junk/cur")
-				if err != nil {
-					log.Fatal(err)
-				}
-				<-done
+				//				// Classify on arrival
+				//				watcher, err := fsnotify.NewWatcher()
+				//				if err != nil {
+				//					log.Fatal(err)
+				//				}
+				//				defer watcher.Close()
+				//
+				//				done := make(chan bool)
+				//				go func() {
+				//					for {
+				//						select {
+				//						case event := <-watcher.Events:
+				//							if event.Op&fsnotify.Create == fsnotify.Create {
+				//								mailName := strings.Split(event.Name, "/")
+				//								m := sisyphus.Mail{
+				//									Key: mailName[len(mailName)-1],
+				//								}
+				//
+				//								if mailName[len(mailName)-2] == "new" {
+				//									err = m.Classify(db)
+				//									if err != nil {
+				//										log.Print(err)
+				//									}
+				//								} else {
+				//									err = m.Learn(db)
+				//									if err != nil {
+				//										log.Print(err)
+				//									}
+				//								}
+				//
+				//							}
+				//						case err := <-watcher.Errors:
+				//							log.Println("error:", err)
+				//						}
+				//					}
+				//				}()
+				//
+				//				err = watcher.Add(maildirPaths[0] + "/cur")
+				//				if err != nil {
+				//					log.Fatal(err)
+				//				}
+				//				err = watcher.Add(maildirPaths[0] + "/new")
+				//				if err != nil {
+				//					log.Fatal(err)
+				//				}
+				//				err = watcher.Add(maildirPaths[0] + "/.Junk/cur")
+				//				if err != nil {
+				//					log.Fatal(err)
+				//				}
+				//				<-done
 			},
 		},
 		{

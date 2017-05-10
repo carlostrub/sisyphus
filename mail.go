@@ -8,10 +8,8 @@ import (
 	"mime/quotedprintable"
 	"os"
 	"regexp"
-	"strconv"
 	"strings"
 
-	"github.com/boltdb/bolt"
 	"github.com/kennygrant/sanitize"
 	"github.com/luksen/maildir"
 )
@@ -219,44 +217,6 @@ func (m *Mail) Wordlist() (w []string) {
 	w = wordlist(s)
 
 	return w
-}
-
-// Classify analyses a new mail (a mail that arrived in the "new" directory),
-// decides whether it is junk and -- if so -- moves it to the Junk folder. If
-// it is not junk, the mail is untouched so it can be handled by the mail
-// client.
-func (m *Mail) Classify(db *bolt.DB) error {
-
-	err := m.Clean()
-	if err != nil {
-		return err
-	}
-
-	list := m.Wordlist()
-	junk, err := Junk(db, list)
-	if err != nil {
-		return err
-	}
-
-	log.Print("Classified " + m.Key + " as Junk=" + strconv.FormatBool(m.Junk))
-
-	// Move mail around if junk.
-	if junk {
-		m.Junk = junk
-		err := os.Rename("./new/"+m.Key, "./.Junk/cur/"+m.Key)
-		if err != nil {
-			return err
-		}
-		log.Print("Moved " + m.Key + " from new to Junk folder")
-	}
-
-	return nil
-}
-
-// Learn adds the words to the respective list and unlearns on the other, if
-// the mail has been moved from there.
-func (m *Mail) Learn(db *bolt.DB) error {
-	return nil
 }
 
 // LoadMails creates missing directories and then loads all mails from a given
