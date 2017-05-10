@@ -27,7 +27,7 @@ install: build
 test:
 	${SISYPHUS_GO_EXECUTABLE} get -u github.com/onsi/ginkgo/ginkgo
 	${SISYPHUS_GO_EXECUTABLE} get -u github.com/onsi/gomega
-	${GOPATH}/bin/ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --progress
+	${GOPATH}/bin/ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --progress --cover
 
 static-test:
 	${SISYPHUS_GO_EXECUTABLE} get -u github.com/alecthomas/gometalinter
