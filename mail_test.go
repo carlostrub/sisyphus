@@ -296,7 +296,8 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			list := m.Wordlist()
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
 			sort.Strings(list)
 
 			Ω(list).Should(Equal(
@@ -317,7 +318,8 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			list := m.Wordlist()
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
 			sort.Strings(list)
 
 			Ω(list).Should(Equal(
@@ -338,7 +340,8 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			list := m.Wordlist()
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
 			sort.Strings(list)
 
 			Ω(list).Should(Equal(
@@ -359,7 +362,8 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			list := m.Wordlist()
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
 			sort.Strings(list)
 
 			Ω(list).Should(Equal(
@@ -380,7 +384,8 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			list := m.Wordlist()
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
 			sort.Strings(list)
 
 			Ω(list).Should(Equal(
@@ -401,7 +406,8 @@ var _ = Describe("Mail", func() {
 			err = m.Clean()
 			Ω(err).ShouldNot(HaveOccurred())
 
-			list := m.Wordlist()
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
 			sort.Strings(list)
 
 			Ω(list).Should(Equal(
