@@ -39,6 +39,27 @@ var _ = Describe("Database", func() {
 			Ω(gN).Should(Equal(0))
 			Ω(jN).Should(Equal(0))
 			Ω(sN).Should(Equal(0))
+
+			CloseDatabases(dbs)
+		})
+
+		It("Closes an open database", func() {
+			dbs, err := LoadDatabases([]Maildir{"test/Maildir"})
+			Ω(err).ShouldNot(HaveOccurred())
+
+			CloseDatabases(dbs)
+
+			dbTest := dbs["test/Maildir"]
+			var n = 4
+
+			err = dbTest.View(func(tx *bolt.Tx) error {
+				b := tx.Bucket([]byte("Statistics"))
+
+				n = b.Stats().KeyN
+
+				return nil
+			})
+			Ω(err).Should(HaveOccurred())
 		})
 	})
 })
