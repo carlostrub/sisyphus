@@ -1,6 +1,8 @@
 package sisyphus_test
 
 import (
+	"os"
+
 	"github.com/boltdb/bolt"
 	. "github.com/carlostrub/sisyphus"
 
@@ -41,6 +43,9 @@ var _ = Describe("Database", func() {
 			Ω(sN).Should(Equal(0))
 
 			CloseDatabases(dbs)
+
+			err = os.Remove("test/Maildir/sisyphus.db")
+			Ω(err).ShouldNot(HaveOccurred())
 		})
 
 		It("Closes an open database", func() {
@@ -60,6 +65,9 @@ var _ = Describe("Database", func() {
 				return nil
 			})
 			Ω(err).Should(HaveOccurred())
+
+			err = os.Remove("test/Maildir/sisyphus.db")
+			Ω(err).ShouldNot(HaveOccurred())
 		})
 	})
 })
