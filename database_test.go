@@ -13,6 +13,11 @@ import (
 var _ = Describe("Database", func() {
 
 	Context("Bolt Database", func() {
+		AfterEach(func() {
+			err = os.Remove("test/Maildir/sisyphus.db")
+			Ω(err).ShouldNot(HaveOccurred())
+		})
+
 		It("Load databases for each maildir", func() {
 			dbs, err := LoadDatabases([]Maildir{"test/Maildir"})
 			Ω(err).ShouldNot(HaveOccurred())
@@ -43,9 +48,6 @@ var _ = Describe("Database", func() {
 			Ω(sN).Should(Equal(0))
 
 			CloseDatabases(dbs)
-
-			err = os.Remove("test/Maildir/sisyphus.db")
-			Ω(err).ShouldNot(HaveOccurred())
 		})
 
 		It("Closes an open database", func() {
@@ -65,9 +67,6 @@ var _ = Describe("Database", func() {
 				return nil
 			})
 			Ω(err).Should(HaveOccurred())
-
-			err = os.Remove("test/Maildir/sisyphus.db")
-			Ω(err).ShouldNot(HaveOccurred())
 		})
 	})
 })
