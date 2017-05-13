@@ -51,7 +51,8 @@ var _ = Describe("Learn", func() {
 
 		It("Load databases for a maildir, then learn a mail and check whether the word counts are correct in the db", func() {
 
-			m.Learn(dbs["test/Maildir"])
+			err = m.Learn(dbs["test/Maildir"])
+			Ω(err).ShouldNot(HaveOccurred())
 
 			var jN, sN, gN int
 
@@ -76,7 +77,8 @@ var _ = Describe("Learn", func() {
 
 		It("Load databases for a maildir, then learn a mail and check whether individual word counts are equal to 1", func() {
 
-			m.Learn(dbs["test/Maildir"])
+			err = m.Learn(dbs["test/Maildir"])
+			Ω(err).ShouldNot(HaveOccurred())
 
 			var wordCount uint64
 

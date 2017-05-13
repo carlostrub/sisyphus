@@ -222,6 +222,21 @@ func (m *Mail) Wordlist() (w []string, err error) {
 	return w, err
 }
 
+// cleanWordlist combines Clean and Wordlist in one internal function
+func (m *Mail) cleanWordlist() (w []string, err error) {
+	err = m.Clean()
+	if err != nil {
+		return w, err
+	}
+
+	w, err = m.Wordlist()
+	if err != nil {
+		return w, err
+	}
+
+	return w, err
+}
+
 // LoadMails creates missing directories and then loads all mails from a given
 // slice of Maildirs
 func LoadMails(d []Maildir) (mails map[Maildir][]*Mail, err error) {

@@ -57,7 +57,7 @@ var _ = Describe("Database", func() {
 			CloseDatabases(dbs)
 
 			dbTest := dbs["test/Maildir"]
-			var n = 4
+			n := 4
 
 			err = dbTest.View(func(tx *bolt.Tx) error {
 				b := tx.Bucket([]byte("Statistics"))
@@ -67,6 +67,7 @@ var _ = Describe("Database", func() {
 				return nil
 			})
 			Ω(err).Should(HaveOccurred())
+			Ω(n).Should(Equal(4))
 		})
 	})
 })

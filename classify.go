@@ -37,13 +37,11 @@ func classificationPrior(db *bolt.DB) (g float64, err error) {
 	return g, err
 }
 
-// classificationLikelihood returns P(W|C_j) -- the probability of seeing a
-// particular word W in a document of this class.
-func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error) {
+// classificationLikelihoodWordcounts gets wordcounts from database to be used
+// in Likelihood calculation
+func classificationLikelihoodWordcounts(db *bolt.DB, word string) (gN, jN float64, err error) {
 
 	err = db.View(func(tx *bolt.Tx) error {
-		var gN, jN, gTotal, jTotal uint64
-
 		b := tx.Bucket([]byte("Wordlists"))
 
 		good := b.Bucket([]byte("Good"))
@@ -53,7 +51,7 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 			if err != nil {
 				return err
 			}
-			gN = gWordHLL.Count()
+			gN = float64(gWordHLL.Count())
 		}
 		junk := b.Bucket([]byte("Junk"))
 		jWordRaw := junk.Get([]byte(word))
@@ -62,9 +60,20 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 			if err != nil {
 				return err
 			}
-			jN = jWordHLL.Count()
+			jN = float64(jWordHLL.Count())
 		}
 
+		return nil
+	})
+
+	return gN, jN, err
+}
+
+// classificationLikelihoodStatistics gets global statistics from database to
+// be used in Likelihood calculation
+func classificationLikelihoodStatistics(db *bolt.DB, word string) (gTotal, jTotal float64, err error) {
+
+	err = db.View(func(tx *bolt.Tx) error {
 		p := tx.Bucket([]byte("Statistics"))
 		gRaw := p.Get([]byte("ProcessedGood"))
 		if len(gRaw) > 0 {
@@ -72,7 +81,7 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 			if err != nil {
 				return err
 			}
-			gTotal = gHLL.Count()
+			gTotal = float64(gHLL.Count())
 		}
 		jRaw := p.Get([]byte("ProcessedJunk"))
 		if len(jRaw) > 0 {
@@ -80,7 +89,7 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 			if err != nil {
 				return err
 			}
-			jTotal = jHLL.Count()
+			jTotal = float64(jHLL.Count())
 		}
 
 		if gTotal == 0 {
@@ -90,11 +99,28 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 			return errors.New("no junk mails have yet been classified")
 		}
 
-		g = float64(gN) / float64(gTotal)
-		j = float64(jN) / float64(jTotal)
-
 		return nil
 	})
+
+	return gTotal, jTotal, err
+}
+
+// classificationLikelihood returns P(W|C_j) -- the probability of seeing a
+// particular word W in a document of this class.
+func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error) {
+
+	gN, jN, err := classificationLikelihoodWordcounts(db, word)
+	if err != nil {
+		return g, j, err
+	}
+
+	gTotal, jTotal, err := classificationLikelihoodStatistics(db, word)
+	if err != nil {
+		return g, j, err
+	}
+
+	g = gN / gTotal
+	j = jN / jTotal
 
 	return g, j, err
 }
@@ -124,12 +150,7 @@ func classificationWord(db *bolt.DB, word string) (g float64, err error) {
 // client.
 func (m *Mail) Classify(db *bolt.DB) error {
 
-	err := m.Clean()
-	if err != nil {
-		return err
-	}
-
-	list, err := m.Wordlist()
+	list, err := m.cleanWordlist()
 	if err != nil {
 		return err
 	}

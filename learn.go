@@ -12,12 +12,7 @@ func (m *Mail) Learn(db *bolt.DB) error {
 
 	log.Println("learn mail " + m.Key)
 
-	err := m.Clean()
-	if err != nil {
-		return err
-	}
-
-	list, err := m.Wordlist()
+	list, err := m.cleanWordlist()
 	if err != nil {
 		return err
 	}

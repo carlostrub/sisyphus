@@ -32,7 +32,8 @@ var _ = Describe("Classify", func() {
 			err = m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
-			m.Learn(dbs["test/Maildir"])
+			err = m.Learn(dbs["test/Maildir"])
+			Ω(err).ShouldNot(HaveOccurred())
 
 			// Load good mail
 			m = &Mail{
@@ -42,7 +43,8 @@ var _ = Describe("Classify", func() {
 			err = m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
-			m.Learn(dbs["test/Maildir"])
+			err = m.Learn(dbs["test/Maildir"])
+			Ω(err).ShouldNot(HaveOccurred())
 		})
 		AfterEach(func() {
 			// Cleanup
@@ -84,7 +86,6 @@ var _ = Describe("Classify", func() {
 
 		It("Classify one word from the mail that was learned in good and junk", func() {
 
-			m.Learn(dbs["test/Maildir"])
 			answer, prob, err := Junk(dbs["test/Maildir"], []string{"than"})
 
 			Ω(err).ShouldNot(HaveOccurred())
