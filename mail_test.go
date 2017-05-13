@@ -234,10 +234,8 @@ var _ = Describe("Mail", func() {
 
 		It("More Junk", func() {
 			m := s.Mail{
-				Key:     "1488226337.M327833P8269.mail.carlostrub.ch,S=6960,W=7161:2,Sa",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488226337.M327833P8269.mail.carlostrub.ch,S=6960,W=7161:2,Sa",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -259,10 +257,8 @@ var _ = Describe("Mail", func() {
 
 		It("More Junk", func() {
 			m := s.Mail{
-				Key:     "1488228352.M339670P8269.mail.carlostrub.ch,S=12659,W=12782:2,Sa",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488228352.M339670P8269.mail.carlostrub.ch,S=12659,W=12782:2,Sa",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -284,10 +280,8 @@ var _ = Describe("Mail", func() {
 
 		It("Wordlist 1", func() {
 			m := s.Mail{
-				Key:     "1488181583.M633084P4781.mail.carlostrub.ch,S=708375,W=720014:2,a",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488181583.M633084P4781.mail.carlostrub.ch,S=708375,W=720014:2,a",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -306,10 +300,8 @@ var _ = Describe("Mail", func() {
 
 		It("Wordlist 2", func() {
 			m := s.Mail{
-				Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730:2,Sa",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730:2,Sa",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -328,10 +320,8 @@ var _ = Describe("Mail", func() {
 
 		It("Wordlist 3", func() {
 			m := s.Mail{
-				Key:     "1488226337.M327824P8269.mail.carlostrub.ch,S=8044,W=8167:2,Sa",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488226337.M327824P8269.mail.carlostrub.ch,S=8044,W=8167:2,Sa",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -350,10 +340,8 @@ var _ = Describe("Mail", func() {
 
 		It("Wordlist 4", func() {
 			m := s.Mail{
-				Key:     "1488226337.M327825P8269.mail.carlostrub.ch,S=802286,W=812785:2,Sa",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488226337.M327825P8269.mail.carlostrub.ch,S=802286,W=812785:2,Sa",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -372,10 +360,8 @@ var _ = Describe("Mail", func() {
 
 		It("Wordlist 5", func() {
 			m := s.Mail{
-				Key:     "1488226337.M327833P8269.mail.carlostrub.ch,S=6960,W=7161:2,Sa",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488226337.M327833P8269.mail.carlostrub.ch,S=6960,W=7161:2,Sa",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -394,10 +380,8 @@ var _ = Describe("Mail", func() {
 
 		It("Wordlist 6", func() {
 			m := s.Mail{
-				Key:     "1488228352.M339670P8269.mail.carlostrub.ch,S=12659,W=12782:2,Sa",
-				Subject: nil,
-				Body:    nil,
-				Junk:    true,
+				Key:  "1488228352.M339670P8269.mail.carlostrub.ch,S=12659,W=12782:2,Sa",
+				Junk: true,
 			}
 
 			err := m.Load("test/Maildir")
@@ -412,6 +396,25 @@ var _ = Describe("Mail", func() {
 
 			Ω(list).Should(Equal(
 				[]string{"always", "amazon", "antiviral", "blockquote", "blood", "body", "canada", "check", "click", "deals", "delivery", "diabetes", "discount", "email", "emails", "europe", "following", "font", "form", "good", "herpes", "hola", "keep", "leading", "limited", "link", "longer", "medication", "message", "most", "north", "offer", "online", "other", "please", "popular", "presents", "pressure", "produced", "products", "read", "receive", "registered", "reserved", "rights", "service", "services", "simply", "span", "special", "states", "store", "subsidiary", "super", "table", "terry", "these", "this", "time", "trademark", "united", "various", "viagra", "view", "when", "wish", "with", "your"}))
+		})
+
+		It("Wordlist 7", func() {
+			m := s.Mail{
+				Key: "1488230510.M141612P8565.mail.carlostrub.ch,S=5978,W=6119",
+			}
+
+			err := m.Load("test/Maildir")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
+			sort.Strings(list)
+
+			Ω(list).Should(Equal(
+				[]string{"amending", "both", "build", "builds", "clang", "convert", "danfe", "depends", "drop", "explicit", "fine", "install", "instead", "library", "localbase", "manually", "port", "powerpc", "prefer", "rather", "shared", "static", "than", "their", "uses", "utilize", "with", "xorg"}))
 		})
 	})
 })

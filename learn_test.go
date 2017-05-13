@@ -11,9 +11,11 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var m *Mail
-var dbs map[Maildir]*bolt.DB
-var err error
+var (
+	m   *Mail
+	dbs map[Maildir]*bolt.DB
+	err error
+)
 
 var _ = Describe("Learn", func() {
 	Context("Learn a new mail", func() {

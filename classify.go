@@ -42,13 +42,13 @@ func classificationPrior(db *bolt.DB) (g float64, err error) {
 func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error) {
 
 	err = db.View(func(tx *bolt.Tx) error {
-		var gN, jN uint64
+		var gN, jN, gTotal, jTotal uint64
 
 		b := tx.Bucket([]byte("Wordlists"))
 
 		good := b.Bucket([]byte("Good"))
 		gWordRaw := good.Get([]byte(word))
-		if len(gWordRaw) != 0 {
+		if len(gWordRaw) > 0 {
 			gWordHLL, err := hllpp.Unmarshal(gWordRaw)
 			if err != nil {
 				return err
@@ -57,7 +57,7 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 		}
 		junk := b.Bucket([]byte("Junk"))
 		jWordRaw := junk.Get([]byte(word))
-		if len(jWordRaw) != 0 {
+		if len(jWordRaw) > 0 {
 			jWordHLL, err := hllpp.Unmarshal(jWordRaw)
 			if err != nil {
 				return err
@@ -66,22 +66,28 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 		}
 
 		p := tx.Bucket([]byte("Statistics"))
-		gHLL, err := hllpp.Unmarshal(p.Get([]byte("ProcessedGood")))
-		if err != nil {
-			return err
+		gRaw := p.Get([]byte("ProcessedGood"))
+		if len(gRaw) > 0 {
+			gHLL, err := hllpp.Unmarshal(gRaw)
+			if err != nil {
+				return err
+			}
+			gTotal = gHLL.Count()
 		}
-		jHLL, err := hllpp.Unmarshal(p.Get([]byte("ProcessedJunk")))
-		if err != nil {
-			return err
+		jRaw := p.Get([]byte("ProcessedJunk"))
+		if len(jRaw) > 0 {
+			jHLL, err := hllpp.Unmarshal(jRaw)
+			if err != nil {
+				return err
+			}
+			jTotal = jHLL.Count()
 		}
 
-		gTotal := gHLL.Count()
 		if gTotal == 0 {
-			return errors.New("no good mails have been classified so far")
+			return errors.New("no good mails have yet been classified")
 		}
-		jTotal := jHLL.Count()
 		if jTotal == 0 {
-			return errors.New("no junk mails have been classified so far")
+			return errors.New("no junk mails have yet been classified")
 		}
 
 		g = float64(gN) / float64(gTotal)
@@ -128,7 +134,7 @@ func (m *Mail) Classify(db *bolt.DB) error {
 		return err
 	}
 
-	junk, err := Junk(db, list)
+	junk, _, err := Junk(db, list)
 	if err != nil {
 		return err
 	}
@@ -149,21 +155,23 @@ func (m *Mail) Classify(db *bolt.DB) error {
 }
 
 // Junk returns true if the wordlist is classified as a junk mail using Bayes'
-// rule.
-func Junk(db *bolt.DB, wordlist []string) (bool, error) {
+// rule. If required, it also returns the calculated probability of being junk,
+// but this is typically not needed.
+func Junk(db *bolt.DB, wordlist []string) (junk bool, prob float64, err error) {
 	var probabilities []float64
 
 	for _, val := range wordlist {
 		p, err := classificationWord(db, val)
 		if err != nil {
-			return false, err
+			return false, prob, err
 		}
 		probabilities = append(probabilities, p)
 	}
 
-	if stat.HarmonicMean(probabilities, nil) < 0.5 {
-		return true, nil
+	prob = stat.HarmonicMean(probabilities, nil)
+	if prob < 0.5 {
+		return true, (1 - prob), nil
 	}
 
-	return false, nil
+	return false, (1 - prob), nil
 }
