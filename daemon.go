@@ -73,7 +73,6 @@ func (p Pidfile) DaemonStop() error {
 	}
 
 	process, err := os.FindProcess(processID)
-
 	if err != nil {
 		e := fmt.Sprintf("Unable to find process ID [%v] with error %v \n", processID, err)
 		return errors.New(e)
@@ -88,7 +87,6 @@ func (p Pidfile) DaemonStop() error {
 	log.Printf("stopping sisyphus process ID [%v]\n", processID)
 	// kill process and exit immediately
 	err = process.Kill()
-
 	if err != nil {
 		e := fmt.Sprintf("Unable to kill process ID [%v] with error %v \n", processID, err)
 		return errors.New(e)
