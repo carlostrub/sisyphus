@@ -7,51 +7,41 @@ import (
 	"github.com/retailnext/hllpp"
 )
 
-// Learn adds the the mail key to the list of words using hyper log log algorithm.
-func (m *Mail) Learn(db *bolt.DB) error {
-
-	log.Println("learn mail " + m.Key)
-
-	list, err := m.cleanWordlist()
-	if err != nil {
-		return err
-	}
-
+// learnWordlist adds the mail key to the respective word's list
+func (m *Mail) learnWordlist(w string, db *bolt.DB) error {
 	wordKey := "Good"
 	if m.Junk {
 		wordKey = "Junk"
 	}
 
-	// Learn words
-	for _, val := range list {
-		err = db.Update(func(tx *bolt.Tx) error {
-			b := tx.Bucket([]byte("Wordlists"))
+	err := db.Update(func(tx *bolt.Tx) (err error) {
+		b := tx.Bucket([]byte("Wordlists"))
 
-			bucket := b.Bucket([]byte(wordKey))
-			wordRaw := bucket.Get([]byte(val))
-			var word *hllpp.HLLPP
-			if len(wordRaw) == 0 {
-				word = hllpp.New()
-			} else {
-				word, err = hllpp.Unmarshal(wordRaw)
-				if err != nil {
-					return err
-				}
+		bucket := b.Bucket([]byte(wordKey))
+		wordRaw := bucket.Get([]byte(w))
+		var word *hllpp.HLLPP
+		if len(wordRaw) == 0 {
+			word = hllpp.New()
+		} else {
+			word, err = hllpp.Unmarshal(wordRaw)
+			if err != nil {
+				return err
 			}
-
-			word.Add([]byte(m.Key))
-
-			err = bucket.Put([]byte(val), word.Marshal())
-
-			return err
-		})
-		if err != nil {
-			return err
 		}
-	}
 
-	// Update the statistics counter
-	err = db.Update(func(tx *bolt.Tx) error {
+		word.Add([]byte(m.Key))
+
+		err = bucket.Put([]byte(w), word.Marshal())
+
+		return err
+	})
+
+	return err
+}
+
+// learnStatistics adds the mail key to the respective word's list
+func (m *Mail) learnStatistics(db *bolt.DB) error {
+	err := db.Update(func(tx *bolt.Tx) (err error) {
 		p := tx.Bucket([]byte("Statistics"))
 
 		key := "ProcessedGood"
@@ -78,4 +68,29 @@ func (m *Mail) Learn(db *bolt.DB) error {
 	})
 
 	return err
+}
+
+// Learn adds the the mail key to the list of words using hyper log log algorithm.
+func (m *Mail) Learn(db *bolt.DB) error {
+
+	log.Println("learn mail " + m.Key)
+
+	list, err := m.cleanWordlist()
+	if err != nil {
+		return err
+	}
+
+	// Learn words
+	for _, val := range list {
+		err := m.learnWordlist(val, db)
+		if err != nil {
+			return err
+		}
+	}
+
+	// Update the statistics counter
+	err = m.learnStatistics(db)
+
+	return err
+
 }
