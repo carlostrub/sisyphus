@@ -10,8 +10,8 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Classify", func() {
-	Context("Classify a new mail", func() {
+var _ = Describe("Classify Mails", func() {
+	Context("Classify one word from the mail that was ", func() {
 		BeforeEach(func() {
 			// check whether there exists a DB file
 			_, oserr := os.Stat("test/Maildir/sisyphus.db")
@@ -54,7 +54,7 @@ var _ = Describe("Classify", func() {
 			Ω(err).ShouldNot(HaveOccurred())
 		})
 
-		It("Classify one word from the mail that was learned before", func() {
+		It("learned before and is junk", func() {
 
 			answer, prob, err := Junk(dbs["test/Maildir"], []string{"london"})
 
@@ -64,7 +64,7 @@ var _ = Describe("Classify", func() {
 
 		})
 
-		It("Classify one word from the mail that was learned before", func() {
+		It("learned before and is good", func() {
 
 			answer, prob, err := Junk(dbs["test/Maildir"], []string{"localbase"})
 
@@ -74,7 +74,7 @@ var _ = Describe("Classify", func() {
 
 		})
 
-		It("Classify one word from the mail that was never learned", func() {
+		It("never learned before", func() {
 
 			answer, prob, err := Junk(dbs["test/Maildir"], []string{"abcdefg"})
 
@@ -84,13 +84,13 @@ var _ = Describe("Classify", func() {
 
 		})
 
-		It("Classify one word from the mail that was learned in good and junk", func() {
+		It("learned both as good and junk, respectively", func() {
 
 			answer, prob, err := Junk(dbs["test/Maildir"], []string{"than"})
 
 			Ω(err).ShouldNot(HaveOccurred())
-			Ω(prob).Should(Equal(0.7795275590551181))
-			Ω(answer).Should(BeTrue())
+			Ω(prob).Should(Equal(0.5))
+			Ω(answer).Should(BeFalse())
 
 		})
 	})

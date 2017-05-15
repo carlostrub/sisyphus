@@ -15,26 +15,12 @@ import (
 // classes.
 func classificationPrior(db *bolt.DB) (g float64, err error) {
 
-	err = db.View(func(tx *bolt.Tx) error {
-		b := tx.Bucket([]byte("Wordlists"))
+	gTotal, jTotal, err := classificationStatistics(db)
+	if err != nil {
+		return g, err
+	}
 
-		good := b.Bucket([]byte("Good"))
-		gN := float64(good.Stats().KeyN)
-
-		junk := b.Bucket([]byte("Junk"))
-		jN := float64(junk.Stats().KeyN)
-
-		// division by zero means there are no learned mails so far
-		if (gN + jN) == 0 {
-			return errors.New("no mails have been classified so far")
-		}
-
-		g = gN / (gN + jN)
-
-		return nil
-	})
-
-	return g, err
+	return gTotal / (gTotal + jTotal), err
 }
 
 // classificationLikelihoodWordcounts gets wordcounts from database to be used
@@ -69,9 +55,9 @@ func classificationLikelihoodWordcounts(db *bolt.DB, word string) (gN, jN float6
 	return gN, jN, err
 }
 
-// classificationLikelihoodStatistics gets global statistics from database to
+// classificationStatistics gets global statistics from database to
 // be used in Likelihood calculation
-func classificationLikelihoodStatistics(db *bolt.DB, word string) (gTotal, jTotal float64, err error) {
+func classificationStatistics(db *bolt.DB) (gTotal, jTotal float64, err error) {
 
 	err = db.View(func(tx *bolt.Tx) error {
 		p := tx.Bucket([]byte("Statistics"))
@@ -114,7 +100,7 @@ func classificationLikelihood(db *bolt.DB, word string) (g, j float64, err error
 		return g, j, err
 	}
 
-	gTotal, jTotal, err := classificationLikelihoodStatistics(db, word)
+	gTotal, jTotal, err := classificationStatistics(db)
 	if err != nil {
 		return g, j, err
 	}
