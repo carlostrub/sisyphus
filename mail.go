@@ -230,9 +230,6 @@ func (m *Mail) cleanWordlist() (w []string, err error) {
 	}
 
 	w, err = m.Wordlist()
-	if err != nil {
-		return w, err
-	}
 
 	return w, err
 }
