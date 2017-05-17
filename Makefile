@@ -34,6 +34,11 @@ static-test:
 	${GOPATH}/bin/gometalinter --install
 	${GOPATH}/bin/gometalinter --vendor --deadline=5m --disable-all --enable=goconst --enable=gocyclo --enable=unused --enable=interfacer --enable=lll --enable=misspell --enable=staticcheck --enable=aligncheck --enable=deadcode --enable=goimports --enable=ineffassign --enable=unconvert --enable=unparam --enable=varcheck --enable=dupl --enable=errcheck --enable=golint --enable=structcheck --enable=gosimple --enable=safesql --tests --json . > gometalinter.out
 
+send-coverage: test
+	CODECLIMATE_API_HOST=https://codebeat.co/webhooks/code_coverage \
+	CODECLIMATE_REPO_TOKEN=6A4615809-e3c4-4267-a049-eaec20ad63b5 \
+	codeclimate-test-reporter < sisyphus.coverprofile
+
 integration-test:
 	${SISYPHUS_GO_EXECUTABLE} build
 	./sisyphus run
