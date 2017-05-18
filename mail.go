@@ -3,12 +3,13 @@ package sisyphus
 import (
 	"bufio"
 	"errors"
-	"log"
 	"math"
 	"mime/quotedprintable"
 	"os"
 	"regexp"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/kennygrant/sanitize"
 	"github.com/luksen/maildir"

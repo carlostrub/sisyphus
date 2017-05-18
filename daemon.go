@@ -4,10 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"os/exec"
 	"strconv"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // See

@@ -2,9 +2,10 @@ package sisyphus
 
 import (
 	"errors"
-	"log"
 	"os"
 	"strconv"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
 	"github.com/gonum/stat"

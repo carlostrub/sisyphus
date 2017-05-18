@@ -1,7 +1,7 @@
 package sisyphus
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
 	"github.com/retailnext/hllpp"
