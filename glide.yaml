@@ -8,6 +8,8 @@ import:
 - package: github.com/fsnotify/fsnotify
 - package: github.com/retailnext/hllpp
 - package: github.com/gonum/stat
+- package: github.com/sirupsen/logrus
+  version: ^0.11.5
 testImport:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega

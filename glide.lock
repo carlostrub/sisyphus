@@ -1,5 +1,5 @@
-hash: 3c3cc20d232bb926c0eff2f838a575b28c9f8669a04af14079464608f74ea78b
-updated: 2017-05-10T17:27:45.826904968Z
+hash: 08a986039e87670acae497e4c9853151102a5fd603a068d0c18012e80ea1c192
+updated: 2017-05-18T19:11:54.375068148Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
@@ -19,7 +19,7 @@ imports:
   - asm/f32
   - asm/f64
 - name: github.com/gonum/lapack
-  version: b2c45d0a904f3d18ef419fd1c65c22f3749046fe
+  version: 219cfcc2cee77e21a618f07d65d14edbe4975c58
   subpackages:
   - lapack64
   - native
@@ -28,28 +28,30 @@ imports:
   subpackages:
   - mat64
 - name: github.com/gonum/stat
-  version: cd3537419d189410d273f890c4e8950c64b92df5
+  version: 7689386cc541c591a7cf28c5f487091756aa97b2
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/luksen/maildir
   version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
 - name: github.com/retailnext/hllpp
   version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
+- name: github.com/sirupsen/logrus
+  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: github.com/urfave/cli
   version: d70f47eeca3afd795160003bc6e28b001d60c67c
 - name: golang.org/x/net
-  version: c9b681d35165f1995d6f3034e61f8761d4b90c99
+  version: 513929065c19401a1c7b76ecd942f9f86a0c061b
   subpackages:
   - html
   - html/atom
   - html/charset
 - name: golang.org/x/sys
-  version: 9ccfe848b9db8435a24c424abbc07a921adf1df5
+  version: e62c3de784db939836898e5c19ffd41bece347da
   subpackages:
   - unix
 testImports:
 - name: github.com/onsi/ginkgo
-  version: 83438ca4278f2f56757b9ab2cb15dd4f596d84e8
+  version: 18c43bbb99ffd9dc8bd38904654693ce75e3e685
   subpackages:
   - config
   - internal/codelocation
@@ -83,7 +85,7 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: golang.org/x/text
-  version: 470f45bf29f4147d6fbd7dfd0a02a848e49f5bf4
+  version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
   subpackages:
   - encoding
   - encoding/charmap
