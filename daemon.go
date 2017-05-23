@@ -130,7 +130,7 @@ func (p Pidfile) DaemonRestart() {
 	}
 
 	log.WithFields(log.Fields{
-		"pid": pid,
+		"pid": string(pid),
 	}).Info("Stopping sisyphus process")
 	cmd := exec.Command(os.Args[0], "stop")
 	cmd.Start()
