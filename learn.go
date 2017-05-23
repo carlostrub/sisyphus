@@ -73,7 +73,9 @@ func (m *Mail) learnStatistics(db *bolt.DB) error {
 // Learn adds the the mail key to the list of words using hyper log log algorithm.
 func (m *Mail) Learn(db *bolt.DB) error {
 
-	log.Println("learn mail " + m.Key)
+	log.WithFields(log.Fields{
+		"mail": m.Key,
+	}).Info("Learn mail")
 
 	list, err := m.cleanWordlist()
 	if err != nil {

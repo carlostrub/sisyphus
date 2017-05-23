@@ -30,7 +30,9 @@ func (d Maildir) CreateDirs() error {
 
 	dir := string(d)
 
-	log.Println("create missing directories for Maildir " + dir)
+	log.WithFields(log.Fields{
+		"dir": dir,
+	}).Info("Create missing directories")
 
 	err := os.MkdirAll(dir+"/.Junk/cur", 0700)
 	if err != nil {
@@ -50,7 +52,10 @@ func (d Maildir) Index() (m []*Mail, err error) {
 
 	dir := string(d)
 
-	log.Println("start indexing mails in " + dir)
+	log.WithFields(log.Fields{
+		"dir": dir,
+	}).Info("Start indexing mails")
+
 	dirs := []string{dir, dir + "/.Junk"}
 	for _, val := range dirs {
 		j, err := maildir.Dir(val).Keys()
@@ -67,7 +72,9 @@ func (d Maildir) Index() (m []*Mail, err error) {
 		}
 	}
 
-	log.Println("all mails in " + dir + " indexed")
+	log.WithFields(log.Fields{
+		"dir": dir,
+	}).Info("All mails indexed")
 
 	return m, nil
 }

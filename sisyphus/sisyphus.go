@@ -69,7 +69,9 @@ func main() {
 
 				// check if daemon already running.
 				if _, err := os.Stat(*pidfile); err == nil {
-					log.Fatal("sisyphus running or " + *pidfile + " file exists.")
+					log.WithFields(log.Fields{
+						"pidfile": *pidfile,
+					}).Fatal("Already running or pidfile exists")
 				}
 
 				fmt.Print(`
@@ -93,11 +95,13 @@ func main() {
 				go func() {
 					signalType := <-ch
 					signal.Stop(ch)
-					log.Println("Exit command received. Exiting sisyphus...")
+					log.Info("Exit command received. Exiting sisyphus...")
 
 					// this is a good place to flush everything to disk
 					// before terminating.
-					log.Println("Received signal type: ", signalType)
+					log.WithFields(log.Fields{
+						"signal": signalType,
+					}).Info("Received signal")
 
 					// remove PID file
 					os.Remove(*pidfile)
@@ -119,13 +123,17 @@ func main() {
 				// Load all mails
 				mails, err := sisyphus.LoadMails(maildirs)
 				if err != nil {
-					log.Fatal(err)
+					log.WithFields(log.Fields{
+						"err": err,
+					}).Fatal("Cannot load mails")
 				}
 
 				// Open all databases
 				dbs, err := sisyphus.LoadDatabases(maildirs)
 				if err != nil {
-					log.Fatal(err)
+					log.WithFields(log.Fields{
+						"err": err,
+					}).Fatal("Cannot load databases")
 				}
 				defer sisyphus.CloseDatabases(dbs)
 
@@ -136,7 +144,9 @@ func main() {
 					for _, val := range m {
 						err := val.Learn(db)
 						if err != nil {
-							log.Fatal(err)
+							log.WithFields(log.Fields{
+								"err": err,
+							}).Warning("Cannot learn mail")
 						}
 					}
 				}
@@ -144,7 +154,9 @@ func main() {
 				//				// Classify on arrival
 				//				watcher, err := fsnotify.NewWatcher()
 				//				if err != nil {
-				//					log.Fatal(err)
+				//log.WithFields(log.Fields{
+				//	"err": err,
+				//}).Warning("Cannot create directory watcher")
 				//				}
 				//				defer watcher.Close()
 				//
@@ -202,10 +214,7 @@ func main() {
 			Usage:   "start sisyphus daemon in the background",
 			Action: func(c *cli.Context) error {
 
-				err := sisyphus.Pidfile(*pidfile).DaemonStart()
-				if err != nil {
-					log.Fatal(err)
-				}
+				sisyphus.Pidfile(*pidfile).DaemonStart()
 
 				return nil
 			},
@@ -216,10 +225,7 @@ func main() {
 			Usage:   "stop sisyphus daemon",
 			Action: func(c *cli.Context) error {
 
-				err := sisyphus.Pidfile(*pidfile).DaemonStop()
-				if err != nil {
-					log.Fatal(err)
-				}
+				sisyphus.Pidfile(*pidfile).DaemonStop()
 
 				return nil
 			},
@@ -230,10 +236,7 @@ func main() {
 			Usage:   "restart sisyphus daemon",
 			Action: func(c *cli.Context) error {
 
-				err := sisyphus.Pidfile(*pidfile).DaemonRestart()
-				if err != nil {
-					log.Fatal(err)
-				}
+				sisyphus.Pidfile(*pidfile).DaemonRestart()
 
 				return nil
 			},
@@ -243,7 +246,7 @@ func main() {
 			Aliases: []string{"i"},
 			Usage:   "status of sisyphus",
 			Action: func(c *cli.Context) error {
-				log.Println("here, we should get statistics from the db, TBD...")
+				log.Info("here, we should get statistics from the db, TBD...")
 				return nil
 			},
 		},

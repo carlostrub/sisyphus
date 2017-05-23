@@ -1,8 +1,6 @@
 package sisyphus
 
 import (
-	"errors"
-	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
@@ -37,94 +35,110 @@ func (p Pidfile) savePID(process int) error {
 }
 
 // DaemonStart starts sisyphus as a backgound process
-func (p Pidfile) DaemonStart() error {
+func (p Pidfile) DaemonStart() {
 	// check if daemon already running.
 	if _, err := os.Stat(string(p)); err == nil {
-		return errors.New("sisyphus running or " + string(p) + " file exists.")
+
+		log.WithFields(log.Fields{
+			"pidfile": p,
+		}).Fatal("Already running or pidfile exists")
+
 	}
 
+	log.Info("Starting sisyphus daemon")
 	cmd := exec.Command(os.Args[0], "run")
-	err := cmd.Start()
-	if err != nil {
-		return err
-	}
-	log.Printf("starting sisyphus process ID [%v]\n", cmd.Process.Pid)
-	log.Println("sisyphus started")
-	err = (p).savePID(cmd.Process.Pid)
+	cmd.Start()
 
-	return err
+	log.WithFields(log.Fields{
+		"pid": cmd.Process.Pid,
+	}).Info("Sisyphus started")
+	err := (p).savePID(cmd.Process.Pid)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Warning("Save process ID file")
+	}
+	log.WithFields(log.Fields{
+		"pidfile": p,
+	}).Info("Process ID file stored")
+
+	return
 }
 
 // DaemonStop stops a running sisyphus background process
-func (p Pidfile) DaemonStop() error {
+func (p Pidfile) DaemonStop() {
 
 	_, err := os.Stat(string(p))
 	if err != nil {
-		return errors.New("sisyphus is not running")
+		log.Fatal("Sisyphus is not running")
 	}
 
 	processIDRaw, err := ioutil.ReadFile(string(p))
 	if err != nil {
-		return errors.New("sisyphus is not running")
+		log.Fatal("Sisyphus is not running")
 	}
 
 	processID, err := strconv.Atoi(string(processIDRaw))
 	if err != nil {
-		return errors.New("unable to read and parse process id found in " + string(p))
+		log.WithFields(log.Fields{
+			"pid": p,
+		}).Fatal("Unable to read process ID")
 	}
 
 	process, err := os.FindProcess(processID)
 	if err != nil {
-		e := fmt.Sprintf("Unable to find process ID [%v] with error %v \n", processID, err)
-		return errors.New(e)
+		log.WithFields(log.Fields{
+			"pid": p,
+			"err": err,
+		}).Fatal("Unable to find process ID")
 	}
 
 	// remove PID file
 	err = os.Remove(string(p))
 	if err != nil {
-		return err
+		log.Warning("Unable to remove process ID file")
 	}
 
-	log.Printf("stopping sisyphus process ID [%v]\n", processID)
+	log.WithFields(log.Fields{
+		"pid": processID,
+	}).Info("Stopping sisyphus process")
 	// kill process and exit immediately
 	err = process.Kill()
 	if err != nil {
-		e := fmt.Sprintf("Unable to kill process ID [%v] with error %v \n", processID, err)
-		return errors.New(e)
+		log.WithFields(log.Fields{
+			"pid": processID,
+			"err": err,
+		}).Fatal("Unable to kill sisyphus process")
 	}
 
-	log.Println("sisyphus stopped")
+	log.Info("Sisyphus stopped")
 	os.Exit(0)
 
-	return nil
+	return
 }
 
 // DaemonRestart restarts a running sisyphus background process
-func (p Pidfile) DaemonRestart() error {
+func (p Pidfile) DaemonRestart() {
 	_, err := os.Stat(string(p))
 	if err != nil {
-		return errors.New("sisyphus is not running")
+		log.Fatal("Sisyphus not running")
 	}
 
 	pid, err := ioutil.ReadFile(string(p))
 	if err != nil {
-		return errors.New("sisyphus is not running")
+		log.Fatal("Sisyphus not running")
 	}
 
+	log.WithFields(log.Fields{
+		"pid": pid,
+	}).Info("Stopping sisyphus process")
 	cmd := exec.Command(os.Args[0], "stop")
-	err = cmd.Start()
-	if err != nil {
-		return err
-	}
-	log.Printf("stopping sisyphus process ID [%v]\n", string(pid))
+	cmd.Start()
 
 	cmd = exec.Command(os.Args[0], "start")
-	err = cmd.Start()
-	if err != nil {
-		return err
-	}
+	cmd.Start()
 
-	log.Println("sisyphus restarted")
+	log.Info("Sisyphus restarted")
 
-	return nil
+	return
 }

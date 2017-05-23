@@ -3,7 +3,6 @@ package sisyphus
 import (
 	"errors"
 	"os"
-	"strconv"
 
 	log "github.com/sirupsen/logrus"
 
@@ -147,7 +146,10 @@ func (m *Mail) Classify(db *bolt.DB) error {
 		return err
 	}
 
-	log.Print("Classified " + m.Key + " as Junk=" + strconv.FormatBool(m.Junk))
+	log.WithFields(log.Fields{
+		"mail": m.Key,
+		"junk": m.Junk,
+	}).Info("Classified")
 
 	// Move mail around if junk.
 	if junk {
@@ -156,7 +158,9 @@ func (m *Mail) Classify(db *bolt.DB) error {
 		if err != nil {
 			return err
 		}
-		log.Print("Moved " + m.Key + " from new to Junk folder")
+		log.WithFields(log.Fields{
+			"mail": m.Key,
+		}).Info("Moved to Junk folder")
 	}
 
 	return nil

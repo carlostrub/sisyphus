@@ -9,7 +9,9 @@ import (
 // openDB creates and opens a new database and its respective buckets (if required)
 func openDB(m Maildir) (db *bolt.DB, err error) {
 
-	log.Println("loading database for " + string(m))
+	log.WithFields(log.Fields{
+		"maildir": m,
+	}).Info("Loading database")
 	// Open the sisyphus.db data file in your current directory.
 	// It will be created if it doesn't exist.
 	db, err = bolt.Open(string(m)+"/sisyphus.db", 0600, nil)
@@ -65,7 +67,7 @@ func LoadDatabases(d []Maildir) (databases map[Maildir]*bolt.DB, err error) {
 		}
 	}
 
-	log.Println("all databases loaded")
+	log.Info("All databases loaded")
 
 	return databases, nil
 }
@@ -75,9 +77,13 @@ func CloseDatabases(databases map[Maildir]*bolt.DB) {
 	for key, val := range databases {
 		err := val.Close()
 		if err != nil {
-			log.Println(err)
+			log.WithFields(log.Fields{
+				"db": string(key) + "/sisyphus.db",
+			}).Warn("Unable to close database")
 		}
-		log.Println("database " + string(key) + "/sisyphus.db closed")
+		log.WithFields(log.Fields{
+			"db": string(key) + "/sisyphus.db",
+		}).Info("Database closed")
 	}
 
 	return
