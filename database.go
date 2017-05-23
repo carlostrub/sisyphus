@@ -79,7 +79,7 @@ func CloseDatabases(databases map[Maildir]*bolt.DB) {
 		if err != nil {
 			log.WithFields(log.Fields{
 				"db": string(key) + "/sisyphus.db",
-			}).Warn("Unable to close database")
+			}).Error("Unable to close database")
 		}
 		log.WithFields(log.Fields{
 			"db": string(key) + "/sisyphus.db",

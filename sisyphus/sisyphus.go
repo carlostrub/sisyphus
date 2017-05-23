@@ -4,8 +4,10 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
+	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 
 	"github.com/carlostrub/sisyphus"
@@ -151,58 +153,52 @@ func main() {
 					}
 				}
 
-				//				// Classify on arrival
-				//				watcher, err := fsnotify.NewWatcher()
-				//				if err != nil {
-				//log.WithFields(log.Fields{
-				//	"err": err,
-				//}).Warning("Cannot create directory watcher")
-				//				}
-				//				defer watcher.Close()
-				//
-				//				done := make(chan bool)
-				//				go func() {
-				//					for {
-				//						select {
-				//						case event := <-watcher.Events:
-				//							if event.Op&fsnotify.Create == fsnotify.Create {
-				//								mailName := strings.Split(event.Name, "/")
-				//								m := sisyphus.Mail{
-				//									Key: mailName[len(mailName)-1],
-				//								}
-				//
-				//								if mailName[len(mailName)-2] == "new" {
-				//									err = m.Classify(db)
-				//									if err != nil {
-				//										log.Print(err)
-				//									}
-				//								} else {
-				//									err = m.Learn(db)
-				//									if err != nil {
-				//										log.Print(err)
-				//									}
-				//								}
-				//
-				//							}
-				//						case err := <-watcher.Errors:
-				//							log.Println("error:", err)
-				//						}
-				//					}
-				//				}()
-				//
-				//				err = watcher.Add(maildirPaths[0] + "/cur")
-				//				if err != nil {
-				//					log.Fatal(err)
-				//				}
-				//				err = watcher.Add(maildirPaths[0] + "/new")
-				//				if err != nil {
-				//					log.Fatal(err)
-				//				}
-				//				err = watcher.Add(maildirPaths[0] + "/.Junk/cur")
-				//				if err != nil {
-				//					log.Fatal(err)
-				//				}
-				//				<-done
+				// Classify whenever a mail arrives in "new"
+				watcher, err := fsnotify.NewWatcher()
+				if err != nil {
+					log.WithFields(log.Fields{
+						"err": err,
+					}).Fatal("Cannot setup directory watcher")
+				}
+				defer watcher.Close()
+
+				done := make(chan bool)
+				go func() {
+					for {
+						select {
+						case event := <-watcher.Events:
+							if event.Op&fsnotify.Create == fsnotify.Create {
+								mailName := strings.Split(event.Name, "/")
+								mailDir := strings.TrimRight(event.Name, "/new/"+mailName[len(mailName)-1])
+								m := sisyphus.Mail{
+									Key: mailName[len(mailName)-1],
+								}
+
+								err = m.Classify(dbs[sisyphus.Maildir(mailDir)])
+								if err != nil {
+									log.Print(err)
+								}
+
+							}
+						case err := <-watcher.Errors:
+							log.WithFields(log.Fields{
+								"err": err,
+							}).Warning("Problem with directory watcher")
+						}
+					}
+				}()
+
+				for _, val := range maildirPaths {
+					err = watcher.Add(val + "/new")
+					if err != nil {
+						log.WithFields(log.Fields{
+							"err": err,
+							"dir": val + "/new",
+						}).Error("Cannot watch directory")
+					}
+				}
+
+				<-done
 			},
 		},
 		{
