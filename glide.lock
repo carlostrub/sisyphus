@@ -1,5 +1,5 @@
-hash: 08a986039e87670acae497e4c9853151102a5fd603a068d0c18012e80ea1c192
-updated: 2017-05-25T11:39:03.407363384Z
+hash: d1a72ce9b2ed6346e486f11d8cc0a39e4ca4243573efd7bdf5225bbbbc1b1706
+updated: 2017-05-25T20:16:35.853054558Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
@@ -49,6 +49,8 @@ imports:
   version: a55a76086885b80f79961eacb876ebd8caf3868d
   subpackages:
   - unix
+- name: gopkg.in/urfave/cli.v2
+  version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
 testImports:
 - name: github.com/onsi/ginkgo
   version: a1f616c97771e46da1722d3aa9dcde0a43f55682

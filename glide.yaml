@@ -4,12 +4,13 @@ import:
 - package: github.com/luksen/maildir
 - package: github.com/boltdb/bolt
   version: 1.3.x
-- package: github.com/urfave/cli
 - package: github.com/fsnotify/fsnotify
 - package: github.com/retailnext/hllpp
 - package: github.com/gonum/stat
 - package: github.com/sirupsen/logrus
   version: ^0.11.5
+- package: gopkg.in/urfave/cli.v2
+  version: 1.19.x
 testImport:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega
