@@ -1,5 +1,5 @@
 hash: 08a986039e87670acae497e4c9853151102a5fd603a068d0c18012e80ea1c192
-updated: 2017-05-18T19:11:54.375068148Z
+updated: 2017-05-25T11:39:03.407363384Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
@@ -14,7 +14,7 @@ imports:
 - name: github.com/gonum/floats
   version: a2cbc5c70616cd18491ef2843231f6ce28b2cb02
 - name: github.com/gonum/internal
-  version: abbe1115275b8ef5f1c4b73e2360c9e8177edcb2
+  version: 4c20688f849035792bcee8a94ec93b5c277c919f
   subpackages:
   - asm/f32
   - asm/f64
@@ -28,7 +28,7 @@ imports:
   subpackages:
   - mat64
 - name: github.com/gonum/stat
-  version: 7689386cc541c591a7cf28c5f487091756aa97b2
+  version: 42a372f1f7b88cf8df268560cf6e21e6e249ce10
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
 - name: github.com/luksen/maildir
@@ -40,18 +40,18 @@ imports:
 - name: github.com/urfave/cli
   version: d70f47eeca3afd795160003bc6e28b001d60c67c
 - name: golang.org/x/net
-  version: 513929065c19401a1c7b76ecd942f9f86a0c061b
+  version: 7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6
   subpackages:
   - html
   - html/atom
   - html/charset
 - name: golang.org/x/sys
-  version: e62c3de784db939836898e5c19ffd41bece347da
+  version: a55a76086885b80f79961eacb876ebd8caf3868d
   subpackages:
   - unix
 testImports:
 - name: github.com/onsi/ginkgo
-  version: 18c43bbb99ffd9dc8bd38904654693ce75e3e685
+  version: a1f616c97771e46da1722d3aa9dcde0a43f55682
   subpackages:
   - config
   - internal/codelocation
