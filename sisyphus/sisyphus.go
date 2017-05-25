@@ -11,7 +11,7 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/carlostrub/sisyphus"
-	"github.com/urfave/cli"
+	"gopkg.in/urfave/cli.v2"
 )
 
 var (
@@ -48,10 +48,10 @@ func main() {
 	app.Flags = []cli.Flag{
 
 		cli.StringSliceFlag{
-			Name:   "maildirs, d",
+			Name:   "maildir, d",
 			Value:  &maildirPaths,
 			EnvVar: "SISYPHUS_DIRS",
-			Usage:  "Comma separated list of paths to the Maildir directories",
+			Usage:  "Call multiple Maildirs by repeating this flag, i.e. --maildir \"./Maildir\" --maildir \"./Maildir2\"",
 		},
 		cli.StringFlag{
 			Name:        "pidfile, p",
