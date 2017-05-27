@@ -180,9 +180,11 @@ func Junk(db *bolt.DB, wordlist []string) (junk bool, prob float64, err error) {
 		probabilities = append(probabilities, p)
 	}
 
-	prob = stat.HarmonicMean(probabilities, nil)
-	if prob < 0.5 {
-		return true, (1 - prob), nil
+	if len(probabilities) > 0 {
+		prob = stat.HarmonicMean(probabilities, nil)
+		if prob < 0.5 {
+			return true, (1 - prob), nil
+		}
 	}
 
 	return false, (1 - prob), nil
