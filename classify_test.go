@@ -1,6 +1,7 @@
 package sisyphus_test
 
 import (
+	"errors"
 	"math"
 	"os"
 
@@ -18,7 +19,9 @@ var _ = Describe("Classify Mails", func() {
 			Ω(os.IsNotExist(oserr)).Should(BeTrue())
 
 			// Load db
-			dbs, err = LoadDatabases([]Maildir{"test/Maildir"})
+			dbs, err = LoadDatabases([]Maildir{
+				"test/Maildir",
+			})
 			Ω(err).ShouldNot(HaveOccurred())
 
 			m = new(Mail)
@@ -90,6 +93,40 @@ var _ = Describe("Classify Mails", func() {
 
 			Ω(err).ShouldNot(HaveOccurred())
 			Ω(prob).Should(Equal(0.5))
+			Ω(answer).Should(BeFalse())
+
+		})
+	})
+
+	Context("Do not classify as junk if there is no information", func() {
+		BeforeEach(func() {
+			// Load empty Maildir2
+			_, err = LoadMails([]Maildir{
+				"test/Maildir2",
+			})
+			Ω(err).ShouldNot(HaveOccurred())
+
+			// Load db
+			dbs, err = LoadDatabases([]Maildir{
+				"test/Maildir2",
+			})
+			Ω(err).ShouldNot(HaveOccurred())
+
+		})
+		AfterEach(func() {
+			// Cleanup
+			CloseDatabases(dbs)
+
+			err = os.RemoveAll("test/Maildir2")
+			Ω(err).ShouldNot(HaveOccurred())
+		})
+
+		It("learned nothing and thus return always good", func() {
+
+			answer, prob, err := Junk(dbs["test/Maildir2"], []string{"Carlo"})
+
+			Ω(err).Should(Equal(errors.New("no good mails have yet been classified")))
+			Ω(prob).Should(Equal(0.0))
 			Ω(answer).Should(BeFalse())
 
 		})
