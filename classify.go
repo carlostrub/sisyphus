@@ -78,11 +78,14 @@ func classificationStatistics(db *bolt.DB) (gTotal, jTotal float64, err error) {
 			jTotal = float64(jHLL.Count())
 		}
 
+		if gTotal == 0 && jTotal == 0 {
+			return errors.New("no mails have yet been learned")
+		}
 		if gTotal == 0 {
-			return errors.New("no good mails have yet been classified")
+			return errors.New("no good mails have yet been learned")
 		}
 		if jTotal == 0 {
-			return errors.New("no junk mails have yet been classified")
+			return errors.New("no junk mails have yet been learned")
 		}
 
 		return nil
@@ -173,19 +176,20 @@ func Junk(db *bolt.DB, wordlist []string) (junk bool, prob float64, err error) {
 	var probabilities []float64
 
 	for _, val := range wordlist {
-		p, err := classificationWord(db, val)
+		var p float64
+		p, err = classificationWord(db, val)
 		if err != nil {
-			return false, prob, err
+			return false, 0.0, err
 		}
 		probabilities = append(probabilities, p)
 	}
 
 	if len(probabilities) > 0 {
 		prob = stat.HarmonicMean(probabilities, nil)
-		if prob < 0.5 {
-			return true, (1 - prob), nil
-		}
+	}
+	if prob < 0.5 {
+		return true, (1 - prob), err
 	}
 
-	return false, (1 - prob), nil
+	return false, (1 - prob), err
 }

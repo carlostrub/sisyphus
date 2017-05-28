@@ -125,7 +125,7 @@ var _ = Describe("Classify Mails", func() {
 
 			answer, prob, err := Junk(dbs["test/Maildir2"], []string{"Carlo"})
 
-			Ω(err).Should(Equal(errors.New("no good mails have yet been classified")))
+			Ω(err).Should(Equal(errors.New("no mails have yet been learned")))
 			Ω(prob).Should(Equal(0.0))
 			Ω(answer).Should(BeFalse())
 
