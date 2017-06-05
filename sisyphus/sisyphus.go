@@ -23,14 +23,14 @@ func main() {
 	// Define App
 	app := cli.NewApp()
 	app.Name = "Sisyphus"
-	app.Usage = "Intelligent Junk and Spam Mail Handler"
+	app.Usage = "Intelligent Junk Mail Handler"
 	app.UsageText = `sisyphus [global options] command [command options]
 	
 	Sisyphus applies artificial intelligence to filter
 	Junk mail in an unobtrusive way. Both, classification and learning
 	operate directly on the Maildir of a user in a fully transparent mode,
 	without any need for configuration or active operation.`
-	app.HelpName = "Intelligent Junk and Spam Mail Handler"
+	app.HelpName = "Intelligent Junk Mail Handler"
 	app.Version = version
 	app.Copyright = "(c) 2017, Carlo Strub. All rights reserved. This binary is licensed under a BSD 3-Clause License."
 	app.Authors = []cli.Author{
