@@ -1,5 +1,5 @@
-hash: 1c42a5aaeffd2a78c3984ac595ba68a545cd83b7ebdcd965351f8556ab94865d
-updated: 2017-06-04T20:35:45.682023296Z
+hash: 1011029ab325472ec25cd15146799b6b125007289d19eabe365e5de759a94fd3
+updated: 2017-06-05T19:57:35.255370189Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
@@ -33,14 +33,12 @@ imports:
   version: 42a372f1f7b88cf8df268560cf6e21e6e249ce10
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
-- name: github.com/numbleroot/maildir
-  version: 7c13ca37771042775818e2a384098f0844575b32
 - name: github.com/retailnext/hllpp
   version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
 - name: github.com/sirupsen/logrus
   version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
 - name: golang.org/x/net
-  version: e4fa1c5465ad6111f206fc92186b8c83d64adbe1
+  version: 59a0b19b5533c7977ddeb86b017bf507ed407b12
   subpackages:
   - html
   - html/atom
