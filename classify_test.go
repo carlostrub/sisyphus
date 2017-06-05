@@ -94,7 +94,7 @@ var _ = Describe("Classify Mails", func() {
 	Context("Do not classify as junk if there is no information", func() {
 		BeforeEach(func() {
 			// Load empty Maildir2
-			_, err = LoadMails([]Maildir{
+			err = LoadMaildirs([]Maildir{
 				"test/Maildir2",
 			})
 			Ω(err).ShouldNot(HaveOccurred())
