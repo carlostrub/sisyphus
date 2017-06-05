@@ -38,7 +38,6 @@ var _ = Describe("Learn", func() {
 				Junk:    true,
 			}
 
-			err = m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 		})
 		AfterEach(func() {

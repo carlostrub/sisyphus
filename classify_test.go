@@ -1,7 +1,6 @@
 package sisyphus_test
 
 import (
-	"errors"
 	"math"
 	"os"
 
@@ -32,9 +31,6 @@ var _ = Describe("Classify Mails", func() {
 				Junk: true,
 			}
 
-			err = m.Load("test/Maildir")
-			Ω(err).ShouldNot(HaveOccurred())
-
 			err = m.Learn(dbs["test/Maildir"], "test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
@@ -42,9 +38,6 @@ var _ = Describe("Classify Mails", func() {
 			m = &Mail{
 				Key: "1488230510.M141612P8565.mail.carlostrub.ch,S=5978,W=6119",
 			}
-
-			err = m.Load("test/Maildir")
-			Ω(err).ShouldNot(HaveOccurred())
 
 			err = m.Learn(dbs["test/Maildir"], "test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
@@ -125,8 +118,8 @@ var _ = Describe("Classify Mails", func() {
 
 			answer, prob, err := Junk(dbs["test/Maildir2"], []string{"Carlo"})
 
-			Ω(err).Should(Equal(errors.New("no mails have yet been learned")))
-			Ω(prob).Should(Equal(0.0))
+			Ω(err).ShouldNot(HaveOccurred())
+			Ω(math.IsNaN(prob)).Should(BeTrue())
 			Ω(answer).Should(BeFalse())
 
 		})
