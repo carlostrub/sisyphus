@@ -13,7 +13,7 @@ following features:
   junk folder
 * can handle multiple mail accounts with independant junk mail preferences
 * is fully daemonized, runs smoothly in the background
-* requires minimal resources by using the HyperLogLog algorithm to store learned mails
+* requires minimal resources, e.g. learning over 3000 mails requires only 2MB of storage
 
 [![Build Status](https://travis-ci.org/carlostrub/sisyphus.svg?branch=master)](https://travis-ci.org/carlostrub/sisyphus)
 [![Go Report Card](https://goreportcard.com/badge/github.com/carlostrub/sisyphus)](https://goreportcard.com/report/github.com/carlostrub/sisyphus)
