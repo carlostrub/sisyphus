@@ -250,18 +250,12 @@ func (m *Mail) cleanWordlist() (w []string, err error) {
 	return w, err
 }
 
-// LoadMails creates missing directories and then loads all mails from a given
-// slice of Maildirs
+// LoadMails loads all mails from a given slice of Maildirs
 func LoadMails(d []Maildir) (mails map[Maildir][]*Mail, err error) {
 	mails = make(map[Maildir][]*Mail)
 
 	// create missing directories and write index
 	for _, val := range d {
-		err := val.CreateDirs()
-		if err != nil {
-			return mails, err
-		}
-
 		var m []*Mail
 		m, err = val.Index()
 		if err != nil {
@@ -272,4 +266,18 @@ func LoadMails(d []Maildir) (mails map[Maildir][]*Mail, err error) {
 	}
 
 	return mails, nil
+}
+
+// LoadMaildirs creates Maildirs and required directories, if missing
+func LoadMaildirs(d []Maildir) (err error) {
+
+	// create missing directories and write index
+	for _, val := range d {
+		err := val.CreateDirs()
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

@@ -6,7 +6,9 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
+	"time"
 
+	"github.com/boltdb/bolt"
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
 
@@ -45,6 +47,9 @@ func main() {
 	var pidfile *string
 	pidfile = new(string)
 
+	var learnafter *string
+	learnafter = new(string)
+
 	app.Flags = []cli.Flag{
 
 		cli.StringSliceFlag{
@@ -59,6 +64,13 @@ func main() {
 			EnvVar:      "SISYPHUS_PID",
 			Usage:       "Location of PID file",
 			Destination: pidfile,
+		},
+		cli.StringFlag{
+			Name:        "learn",
+			Value:       "12h",
+			EnvVar:      "SISYPHUS_DURATION",
+			Usage:       "Time interval between to learn cycles",
+			Destination: learnafter,
 		},
 	}
 
@@ -122,12 +134,12 @@ func main() {
 					maildirs = append(maildirs, sisyphus.Maildir(val))
 				}
 
-				// Load all mails
-				mails, err := sisyphus.LoadMails(maildirs)
+				// Create missing Maildirs
+				err := sisyphus.LoadMaildirs(maildirs)
 				if err != nil {
 					log.WithFields(log.Fields{
 						"err": err,
-					}).Fatal("Cannot load mails")
+					}).Fatal("Cannot load maildirs")
 				}
 
 				// Open all databases
@@ -139,21 +151,18 @@ func main() {
 				}
 				defer sisyphus.CloseDatabases(dbs)
 
-				// Learn at startup
-				for _, d := range maildirs {
-					db := dbs[d]
-					m := mails[d]
-					for _, val := range m {
-						err := val.Learn(db, d)
+				// Learn at startup and regular intervals
+				go func() {
+					for {
+						duration, err := time.ParseDuration(*learnafter)
 						if err != nil {
-							log.WithFields(log.Fields{
-								"err":  err,
-								"mail": val.Key,
-							}).Warning("Cannot learn mail")
+							log.Fatal("Cannot parse duration for learning intervals.")
 						}
+
+						learn(maildirs, dbs)
+						time.Sleep(duration)
 					}
-				}
-				log.Info("All mails learned")
+				}()
 
 				// Classify whenever a mail arrives in "new"
 				watcher, err := fsnotify.NewWatcher()
@@ -252,4 +261,29 @@ func main() {
 	}
 
 	app.Run(os.Args)
+}
+
+func learn(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
+	mails, err := sisyphus.LoadMails(maildirs)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Fatal("Cannot load mails")
+	}
+	for _, d := range maildirs {
+		db := dbs[d]
+		m := mails[d]
+		for _, val := range m {
+			err := val.Learn(db, d)
+			if err != nil {
+				log.WithFields(log.Fields{
+					"err":  err,
+					"mail": val.Key,
+				}).Warning("Cannot learn mail")
+			}
+		}
+	}
+	log.Info("All mails learned")
+
+	return
 }
