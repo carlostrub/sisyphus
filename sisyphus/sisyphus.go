@@ -149,10 +149,11 @@ func main() {
 							log.WithFields(log.Fields{
 								"err":  err,
 								"mail": val.Key,
-							}).Error("Cannot learn mail")
+							}).Warning("Cannot learn mail")
 						}
 					}
 				}
+				log.Info("All mails learned")
 
 				// Classify whenever a mail arrives in "new"
 				watcher, err := fsnotify.NewWatcher()
