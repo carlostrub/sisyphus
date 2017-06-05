@@ -1,7 +1,6 @@
 package sisyphus
 
 import (
-	"errors"
 	"os"
 
 	log "github.com/sirupsen/logrus"
@@ -79,13 +78,16 @@ func classificationStatistics(db *bolt.DB) (gTotal, jTotal float64, err error) {
 		}
 
 		if gTotal == 0 && jTotal == 0 {
-			return errors.New("no mails have yet been learned")
+			log.Warning("no mails have yet been learned")
+			return nil
 		}
 		if gTotal == 0 {
-			return errors.New("no good mails have yet been learned")
+			log.Warning("no good mails have yet been learned")
+			return nil
 		}
 		if jTotal == 0 {
-			return errors.New("no junk mails have yet been learned")
+			log.Warning("no junk mails have yet been learned")
+			return nil
 		}
 
 		return nil
@@ -137,27 +139,37 @@ func classificationWord(db *bolt.DB, word string) (g float64, err error) {
 // decides whether it is junk and -- if so -- moves it to the Junk folder. If
 // it is not junk, the mail is untouched so it can be handled by the mail
 // client.
-func (m *Mail) Classify(db *bolt.DB) error {
+func (m *Mail) Classify(db *bolt.DB, dir Maildir) (err error) {
+
+	m.New = true
+
+	err = m.Load(dir)
+	if err != nil {
+		return err
+	}
 
 	list, err := m.cleanWordlist()
 	if err != nil {
 		return err
 	}
 
-	junk, _, err := Junk(db, list)
+	junk, prob, err := Junk(db, list)
 	if err != nil {
 		return err
 	}
 
+	m.Junk = junk
+
 	log.WithFields(log.Fields{
-		"mail": m.Key,
-		"junk": m.Junk,
+		"mail":        m.Key,
+		"junk":        m.Junk,
+		"probability": prob,
+		"dir":         string(dir),
 	}).Info("Classified")
 
 	// Move mail around if junk.
 	if junk {
-		m.Junk = junk
-		err := os.Rename("./new/"+m.Key, "./.Junk/cur/"+m.Key)
+		err := os.Rename(string(dir)+"/new/"+m.Key, string(dir)+"/.Junk/cur/"+m.Key)
 		if err != nil {
 			return err
 		}
@@ -174,6 +186,9 @@ func (m *Mail) Classify(db *bolt.DB) error {
 // but this is typically not needed.
 func Junk(db *bolt.DB, wordlist []string) (junk bool, prob float64, err error) {
 	var probabilities []float64
+
+	// initial value should be no junk
+	prob = 1.0
 
 	for _, val := range wordlist {
 		var p float64

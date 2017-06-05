@@ -1,8 +1,10 @@
-hash: d1a72ce9b2ed6346e486f11d8cc0a39e4ca4243573efd7bdf5225bbbbc1b1706
-updated: 2017-05-25T20:16:35.853054558Z
+hash: 1c42a5aaeffd2a78c3984ac595ba68a545cd83b7ebdcd965351f8556ab94865d
+updated: 2017-06-04T20:35:45.682023296Z
 imports:
 - name: github.com/boltdb/bolt
   version: 583e8937c61f1af6513608ccc75c97b6abdf4ff9
+- name: github.com/carlostrub/maildir
+  version: 87290f3144a16d94b0c948cfbb38f5097a9fd6f3
 - name: github.com/fsnotify/fsnotify
   version: 4da3e2cfbabc9f751898f250b49f2439785783a1
 - name: github.com/gonum/blas
@@ -31,22 +33,20 @@ imports:
   version: 42a372f1f7b88cf8df268560cf6e21e6e249ce10
 - name: github.com/kennygrant/sanitize
   version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
-- name: github.com/luksen/maildir
-  version: 5297d9c3091c7d4891c9d4f6fa743d500c038d6f
+- name: github.com/numbleroot/maildir
+  version: 7c13ca37771042775818e2a384098f0844575b32
 - name: github.com/retailnext/hllpp
   version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
 - name: github.com/sirupsen/logrus
   version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
-- name: github.com/urfave/cli
-  version: d70f47eeca3afd795160003bc6e28b001d60c67c
 - name: golang.org/x/net
-  version: 7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6
+  version: e4fa1c5465ad6111f206fc92186b8c83d64adbe1
   subpackages:
   - html
   - html/atom
   - html/charset
 - name: golang.org/x/sys
-  version: a55a76086885b80f79961eacb876ebd8caf3868d
+  version: b90f89a1e7a9c1f6b918820b3daa7f08488c8594
   subpackages:
   - unix
 - name: gopkg.in/urfave/cli.v2
@@ -73,7 +73,7 @@ testImports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: 00acfa9d92a386415bd235ab069c52063f925998
+  version: 39a54bd3c3bbfe1c331a9b3207e92134c77ed812
   subpackages:
   - format
   - internal/assertion
@@ -87,7 +87,7 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: golang.org/x/text
-  version: 19e51611da83d6be54ddafce4a4af510cb3e9ea4
+  version: ccbd3f7822129ff389f8ca4858a9b9d4d910531c
   subpackages:
   - encoding
   - encoding/charmap

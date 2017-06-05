@@ -10,7 +10,7 @@ import (
 func openDB(m Maildir) (db *bolt.DB, err error) {
 
 	log.WithFields(log.Fields{
-		"maildir": m,
+		"dir": string(m),
 	}).Info("Loading database")
 	// Open the sisyphus.db data file in your current directory.
 	// It will be created if it doesn't exist.

@@ -56,7 +56,7 @@ func (p Pidfile) DaemonStart() {
 	if err != nil {
 		log.WithFields(log.Fields{
 			"err": err,
-		}).Warning("Save process ID file")
+		}).Error("Save process ID file")
 	}
 	log.WithFields(log.Fields{
 		"pidfile": p,
@@ -96,7 +96,7 @@ func (p Pidfile) DaemonStop() {
 	// remove PID file
 	err = os.Remove(string(p))
 	if err != nil {
-		log.Warning("Unable to remove process ID file")
+		log.Error("Unable to remove process ID file")
 	}
 
 	log.WithFields(log.Fields{

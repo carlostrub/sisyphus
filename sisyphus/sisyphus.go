@@ -144,11 +144,12 @@ func main() {
 					db := dbs[d]
 					m := mails[d]
 					for _, val := range m {
-						err := val.Learn(db)
+						err := val.Learn(db, d)
 						if err != nil {
 							log.WithFields(log.Fields{
-								"err": err,
-							}).Warning("Cannot learn mail")
+								"err":  err,
+								"mail": val.Key,
+							}).Error("Cannot learn mail")
 						}
 					}
 				}
@@ -168,22 +169,23 @@ func main() {
 						select {
 						case event := <-watcher.Events:
 							if event.Op&fsnotify.Create == fsnotify.Create {
-								mailName := strings.Split(event.Name, "/")
-								mailDir := strings.TrimRight(event.Name, "/new/"+mailName[len(mailName)-1])
+								path := strings.Split(event.Name, "/new/")
 								m := sisyphus.Mail{
-									Key: mailName[len(mailName)-1],
+									Key: path[1],
 								}
 
-								err = m.Classify(dbs[sisyphus.Maildir(mailDir)])
+								err = m.Classify(dbs[sisyphus.Maildir(path[0])], sisyphus.Maildir(path[0]))
 								if err != nil {
-									log.Print(err)
+									log.WithFields(log.Fields{
+										"err": err,
+									}).Error("Classify mail")
 								}
 
 							}
 						case err := <-watcher.Errors:
 							log.WithFields(log.Fields{
 								"err": err,
-							}).Warning("Problem with directory watcher")
+							}).Error("Problem with directory watcher")
 						}
 					}
 				}()

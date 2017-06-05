@@ -1,7 +1,6 @@
 package: github.com/carlostrub/sisyphus
 import:
 - package: github.com/kennygrant/sanitize
-- package: github.com/luksen/maildir
 - package: github.com/boltdb/bolt
   version: 1.3.x
 - package: github.com/fsnotify/fsnotify
@@ -11,6 +10,8 @@ import:
   version: ^0.11.5
 - package: gopkg.in/urfave/cli.v2
   version: 1.19.x
+- package: github.com/numbleroot/maildir
+- package: github.com/carlostrub/maildir
 testImport:
 - package: github.com/onsi/ginkgo
 - package: github.com/onsi/gomega

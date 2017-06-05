@@ -35,7 +35,7 @@ var _ = Describe("Classify Mails", func() {
 			err = m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
-			err = m.Learn(dbs["test/Maildir"])
+			err = m.Learn(dbs["test/Maildir"], "test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
 			// Load good mail
@@ -46,7 +46,7 @@ var _ = Describe("Classify Mails", func() {
 			err = m.Load("test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 
-			err = m.Learn(dbs["test/Maildir"])
+			err = m.Learn(dbs["test/Maildir"], "test/Maildir")
 			Ω(err).ShouldNot(HaveOccurred())
 		})
 		AfterEach(func() {

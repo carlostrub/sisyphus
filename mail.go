@@ -5,14 +5,15 @@ import (
 	"errors"
 	"math"
 	"mime/quotedprintable"
+	"net/mail"
 	"os"
 	"regexp"
 	"strings"
 
 	log "github.com/sirupsen/logrus"
 
+	"github.com/carlostrub/maildir"
 	"github.com/kennygrant/sanitize"
-	"github.com/luksen/maildir"
 )
 
 // Maildir represents the address to a Maildir directory
@@ -80,12 +81,19 @@ func (d Maildir) Index() (m []*Mail, err error) {
 }
 
 // Load reads a mail's subject and body
-func (m *Mail) Load(d string) error {
+func (m *Mail) Load(dir Maildir) (err error) {
 
-	if m.Junk {
-		d = d + "/.Junk"
+	var message *mail.Message
+	message = new(mail.Message)
+
+	switch {
+	case m.Junk:
+		dir = dir + Maildir("/.Junk")
+	case m.New:
+		dir = dir + Maildir("/new")
 	}
-	message, err := maildir.Dir(d).Message(m.Key)
+
+	message, err = maildir.Dir(dir).Message(m.Key)
 	if err != nil {
 		return err
 	}
