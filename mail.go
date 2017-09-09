@@ -3,12 +3,14 @@ package sisyphus
 import (
 	"bufio"
 	"errors"
+	"fmt"
 	"math"
 	"mime/quotedprintable"
 	"net/mail"
 	"os"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 
 	log "github.com/sirupsen/logrus"
 
@@ -169,6 +171,7 @@ func (m *Mail) Clean() error {
 		b = cleanString(b)
 		m.Body = &b
 	}
+
 	return nil
 }
 
@@ -187,6 +190,15 @@ func wordlist(s string) (l []string, err error) {
 	}
 
 	for _, w := range raw {
+		str := w
+		for len(str) > 0 {
+			r, size := utf8.DecodeLastRuneInString(str)
+			if size > 1 {
+				clean = append(clean, fmt.Sprintf("%c", r))
+			}
+
+			str = str[:len(str)-size]
+		}
 
 		// no long or too short words
 		length := len(w)
