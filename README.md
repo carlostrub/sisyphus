@@ -56,19 +56,31 @@ can put in your `$PATH`. (You can also take a look at `make install` to install
 for you.)
 
 ## Usage
+First, set the environment variables necessary for operation:
+```
+$ setenv SISYPHUS_DIRS PATHTOMAILDIR
+$ setenv SISYPHUS_DURATION 24h
+```
+or
+```
+$ export SISYPHUS_DIRS=PATHTOMAILDIR
+$ export SISYPHUS_DURATION=24h
+```
+or for Windows
+```
+$ set SISYPHUS_DIRS=PATHTOMAILDIR
+$ set SISYPHUS_DURATION=24h
+```
+
+
 Sisyphus help can be started by running
 ```
-# sisyphus help
+$ sisyphus help
 ```
 
 To start sisyphus, do
 ```
-# sisyphus --maildir PATHTOMAILDIR  run
-```
-
-To run it in the background, do
-```
-# sisyphus --maildir PATHTOMAILDIR  start
+$ sisyphus run
 ```
 
 See the help for more details.
