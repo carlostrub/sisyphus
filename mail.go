@@ -193,7 +193,7 @@ func wordlist(s string) (l []string, err error) {
 		str := w
 		for len(str) > 0 {
 			r, size := utf8.DecodeLastRuneInString(str)
-			if size > 1 {
+			if size > 2 {
 				clean = append(clean, fmt.Sprintf("%c", r))
 			}
 

@@ -1,0 +1,103 @@
+Return-Path: d.wah@telus.net
+Delivered-To: cs@carlostrub.ch
+Received: from mail.carlostrub.ch (localhost [127.0.0.1])
+	by mail.carlostrub.ch (OpenSMTPD) with ESMTP id a30bd1e7
+	for <cs@carlostrub.ch>;
+	Thu, 14 Sep 2017 11:56:55 +0000 (UTC)
+Received: from mx2.freebsd.org (mx2.freebsd.org [8.8.178.116])
+	by mail.carlostrub.ch (OpenSMTPD) with ESMTPS id 15fa8b6a (TLSv1.2:ECDHE-RSA-AES256-GCM-SHA384:256:NO)
+	for <cs@carlostrub.ch>;
+	Thu, 14 Sep 2017 11:56:55 +0000 (UTC)
+Received: from mx1.freebsd.org (mx1.freebsd.org [8.8.178.115])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "mx1.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by mx2.freebsd.org (Postfix) with ESMTPS id 5ACFF85831
+	for <cs@carlostrub.ch>; Thu, 14 Sep 2017 11:56:53 +0000 (UTC)
+	(envelope-from d.wah@telus.net)
+Received: from freefall.freebsd.org (freefall.freebsd.org [96.47.72.132])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "freefall.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by mx1.freebsd.org (Postfix) with ESMTPS id 071EC711B9
+	for <cs@carlostrub.ch>; Thu, 14 Sep 2017 11:56:53 +0000 (UTC)
+	(envelope-from d.wah@telus.net)
+Received: by freefall.freebsd.org (Postfix)
+	id 55B441C072; Thu, 14 Sep 2017 11:56:52 +0000 (UTC)
+Delivered-To: cs@localmail.freebsd.org
+Received: from mx1.freebsd.org (mx1.freebsd.org [IPv6:2001:1900:2254:206a::19:1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "mx1.freebsd.org", Issuer "Let's Encrypt Authority X3" (verified OK))
+	by freefall.freebsd.org (Postfix) with ESMTPS id 15DF81C071
+	for <cs@localmail.freebsd.org>; Thu, 14 Sep 2017 11:56:52 +0000 (UTC)
+	(envelope-from d.wah@telus.net)
+Received: from cmta20.telus.net (cmta20.telus.net [209.171.16.93])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(Client CN "Client", Issuer "CA" (not verified))
+	by mx1.freebsd.org (Postfix) with ESMTPS id 07764711B0
+	for <cs@freebsd.org>; Thu, 14 Sep 2017 11:56:50 +0000 (UTC)
+	(envelope-from d.wah@telus.net)
+Received: from mtlp000045.email.telus.net ([172.20.100.250])
+	by cmsmtp with SMTP
+	id sSlEdIwYPJr7NsSlEdycW0; Thu, 14 Sep 2017 05:56:48 -0600
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=telus.net; s=neo;
+	t=1505390208; bh=wNu7orXliOqblv9z4rDZW6sIqAs063MoOfMT0Vuax1E=;
+	h=Date:From:Subject;
+	b=Z52k/CVo2DMmZN1aOTCMgCitcmwmRptaShPuO1mBXkOBAMgaMqmZOl3qyxbSIc7r0
+	 6cWXsIeIh0vf/L9+GMICaTqDZM7IKmsVs8WyV7v4gRPVbjuGWCRdCbExkLtIpXc9Ga
+	 HquV8y9hpd7B/g+anz2zpUTsp/YHM2BhXK5jQXFM05ORPty609lEXJLkKD166w2FS6
+	 7zMUGiNj+WtS8poFPjbWEgX3pvF/Q+3bRmJcxJ6j96InMEImT1BfalIoAwzEeZlFX2
+	 zo3buUiUNQk5IM0As4QqlhApYpPZKKZvGGrE/tpGL0YhjWwz3AG4NLjYox859pGDTU
+	 sux4IzzAJbuXA==
+X-Authority-Analysis: v=2.2 cv=Pe4Qvmpd c=1 sm=1 tr=0
+ a=4bd358MHcbnBkp+IcMzszA==:117 a=9cW_t1CCXrUA:10 a=FKkrIqjQGGEA:10
+ a=ViQZ6e29HfwA:10 a=IkcTkHD0fZMA:10 a=cYtMBaw0_NcA:10
+ a=WfoT1aaa59-9n63EQxkA:9 a=QEXdDO2ut3YA:10
+Date: Thu, 14 Sep 2017 05:56:48 -0600 (MDT)
+From: Eddie Agbetome <d.wah@telus.net>
+Message-ID: <496589688.116977988.1505390208769.JavaMail.zimbra@mailid.telus.net>
+Subject: =?utf-8?Q?Odpov=C4=9B=C4=8F?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Originating-IP: [41.190.2.164]
+X-Mailer: Zimbra 8.6.0_GA_1211 (ZimbraWebClient - FF56 (Win)/8.6.0_GA_1211)
+Thread-Topic: =?utf-8?B?T2Rwb3bEm8SP?=
+Thread-Index: MoFj9+LsRof/W+w4LROfrHyayTVYKQ==
+X-CMAE-Envelope: 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
+X-Virus-Scanned: ClamAV using ClamSMTP
+
+Drah=C3=BD p=C5=99=C3=ADteli,
+
+Banka =C4=8Dek=C3=A1 na v=C3=A1s po=C5=BE=C3=A1dat o zesnul=C3=BD str=C3=BD=
+cov=C3=BD fond. Odpov=C4=9Bzte pros=C3=ADm na podrobnosti.
+
+S pozdravem,
+Eddie Agbetome
+
+
+

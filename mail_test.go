@@ -85,6 +85,14 @@ var _ = Describe("Mail", func() {
 						Key:  "1504991774.M467861P1924.mail.carlostrub.ch,S=6478,W=6592",
 						Junk: true,
 					},
+					{
+						Key:  "1505075914.M288773P9791.mail.carlostrub.ch,S=21241,W=21583",
+						Junk: true,
+					},
+					{
+						Key:  "1505392305.M710650P33881.mail.carlostrub.ch,S=6961,W=7064",
+						Junk: true,
+					},
 				}))
 		})
 		It("Fail if Maildir does not exist", func() {
@@ -403,7 +411,7 @@ var _ = Describe("Mail", func() {
 			sort.Strings(list)
 
 			Ω(list).Should(Equal(
-				[]string{"always", "amazon", "antiviral", "blockquote", "blood", "body", "canada", "check", "click", "deals", "delivery", "diabetes", "discount", "email", "emails", "europe", "following", "font", "form", "good", "herpes", "hola", "keep", "leading", "limited", "link", "longer", "medication", "message", "most", "north", "offer", "online", "other", "please", "popular", "presents", "pressure", "produced", "products", "read", "receive", "registered", "reserved", "rights", "service", "services", "simply", "span", "special", "states", "store", "subsidiary", "super", "table", "terry", "these", "this", "time", "trademark", "united", "various", "viagra", "view", "when", "wish", "with", "your", "\u00a0", "©"}))
+				[]string{"always", "amazon", "antiviral", "blockquote", "blood", "body", "canada", "check", "click", "deals", "delivery", "diabetes", "discount", "email", "emails", "europe", "following", "font", "form", "good", "herpes", "hola", "keep", "leading", "limited", "link", "longer", "medication", "message", "most", "north", "offer", "online", "other", "please", "popular", "presents", "pressure", "produced", "products", "read", "receive", "registered", "reserved", "rights", "service", "services", "simply", "span", "special", "states", "store", "subsidiary", "super", "table", "terry", "these", "this", "time", "trademark", "united", "various", "viagra", "view", "when", "wish", "with", "your"}))
 		})
 
 		It("Wordlist 7", func() {
@@ -463,6 +471,47 @@ var _ = Describe("Mail", func() {
 
 			Ω(list).Should(Equal(
 				[]string{"‰", "⒏", "。", "《", "》", "下", "专", "倍", "六", "册", "利", "即", "取", "可", "合", "员", "回", "址", "够", "大", "天", "就", "彩", "拵", "拿", "提", "有", "永", "注", "澳", "特", "琻", "碼", "网", "赢", "邀", "钱", "门", "限", "領", "餸", "馈", "首", "，", "："}))
+		})
+
+		It("Wordlist 10", func() {
+			m := s.Mail{
+				Key:  "1505392305.M710650P33881.mail.carlostrub.ch,S=6961,W=7064:2,S",
+				Junk: true,
+			}
+
+			err := m.Load("test/Maildir")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
+			sort.Strings(list)
+
+			Ω(list).Should(Equal(
+				[]string{"agbetome", "banka", "drahy", "eddie", "fond", "odpov", "pozdravem", "prosim", "strycovy", "zesnuly"}))
+		})
+
+		It("Wordlist 11", func() {
+			Skip("See known issues with mime/quotedprintable")
+			m := s.Mail{
+				Key:  "1505075914.M288773P9791.mail.carlostrub.ch,S=21241,W=21583:2,S",
+				Junk: true,
+			}
+
+			err := m.Load("test/Maildir")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Clean()
+			Ω(err).ShouldNot(HaveOccurred())
+
+			list, err := m.Wordlist()
+			Ω(err).ShouldNot(HaveOccurred())
+			sort.Strings(list)
+
+			Ω(list).Should(Equal(
+				[]string{"agbetome", "banka", "drahy", "eddie", "fond", "odpov", "pozdravem", "prosim", "strycovy", "zesnuly"}))
 		})
 	})
 })
