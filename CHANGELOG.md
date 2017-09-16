@@ -3,7 +3,9 @@
 -
 
 ## Changed
--
+- Converted the entire app to a [Twelve-Factor App](https://12factor.net/).
+  This has consequences in how you launch it, i.e. use environment variables
+  instead of flags.
 
 ## Fixed
 - Only permit unicode characters of bitsize larger than 2, this guarantees we

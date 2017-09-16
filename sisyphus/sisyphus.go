@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/signal"
 	"strings"
-	"syscall"
 	"time"
 
 	"github.com/boltdb/bolt"
@@ -81,48 +79,22 @@ func main() {
 			Usage:   "run sisyphus",
 			Action: func(c *cli.Context) {
 
-				// check if daemon already running.
-				if _, err := os.Stat(*pidfile); err == nil {
-					log.WithFields(log.Fields{
-						"pidfile": *pidfile,
-					}).Fatal("Already running or pidfile exists")
-				}
-
 				fmt.Print(`
 
 
-	███████╗██╗███████╗██╗   ██╗██████╗ ██╗  ██╗██╗   ██╗███████╗
-	██╔════╝██║██╔════╝╚██╗ ██╔╝██╔══██╗██║  ██║██║   ██║██╔════╝
-	███████╗██║███████╗ ╚████╔╝ ██████╔╝███████║██║   ██║███████╗
-	╚════██║██║╚════██║  ╚██╔╝  ██╔═══╝ ██╔══██║██║   ██║╚════██║
-	███████║██║███████║   ██║   ██║     ██║  ██║╚██████╔╝███████║
-	╚══════╝╚═╝╚══════╝   ╚═╝   ╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+                                                                                           
+               #####                                             
+              #     # #  ####  #   # #####  #    # #    #  ####  
+              #       # #       # #  #    # #    # #    # #      
+               #####  #  ####    #   #    # ###### #    #  ####  
+                    # #      #   #   #####  #    # #    #      # 
+              #     # # #    #   #   #      #    # #    # #    # 
+               #####  #  ####    #   #      #    #  ####   ####  
 
-	by Carlo Strub <cs@carlostrub.ch>
+              by Carlo Strub <cs@carlostrub.ch>
 
 
 `)
-				// Make arrangement to remove PID file upon receiving the SIGTERM from kill command
-				ch := make(chan os.Signal, 1)
-				signal.Notify(ch, os.Interrupt, os.Kill, syscall.SIGTERM)
-
-				go func() {
-					signalType := <-ch
-					signal.Stop(ch)
-					log.Info("Exit command received. Exiting sisyphus...")
-
-					// this is a good place to flush everything to disk
-					// before terminating.
-					log.WithFields(log.Fields{
-						"signal": signalType,
-					}).Info("Received signal")
-
-					// remove PID file
-					os.Remove(*pidfile)
-
-					os.Exit(0)
-
-				}()
 
 				if len(maildirPaths) < 1 {
 					log.Fatal("No Maildir set. Please check the manual.")
@@ -214,45 +186,9 @@ func main() {
 			},
 		},
 		{
-			// See
-			// https://www.socketloop.com/tutorials/golang-daemonizing-a-simple-web-server-process-example
-			// for the process we are using to daemonize
-			Name:    "start",
-			Aliases: []string{"s"},
-			Usage:   "start sisyphus daemon in the background",
-			Action: func(c *cli.Context) error {
-
-				sisyphus.Pidfile(*pidfile).DaemonStart()
-
-				return nil
-			},
-		},
-		{
-			Name:    "stop",
-			Aliases: []string{"e"},
-			Usage:   "stop sisyphus daemon",
-			Action: func(c *cli.Context) error {
-
-				sisyphus.Pidfile(*pidfile).DaemonStop()
-
-				return nil
-			},
-		},
-		{
-			Name:    "restart",
-			Aliases: []string{"r"},
-			Usage:   "restart sisyphus daemon",
-			Action: func(c *cli.Context) error {
-
-				sisyphus.Pidfile(*pidfile).DaemonRestart()
-
-				return nil
-			},
-		},
-		{
-			Name:    "status",
+			Name:    "stats",
 			Aliases: []string{"i"},
-			Usage:   "status of sisyphus",
+			Usage:   "Statistics from Sisyphus",
 			Action: func(c *cli.Context) error {
 				log.Info("here, we should get statistics from the db, TBD...")
 				return nil
