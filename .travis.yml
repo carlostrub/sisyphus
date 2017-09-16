@@ -6,7 +6,7 @@ go:
 
 cache:
   directories:
-  - $GOPATH/src/github.com/Masterminds/glide
+  - $GOPATH/src
   - $HOME/.glide/cache
 
 install:
