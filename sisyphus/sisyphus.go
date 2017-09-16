@@ -24,12 +24,15 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Sisyphus"
 	app.Usage = "Intelligent Junk Mail Handler"
-	app.UsageText = `sisyphus [global options] command [command options]
+	app.UsageText = `sisyphus [GLOBAL OPTIONS] command
 	
 	Sisyphus applies artificial intelligence to filter
 	Junk mail in an unobtrusive way. Both, classification and learning
 	operate directly on the Maildir of a user in a fully transparent mode,
-	without any need for configuration or active operation.`
+	without any need for configuration or active operation.
+	
+	It is highly recommended to operate Sisyphus by setting environment
+	variables for the global options instead of using flags.`
 	app.HelpName = "Intelligent Junk Mail Handler"
 	app.Version = version
 	app.Copyright = "(c) 2017, Carlo Strub. All rights reserved. This binary is licensed under a BSD 3-Clause License."
@@ -42,9 +45,6 @@ func main() {
 
 	maildirPaths := cli.StringSlice([]string{})
 
-	var pidfile *string
-	pidfile = new(string)
-
 	var learnafter *string
 	learnafter = new(string)
 
@@ -55,13 +55,6 @@ func main() {
 			Value:  &maildirPaths,
 			EnvVar: "SISYPHUS_DIRS",
 			Usage:  "Call multiple Maildirs by repeating this flag, i.e. --maildir \"./Maildir\" --maildir \"./Maildir2\"",
-		},
-		cli.StringFlag{
-			Name:        "pidfile, p",
-			Value:       "/tmp/sisyphus.pid",
-			EnvVar:      "SISYPHUS_PID",
-			Usage:       "Location of PID file",
-			Destination: pidfile,
 		},
 		cli.StringFlag{
 			Name:        "learn",
@@ -188,7 +181,7 @@ func main() {
 		{
 			Name:    "stats",
 			Aliases: []string{"i"},
-			Usage:   "Statistics from Sisyphus",
+			Usage:   "show statistics",
 			Action: func(c *cli.Context) error {
 				log.Info("here, we should get statistics from the db, TBD...")
 				return nil
