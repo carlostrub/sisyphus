@@ -24,15 +24,11 @@ func main() {
 	app := cli.NewApp()
 	app.Name = "Sisyphus"
 	app.Usage = "Intelligent Junk Mail Handler"
-	app.UsageText = `sisyphus [GLOBAL OPTIONS] command
-	
-	Sisyphus applies artificial intelligence to filter
-	Junk mail in an unobtrusive way. Both, classification and learning
-	operate directly on the Maildir of a user in a fully transparent mode,
-	without any need for configuration or active operation.
-	
-	It is highly recommended to operate Sisyphus by setting environment
-	variables for the global options instead of using flags.`
+	app.UsageText = `
+	Sisyphus applies artificial intelligence to filter Junk mail in an
+	unobtrusive way. Both, classification and learning operate directly on
+	the Maildir of a user in a fully transparent mode, without any need for
+	configuration or active operation.`
 	app.HelpName = "Intelligent Junk Mail Handler"
 	app.Version = version
 	app.Copyright = "(c) 2017, Carlo Strub. All rights reserved. This binary is licensed under a BSD 3-Clause License."
@@ -42,28 +38,76 @@ func main() {
 			Email: "cs@carlostrub.ch",
 		},
 	}
+	app.ExtraInfo = func() map[string]string {
+		return map[string]string{
+			"ENVIRONMENT VARIABLES": `For configuration, set the following environment
+  variables:
+  
+  SISYPHUS_DIRS:     Comma-separated list of maildirs,
+                     e.g. ./Maildir,/home/JohnDoe/Maildir
 
-	maildirPaths := cli.StringSlice([]string{})
-
-	var learnafter *string
-	learnafter = new(string)
-
-	app.Flags = []cli.Flag{
-
-		cli.StringSliceFlag{
-			Name:   "maildir, d",
-			Value:  &maildirPaths,
-			EnvVar: "SISYPHUS_DIRS",
-			Usage:  "Call multiple Maildirs by repeating this flag, i.e. --maildir \"./Maildir\" --maildir \"./Maildir2\"",
-		},
-		cli.StringFlag{
-			Name:        "learn",
-			Value:       "12h",
-			EnvVar:      "SISYPHUS_DURATION",
-			Usage:       "Time interval between to learn cycles",
-			Destination: learnafter,
-		},
+  SISYPHUS_DURATION: Interval between learning periods, e.g. 12h
+			`,
+		}
 	}
+	app.CustomAppHelpTemplate = `NAME:
+  {{.Name}} - {{.Usage}}
+
+USAGE:
+  sisyphus {{if .VisibleFlags}}[FLAGS] {{end}}COMMAND{{if .VisibleFlags}}{{end}}
+  {{.UsageText}}
+
+COMMANDS:
+  {{range .VisibleCommands}}{{join .Names ", "}}{{ "\t" }}{{.Usage}}
+  {{end}}{{if .VisibleFlags}}
+FLAGS:
+  {{range .VisibleFlags}}{{.}}
+  {{end}}{{end}}
+{{range $key, $value := ExtraInfo}}
+{{$key}}:
+  {{$value}}
+{{end}}VERSION:
+  {{.Version}}
+
+AUTHOR:{{range .Authors}}
+  {{.}}{{end}}
+
+COPYRIGHT:
+  {{.Copyright}}
+`
+
+	dirsRaw, ok := os.LookupEnv("SISYPHUS_DIRS")
+	if !ok {
+		log.Fatal("Environment variable SISYPHUS_DIRS not set.")
+	}
+	dirsSplit := strings.Split(dirsRaw, ",")
+
+	var maildirs []sisyphus.Maildir
+	for i := 0; i < len(dirsSplit); i++ {
+		maildirs = append(maildirs, sisyphus.Maildir(dirsSplit[i]))
+	}
+
+	_, ok = os.LookupEnv("SISYPHUS_DURATION")
+	if !ok {
+		log.Fatal("Environment variable SISYPHUS_DURATION not set.")
+	}
+
+	//	app.Flags = []cli.Flag{
+	//
+	//		&cli.StringSliceFlag{
+	//			Name:    "maildir, d",
+	//			Value:   &maildirPaths,
+	//			EnvVars: []string{"SISYPHUS_DIRS"},
+	//			Usage:   "Call multiple Maildirs by repeating this flag, i.e. --maildir \"./Maildir\" --maildir \"./Maildir2\"",
+	//		},
+	//		&cli.StringFlag{
+	//			Name:        "learn",
+	//			Value:       "12h",
+	//			EnvVars:     []string{"SISYPHUS_DURATION"},
+	//			Usage:       "Time interval between to learn cycles",
+	//			Destination: learnafter,
+	//		},
+	//	}
 
 	app.Commands = []cli.Command{
 		{
@@ -89,16 +133,6 @@ func main() {
 
 `)
 
-				if len(maildirPaths) < 1 {
-					log.Fatal("No Maildir set. Please check the manual.")
-				}
-
-				// Populate maildir with the maildirs given by setting the flag.
-				var maildirs []sisyphus.Maildir
-				for _, val := range maildirPaths {
-					maildirs = append(maildirs, sisyphus.Maildir(val))
-				}
-
 				// Create missing Maildirs
 				err := sisyphus.LoadMaildirs(maildirs)
 				if err != nil {
@@ -119,7 +153,7 @@ func main() {
 				// Learn at startup and regular intervals
 				go func() {
 					for {
-						duration, err := time.ParseDuration(*learnafter)
+						duration, err := time.ParseDuration(os.Getenv("SISYPHUS_DURATION"))
 						if err != nil {
 							log.Fatal("Cannot parse duration for learning intervals.")
 						}
@@ -165,8 +199,8 @@ func main() {
 					}
 				}()
 
-				for _, val := range maildirPaths {
-					err = watcher.Add(val + "/new")
+				for _, val := range maildirs {
+					err = watcher.Add(string(val) + "/new")
 					if err != nil {
 						log.WithFields(log.Fields{
 							"err": err,
