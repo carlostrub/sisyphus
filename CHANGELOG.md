@@ -1,4 +1,4 @@
-# Release 0.3.0-dev
+# Release 0.3.0
 ## Added
 -
 
