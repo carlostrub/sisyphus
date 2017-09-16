@@ -1,3 +1,16 @@
+# Release 0.3.0-dev
+## Added
+-
+
+## Changed
+-
+
+## Fixed
+-
+
+## Known Issues
+-
+
 # Release 0.2.0
 ## Added
 Support for unicode characters.

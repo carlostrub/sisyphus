@@ -1,12 +1,12 @@
-hash: 1011029ab325472ec25cd15146799b6b125007289d19eabe365e5de759a94fd3
-updated: 2017-08-14T23:09:13.543150524+02:00
+hash: 09e7a6778dc8acfa5329ae93fe80b94dc8a5dc733333915ddb317e5092955950
+updated: 2017-09-16T21:13:19.173511403+02:00
 imports:
 - name: github.com/boltdb/bolt
   version: 2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8
 - name: github.com/carlostrub/maildir
   version: 87290f3144a16d94b0c948cfbb38f5097a9fd6f3
 - name: github.com/fsnotify/fsnotify
-  version: 4da3e2cfbabc9f751898f250b49f2439785783a1
+  version: 629574ca2a5df945712d3079857300b5e4da0236
 - name: github.com/gonum/blas
   version: 37e82626499e1df7c54aeaba0959fd6e7e8dc1e4
   subpackages:
@@ -36,22 +36,27 @@ imports:
 - name: github.com/retailnext/hllpp
   version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
 - name: github.com/sirupsen/logrus
-  version: ba1b36c82c5e05c4f912a88eab0dcd91a171688f
+  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: golang.org/x/crypto
+  version: 7d9177d70076375b9a59c8fde23d52d9c4a7ecd5
+  subpackages:
+  - ssh/terminal
 - name: golang.org/x/net
-  version: 1c05540f6879653db88113bc4a2b70aec4bd491f
+  version: 8351a756f30f1297fe94bbf4b767ec589c6ea6d0
   subpackages:
   - html
   - html/atom
   - html/charset
 - name: golang.org/x/sys
-  version: 2d3e384235de683634e9080b58f757466840aa48
+  version: 062cd7e4e68206d8bab9b18396626e855c992658
   subpackages:
   - unix
+  - windows
 - name: gopkg.in/urfave/cli.v2
-  version: 0bdeddeeb0f650497d603c4ad7b20cfe685682f6
+  version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
 testImports:
 - name: github.com/onsi/ginkgo
-  version: 8382b23d18dbaaff8e5f7e83784c53ebb8ec2f47
+  version: 9eda700730cba42af70d53180f9dcce9266bc2bc
   subpackages:
   - config
   - internal/codelocation
@@ -85,7 +90,7 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: golang.org/x/text
-  version: e56139fd9c5bc7244c76116c68e500765bb6db6b
+  version: 1cbadb444a806fd9430d14ad08967ed91da4fa0a
   subpackages:
   - encoding
   - encoding/charmap
