@@ -18,9 +18,3 @@ install:
 
 script:
   - ginkgo -r --randomizeAllSpecs --randomizeSuites --race
-
-cache:
-  directories:
-  - $GOPATH/src/github.com/Masterminds/glide
-  - $HOME/.glide/cache
-
