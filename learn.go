@@ -98,6 +98,11 @@ func (m *Mail) Learn(db *bolt.DB, dir Maildir) (err error) {
 
 	// Update the statistics counter
 	err = m.learnStatistics(db)
+	if err != nil {
+		return err
+	}
+
+	err = m.Unload(dir)
 
 	return err
 

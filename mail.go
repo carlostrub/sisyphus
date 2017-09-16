@@ -125,6 +125,15 @@ func (m *Mail) Load(dir Maildir) (err error) {
 	return nil
 }
 
+// Unload removes a mail's subject and body from the internal cache
+func (m *Mail) Unload(dir Maildir) (err error) {
+
+	m.Subject = nil
+	m.Body = nil
+
+	return nil
+}
+
 func trimStringFromBase64(s string) string {
 	if idx := strings.Index(s, "Content-Transfer-Encoding: base64"); idx != -1 {
 		return s[:idx-1]

@@ -178,7 +178,9 @@ func (m *Mail) Classify(db *bolt.DB, dir Maildir) (err error) {
 		}).Info("Moved to Junk folder")
 	}
 
-	return nil
+	err = m.Unload(dir)
+
+	return err
 }
 
 // Junk returns true if the wordlist is classified as a junk mail using Bayes'

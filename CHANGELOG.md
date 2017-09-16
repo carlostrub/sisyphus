@@ -6,6 +6,9 @@
 - Converted the entire app to a [Twelve-Factor App](https://12factor.net/).
   This has consequences in how you launch it, i.e. use environment variables
   instead of flags.
+- The interval between learning periods can be set at runtime now.
+- Unload mail content after classification and learning, should reduce memory
+  requirements.
 
 ## Fixed
 - Only permit unicode characters of bitsize larger than 2, this guarantees we

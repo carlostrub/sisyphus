@@ -123,6 +123,28 @@ var _ = Describe("Mail", func() {
 					Junk:    true,
 				}))
 		})
+		It("Unload mail content from struct", func() {
+			m := s.Mail{
+				Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
+				Subject: nil,
+				Body:    nil,
+				Junk:    true,
+			}
+
+			err := m.Load("test/Maildir")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			err = m.Unload("test/Maildir")
+			Ω(err).ShouldNot(HaveOccurred())
+
+			Ω(m).Should(Equal(
+				s.Mail{
+					Key:     "1488226337.M327822P8269.mail.carlostrub.ch,S=3620,W=3730",
+					Subject: nil,
+					Body:    nil,
+					Junk:    true,
+				}))
+		})
 		It("Fail if Subject has already content", func() {
 			st := "test"
 			m := s.Mail{
