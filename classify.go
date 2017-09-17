@@ -32,7 +32,8 @@ func classificationLikelihoodWordcounts(db *bolt.DB, word string) (gN, jN float6
 		good := b.Bucket([]byte("Good"))
 		gWordRaw := good.Get([]byte(word))
 		if len(gWordRaw) > 0 {
-			gWordHLL, err := hllpp.Unmarshal(gWordRaw)
+			var gWordHLL *hllpp.HLLPP
+			gWordHLL, err = hllpp.Unmarshal(gWordRaw)
 			if err != nil {
 				return err
 			}
@@ -41,7 +42,8 @@ func classificationLikelihoodWordcounts(db *bolt.DB, word string) (gN, jN float6
 		junk := b.Bucket([]byte("Junk"))
 		jWordRaw := junk.Get([]byte(word))
 		if len(jWordRaw) > 0 {
-			jWordHLL, err := hllpp.Unmarshal(jWordRaw)
+			var jWordHLL *hllpp.HLLPP
+			jWordHLL, err = hllpp.Unmarshal(jWordRaw)
 			if err != nil {
 				return err
 			}
@@ -62,7 +64,8 @@ func classificationStatistics(db *bolt.DB) (gTotal, jTotal float64, err error) {
 		p := tx.Bucket([]byte("Statistics"))
 		gRaw := p.Get([]byte("ProcessedGood"))
 		if len(gRaw) > 0 {
-			gHLL, err := hllpp.Unmarshal(gRaw)
+			var gHLL *hllpp.HLLPP
+			gHLL, err = hllpp.Unmarshal(gRaw)
 			if err != nil {
 				return err
 			}
@@ -70,7 +73,8 @@ func classificationStatistics(db *bolt.DB) (gTotal, jTotal float64, err error) {
 		}
 		jRaw := p.Get([]byte("ProcessedJunk"))
 		if len(jRaw) > 0 {
-			jHLL, err := hllpp.Unmarshal(jRaw)
+			var jHLL *hllpp.HLLPP
+			jHLL, err = hllpp.Unmarshal(jRaw)
 			if err != nil {
 				return err
 			}
@@ -169,7 +173,7 @@ func (m *Mail) Classify(db *bolt.DB, dir Maildir) (err error) {
 
 	// Move mail around if junk.
 	if junk {
-		err := os.Rename(string(dir)+"/new/"+m.Key, string(dir)+"/.Junk/cur/"+m.Key)
+		err = os.Rename(string(dir)+"/new/"+m.Key, string(dir)+"/.Junk/cur/"+m.Key)
 		if err != nil {
 			return err
 		}

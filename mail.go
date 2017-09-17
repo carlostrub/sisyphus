@@ -86,7 +86,6 @@ func (d Maildir) Index() (m []*Mail, err error) {
 func (m *Mail) Load(dir Maildir) (err error) {
 
 	var message *mail.Message
-	message = new(mail.Message)
 
 	switch {
 	case m.Junk:

@@ -90,7 +90,7 @@ func (m *Mail) Learn(db *bolt.DB, dir Maildir) (err error) {
 
 	// Learn words
 	for _, val := range list {
-		err := m.learnWordlist(val, db)
+		err = m.learnWordlist(val, db)
 		if err != nil {
 			return err
 		}
