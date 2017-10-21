@@ -1,3 +1,18 @@
+# Release 1.0.0
+## Added
+-
+
+## Changed
+- update dependencies
+- application is stable enough to be released as version 1.0.0
+
+## Fixed
+- 
+
+## Known Issues
+- There seems to be an issue with quotedprintable not properly reading in
+  malformed mails. Currently, such is likely to pass the filter.
+
 # Release 0.3.0
 ## Added
 -
