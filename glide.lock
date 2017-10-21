@@ -1,5 +1,5 @@
 hash: 09e7a6778dc8acfa5329ae93fe80b94dc8a5dc733333915ddb317e5092955950
-updated: 2017-09-16T21:13:19.173511403+02:00
+updated: 2017-10-21T15:22:43.70848844+02:00
 imports:
 - name: github.com/boltdb/bolt
   version: 2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8
@@ -32,23 +32,23 @@ imports:
 - name: github.com/gonum/stat
   version: 40602ac931a7ab7f72cb1eff5ce1753a2d28d345
 - name: github.com/kennygrant/sanitize
-  version: 6a0bfdde8629a3a3a7418a7eae45c54154692514
+  version: 2e6820834a1f36c626bf19a253b7d3cc060e9b8b
 - name: github.com/retailnext/hllpp
   version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
 - name: github.com/sirupsen/logrus
   version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
 - name: golang.org/x/crypto
-  version: 7d9177d70076375b9a59c8fde23d52d9c4a7ecd5
+  version: edd5e9b0879d13ee6970a50153d85b8fec9f7686
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: 8351a756f30f1297fe94bbf4b767ec589c6ea6d0
+  version: cd69bc3fc700721b709c3a59e16e24c67b58f6ff
   subpackages:
   - html
   - html/atom
   - html/charset
 - name: golang.org/x/sys
-  version: 062cd7e4e68206d8bab9b18396626e855c992658
+  version: 8dbc5d05d6edcc104950cc299a1ce6641235bc86
   subpackages:
   - unix
   - windows
@@ -90,7 +90,7 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: golang.org/x/text
-  version: 1cbadb444a806fd9430d14ad08967ed91da4fa0a
+  version: c01e4764d870b77f8abe5096ee19ad20d80e8075
   subpackages:
   - encoding
   - encoding/charmap
