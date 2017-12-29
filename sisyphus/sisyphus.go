@@ -159,8 +159,8 @@ COPYRIGHT:
 							log.Fatal("Cannot parse duration for learning intervals.")
 						}
 
-						learn(maildirs, dbs)
 						backup(maildirs, dbs)
+						learn(maildirs, dbs)
 						time.Sleep(duration)
 					}
 				}()
@@ -267,7 +267,7 @@ func backup(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 
 		w := bufio.NewWriter(backup)
 
-		err := db.View(func(tx *bolt.Tx) error {
+		err = db.View(func(tx *bolt.Tx) error {
 			_, err := tx.WriteTo(w)
 			return err
 		})
