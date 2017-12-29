@@ -72,6 +72,21 @@ func LoadDatabases(d []Maildir) (databases map[Maildir]*bolt.DB, err error) {
 	return databases, nil
 }
 
+// LoadBackupDatabases loads all backup databases from a given slice of Maildirs
+func LoadBackupDatabases(d []Maildir) (databases map[Maildir]*bolt.DB, err error) {
+	databases = make(map[Maildir]*bolt.DB)
+	for _, val := range d {
+		databases[val], err = bolt.Open(string(val)+"/sisyphus.db.backup", 0600, nil)
+		if err != nil {
+			return databases, err
+		}
+	}
+
+	log.Info("All databases loaded")
+
+	return databases, nil
+}
+
 // CloseDatabases closes all databases from a given slice of Maildirs
 func CloseDatabases(databases map[Maildir]*bolt.DB) {
 	for key, val := range databases {
@@ -82,7 +97,7 @@ func CloseDatabases(databases map[Maildir]*bolt.DB) {
 			}).Error("Unable to close database")
 		}
 		log.WithFields(log.Fields{
-			"db": string(key) + "/sisyphus.db",
+			"maildir": string(key),
 		}).Info("Database closed")
 	}
 }

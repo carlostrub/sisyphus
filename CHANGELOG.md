@@ -1,3 +1,18 @@
+# Release 1.1.0
+## Added
+- Perform a database backup before starting a new learning cycle
+- Provide a 'stats' command to display various statistics in an info log
+
+## Changed
+- 
+
+## Fixed
+- 
+
+## Known Issues
+- There seems to be an issue with quotedprintable not properly reading in
+  malformed mails. Currently, such is likely to pass the filter.
+
 # Release 1.0.0
 ## Added
 -

@@ -218,9 +218,34 @@ COPYRIGHT:
 			Name:    "stats",
 			Aliases: []string{"i"},
 			Usage:   "show statistics",
-			Action: func(c *cli.Context) error {
-				log.Info("here, we should get statistics from the db, TBD...")
-				return nil
+			Action: func(c *cli.Context) {
+
+				// Create missing Maildirs
+				err := sisyphus.LoadMaildirs(maildirs)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"err": err,
+					}).Fatal("Cannot load maildirs")
+				}
+
+				// Open all backup databases
+				dbs, err := sisyphus.LoadBackupDatabases(maildirs)
+				if err != nil {
+					log.WithFields(log.Fields{
+						"err": err,
+					}).Fatal("Cannot load backup databases")
+				}
+				defer sisyphus.CloseDatabases(dbs)
+
+				for _, db := range dbs {
+					gTotal, jTotal, gWords, jWords := info(db)
+					log.WithFields(log.Fields{
+						"good mails learned":   gTotal,
+						"junk mails learned":   jTotal,
+						"number of good words": gWords,
+						"number of junk words": jWords,
+					}).Info("Statistics")
+				}
 			},
 		},
 	}
