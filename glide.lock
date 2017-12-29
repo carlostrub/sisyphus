@@ -1,5 +1,5 @@
 hash: 09e7a6778dc8acfa5329ae93fe80b94dc8a5dc733333915ddb317e5092955950
-updated: 2017-12-12T22:01:27.455334181+01:00
+updated: 2017-12-29T21:26:26.754934684+01:00
 imports:
 - name: github.com/boltdb/bolt
   version: 2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8
@@ -38,7 +38,7 @@ imports:
 - name: github.com/sirupsen/logrus
   version: d682213848ed68c0a260ca37d6dd5ace8423f5ba
 - name: golang.org/x/crypto
-  version: 94eea52f7b742c7cbe0b03b22f0c4c8631ece122
+  version: 95a4943f35d008beabde8c11e5075a1b714e6419
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
@@ -48,7 +48,7 @@ imports:
   - html/atom
   - html/charset
 - name: golang.org/x/sys
-  version: 53aa286056ef226755cd898109dbcdaba8ac0b81
+  version: 83801418e1b59fb1880e363299581ee543af32ca
   subpackages:
   - unix
   - windows
@@ -90,7 +90,7 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: golang.org/x/text
-  version: 3b24cac7bc3a458991ab409aa2a339ac9e0d60d6
+  version: e19ae1496984b1c655b8044a65c0300a3c878dd3
   subpackages:
   - encoding
   - encoding/charmap
