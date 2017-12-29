@@ -83,6 +83,12 @@ To start sisyphus, do
 $ sisyphus run
 ```
 
+To display various statistics, do
+```
+$ sisyphus stats
+```
+(caveat: run at least one learning cycle)
+
 See the help for more details.
 
 ## License
