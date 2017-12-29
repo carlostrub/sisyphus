@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
 	"strings"
@@ -159,6 +160,7 @@ COPYRIGHT:
 						}
 
 						learn(maildirs, dbs)
+						backup(maildirs, dbs)
 						time.Sleep(duration)
 					}
 				}()
@@ -247,6 +249,38 @@ func learn(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 		}
 	}
 	log.Info("All mails learned")
+
+	return
+}
+
+func backup(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
+	for _, d := range maildirs {
+		db := dbs[d]
+
+		backup, err := os.Create(string(d) + "/sisyphus.db.backup")
+		if err != nil {
+			log.WithFields(log.Fields{
+				"err": err,
+			}).Error("Backup creation")
+		}
+		defer backup.Close()
+
+		w := bufio.NewWriter(backup)
+
+		err := db.View(func(tx *bolt.Tx) error {
+			_, err := tx.WriteTo(w)
+			return err
+		})
+		if err != nil {
+			log.WithFields(log.Fields{
+				"err": err,
+			}).Error("Backup creation")
+		}
+
+		w.Flush()
+	}
+
+	log.Info("All databases backed up successfully.")
 
 	return
 }
