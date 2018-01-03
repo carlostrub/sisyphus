@@ -12,7 +12,6 @@ following features:
 * learns about your preferences based on all messages in your inbox and your
   junk folder
 * can handle multiple mail accounts with independant junk mail preferences
-* is fully daemonized, runs smoothly in the background
 * requires minimal resources, e.g. learning over 50000 mails and keeping track of roughly 90000 words requires only 10MB of storage
 
 [![Build Status](https://travis-ci.org/carlostrub/sisyphus.svg?branch=master)](https://travis-ci.org/carlostrub/sisyphus)
