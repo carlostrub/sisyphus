@@ -32,7 +32,7 @@ func main() {
 	configuration or active operation.`
 	app.HelpName = "Intelligent Junk Mail Handler"
 	app.Version = version
-	app.Copyright = "(c) 2017, Carlo Strub. All rights reserved. This binary is licensed under a BSD 3-Clause License."
+	app.Copyright = "(c) 2017, 2018, Carlo Strub. All rights reserved. This binary is licensed under a BSD 3-Clause License."
 	app.Authors = []cli.Author{
 		{
 			Name:  "Carlo Strub",
