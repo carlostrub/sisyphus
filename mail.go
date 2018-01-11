@@ -8,6 +8,7 @@ import (
 	"mime/quotedprintable"
 	"net/mail"
 	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"unicode/utf8"
@@ -37,15 +38,15 @@ func (d Maildir) CreateDirs() error {
 		"dir": dir,
 	}).Info("Create missing directories")
 
-	err := os.MkdirAll(dir+"/.Junk/cur", 0700)
+	err := os.MkdirAll(filepath.Join(dir, ".Junk", "cur"), 0700)
 	if err != nil {
 		return err
 	}
-	err = os.MkdirAll(dir+"/new", 0700)
+	err = os.MkdirAll(filepath.Join(dir, "new"), 0700)
 	if err != nil {
 		return err
 	}
-	err = os.MkdirAll(dir+"/cur", 0700)
+	err = os.MkdirAll(filepath.Join(dir, "cur"), 0700)
 
 	return err
 }
@@ -59,7 +60,7 @@ func (d Maildir) Index() (m []*Mail, err error) {
 		"dir": dir,
 	}).Info("Start indexing mails")
 
-	dirs := []string{dir, dir + "/.Junk"}
+	dirs := []string{dir, filepath.Join(dir, ".Junk")}
 	for _, val := range dirs {
 		j, err := maildir.Dir(val).Keys()
 		if err != nil {
@@ -68,7 +69,7 @@ func (d Maildir) Index() (m []*Mail, err error) {
 		for _, v := range j {
 			var new Mail
 			new.Key = v
-			if val == dir+"/.Junk" {
+			if val == filepath.Join(dir, ".Junk") {
 				new.Junk = true
 			}
 			m = append(m, &new)
@@ -89,9 +90,9 @@ func (m *Mail) Load(dir Maildir) (err error) {
 
 	switch {
 	case m.Junk:
-		dir = dir + Maildir("/.Junk")
+		dir = Maildir(filepath.Join(string(dir), ".Junk"))
 	case m.New:
-		dir = dir + Maildir("/new")
+		dir = Maildir(filepath.Join(string(dir), "new"))
 	}
 
 	message, err = maildir.Dir(dir).Message(m.Key)

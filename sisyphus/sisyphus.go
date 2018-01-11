@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -202,11 +203,11 @@ COPYRIGHT:
 				}()
 
 				for _, val := range maildirs {
-					err = watcher.Add(string(val) + "/new")
+					err = watcher.Add(filepath.Join(string(val), "new"))
 					if err != nil {
 						log.WithFields(log.Fields{
 							"err": err,
-							"dir": val + "/new",
+							"dir": filepath.Join(string(val), "new"),
 						}).Error("Cannot watch directory")
 					}
 				}
@@ -282,7 +283,7 @@ func backup(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 	for _, d := range maildirs {
 		db := dbs[d]
 
-		backup, err := os.Create(string(d) + "/sisyphus.db.backup")
+		backup, err := os.Create(filepath.Join(string(d), "sisyphus.db.backup"))
 		if err != nil {
 			log.WithFields(log.Fields{
 				"err": err,

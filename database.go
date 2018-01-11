@@ -1,6 +1,8 @@
 package sisyphus
 
 import (
+	"path/filepath"
+
 	log "github.com/sirupsen/logrus"
 
 	"github.com/boltdb/bolt"
@@ -14,7 +16,7 @@ func openDB(m Maildir) (db *bolt.DB, err error) {
 	}).Info("Loading database")
 	// Open the sisyphus.db data file in your current directory.
 	// It will be created if it doesn't exist.
-	db, err = bolt.Open(string(m)+"/sisyphus.db", 0600, nil)
+	db, err = bolt.Open(filepath.Join(string(m), "sisyphus.db"), 0600, nil)
 	if err != nil {
 		return db, err
 	}
@@ -76,7 +78,7 @@ func LoadDatabases(d []Maildir) (databases map[Maildir]*bolt.DB, err error) {
 func LoadBackupDatabases(d []Maildir) (databases map[Maildir]*bolt.DB, err error) {
 	databases = make(map[Maildir]*bolt.DB)
 	for _, val := range d {
-		databases[val], err = bolt.Open(string(val)+"/sisyphus.db.backup", 0600, nil)
+		databases[val], err = bolt.Open(filepath.Join(string(val), "sisyphus.db.backup"), 0600, nil)
 		if err != nil {
 			return databases, err
 		}
@@ -93,7 +95,7 @@ func CloseDatabases(databases map[Maildir]*bolt.DB) {
 		err := val.Close()
 		if err != nil {
 			log.WithFields(log.Fields{
-				"db": string(key) + "/sisyphus.db",
+				"db": filepath.Join(string(key), "sisyphus.db"),
 			}).Error("Unable to close database")
 		}
 		log.WithFields(log.Fields{

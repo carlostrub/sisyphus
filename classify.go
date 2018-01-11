@@ -2,6 +2,7 @@ package sisyphus
 
 import (
 	"os"
+	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
 
@@ -173,7 +174,7 @@ func (m *Mail) Classify(db *bolt.DB, dir Maildir) (err error) {
 
 	// Move mail around if junk.
 	if junk {
-		err = os.Rename(string(dir)+"/new/"+m.Key, string(dir)+"/.Junk/cur/"+m.Key)
+		err = os.Rename(filepath.Join(string(dir), "new", m.Key), filepath.Join(string(dir), ".Junk", "cur", m.Key))
 		if err != nil {
 			return err
 		}
