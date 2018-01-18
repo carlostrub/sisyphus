@@ -13,7 +13,6 @@ import (
 	log "github.com/sirupsen/logrus"
 
 	"github.com/carlostrub/sisyphus"
-	"gopkg.in/urfave/cli.v2"
 )
 
 var (
@@ -239,7 +238,7 @@ COPYRIGHT:
 				defer sisyphus.CloseDatabases(dbs)
 
 				for _, db := range dbs {
-					gTotal, jTotal, gWords, jWords := info(db)
+					gTotal, jTotal, gWords, jWords := sisyphus.Info(db)
 					log.WithFields(log.Fields{
 						"good mails learned":   gTotal,
 						"junk mails learned":   jTotal,
