@@ -1,5 +1,5 @@
-hash: 09e7a6778dc8acfa5329ae93fe80b94dc8a5dc733333915ddb317e5092955950
-updated: 2018-01-11T21:04:35.863023911+01:00
+hash: 14460d143bbeaabad675e23bb0773e78aa41b7a955b3d36453c57b8a14045b9e
+updated: 2018-01-18T20:58:10.051542846+01:00
 imports:
 - name: github.com/boltdb/bolt
   version: 2f1ce7a837dcb8da3ec595b1dac9d0632f0f99e8
@@ -37,23 +37,23 @@ imports:
   version: 9fdfea05b3e55bebe7beb22d16c7db15d46cd518
 - name: github.com/sirupsen/logrus
   version: d682213848ed68c0a260ca37d6dd5ace8423f5ba
+- name: github.com/urfave/cli
+  version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
 - name: golang.org/x/crypto
-  version: 5f55bce93ad2c89f411e009659bb1fd83da36e7b
+  version: 13931e22f9e72ea58bb73048bc752b48c6d4d4ac
   subpackages:
   - ssh/terminal
 - name: golang.org/x/net
-  version: ab555f366c4508dbe0802550b1b20c46c5c18aa0
+  version: 5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec
   subpackages:
   - html
   - html/atom
   - html/charset
 - name: golang.org/x/sys
-  version: 810d7000345868fc619eb81f46307107118f4ae1
+  version: 2c42eef0765b9837fbdab12011af7830f55f88f0
   subpackages:
   - unix
   - windows
-- name: gopkg.in/urfave/cli.v2
-  version: cfb38830724cc34fedffe9a2a29fb54fa9169cd1
 testImports:
 - name: github.com/onsi/ginkgo
   version: 9eda700730cba42af70d53180f9dcce9266bc2bc

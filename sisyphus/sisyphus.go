@@ -11,6 +11,7 @@ import (
 	"github.com/boltdb/bolt"
 	"github.com/fsnotify/fsnotify"
 	log "github.com/sirupsen/logrus"
+	"github.com/urfave/cli"
 
 	"github.com/carlostrub/sisyphus"
 )
