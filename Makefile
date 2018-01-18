@@ -18,6 +18,8 @@ verify-version:
 	fi
 
 build: verify-version
+	${SISYPHUS_GO_EXECUTABLE} get -u github.com/Masterminds/glide
+	glide install
 	${SISYPHUS_GO_EXECUTABLE} build -o sisyphus/sisyphus -ldflags "-X main.version=${VERSION}" sisyphus/sisyphus.go
 
 install: build
