@@ -66,6 +66,7 @@ dist: build-all
 	cd dist && \
 	$(DIST_DIRS) cp ../LICENSE {} \; && \
 	$(DIST_DIRS) cp ../README.md {} \; && \
+	$(DIST_DIRS) cp ../CHANGELOG.md {} \; && \
 	$(DIST_DIRS) tar -zcf sisyphus-${VERSION}-{}.tar.gz {} \; && \
 	$(DIST_DIRS) zip -r sisyphus-${VERSION}-{}.zip {} \; && \
 	cd ..
