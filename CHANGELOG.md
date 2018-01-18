@@ -1,3 +1,18 @@
+# Release 1.1.1
+## Added
+-
+
+## Changed
+- 
+
+## Fixed
+- Fixed the build process (#5)
+- Fixed the dependency on urfave/cli (#5)
+
+## Known Issues
+- There seems to be an issue with quotedprintable not properly reading in
+  malformed mails. Currently, such is likely to pass the filter.
+
 # Release 1.1.0
 ## Added
 - Perform a database backup before starting a new learning cycle
