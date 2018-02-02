@@ -254,6 +254,7 @@ COPYRIGHT:
 	app.Run(os.Args)
 }
 
+// learn invokes the learning process for a slice of maildirs
 func learn(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 	mails, err := sisyphus.LoadMails(maildirs)
 	if err != nil {
@@ -279,6 +280,7 @@ func learn(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 	return
 }
 
+// backup creates a backup copy of the existing database
 func backup(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 	for _, d := range maildirs {
 		db := dbs[d]
