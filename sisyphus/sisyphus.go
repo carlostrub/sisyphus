@@ -78,39 +78,6 @@ COPYRIGHT:
   {{.Copyright}}
 `
 
-	dirsRaw, ok := os.LookupEnv("SISYPHUS_DIRS")
-	if !ok {
-		log.Fatal("Environment variable SISYPHUS_DIRS not set.")
-	}
-	dirsSplit := strings.Split(dirsRaw, ",")
-
-	var maildirs []sisyphus.Maildir
-	for i := 0; i < len(dirsSplit); i++ {
-		maildirs = append(maildirs, sisyphus.Maildir(dirsSplit[i]))
-	}
-
-	_, ok = os.LookupEnv("SISYPHUS_DURATION")
-	if !ok {
-		log.Fatal("Environment variable SISYPHUS_DURATION not set.")
-	}
-
-	//	app.Flags = []cli.Flag{
-	//
-	//		&cli.StringSliceFlag{
-	//			Name:    "maildir, d",
-	//			Value:   &maildirPaths,
-	//			EnvVars: []string{"SISYPHUS_DIRS"},
-	//			Usage:   "Call multiple Maildirs by repeating this flag, i.e. --maildir \"./Maildir\" --maildir \"./Maildir2\"",
-	//		},
-	//		&cli.StringFlag{
-	//			Name:        "learn",
-	//			Value:       "12h",
-	//			EnvVars:     []string{"SISYPHUS_DURATION"},
-	//			Usage:       "Time interval between to learn cycles",
-	//			Destination: learnafter,
-	//		},
-	//	}
-
 	app.Commands = []cli.Command{
 		{
 			Name:    "run",
@@ -135,13 +102,7 @@ COPYRIGHT:
 
 `)
 
-				// Create missing Maildirs
-				err := sisyphus.LoadMaildirs(maildirs)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"err": err,
-					}).Fatal("Cannot load maildirs")
-				}
+				maildirs := loadConfig()
 
 				// Open all databases
 				dbs, err := sisyphus.LoadDatabases(maildirs)
@@ -221,13 +182,7 @@ COPYRIGHT:
 			Usage:   "show statistics",
 			Action: func(c *cli.Context) {
 
-				// Create missing Maildirs
-				err := sisyphus.LoadMaildirs(maildirs)
-				if err != nil {
-					log.WithFields(log.Fields{
-						"err": err,
-					}).Fatal("Cannot load maildirs")
-				}
+				maildirs := loadConfig()
 
 				// Open all backup databases
 				dbs, err := sisyphus.LoadBackupDatabases(maildirs)
@@ -286,6 +241,7 @@ func backup(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 		db := dbs[d]
 
 		backup, err := os.Create(filepath.Join(string(d), "sisyphus.db.backup"))
+
 		if err != nil {
 			log.WithFields(log.Fields{
 				"err": err,
@@ -311,4 +267,39 @@ func backup(maildirs []sisyphus.Maildir, dbs map[sisyphus.Maildir]*bolt.DB) {
 	log.Info("All databases backed up successfully.")
 
 	return
+}
+
+// loadConfig checks the validity of the environment variables and
+// loads the maildirs
+func loadConfig() []sisyphus.Maildir {
+
+	dirsRaw, ok := os.LookupEnv("SISYPHUS_DIRS")
+	if !ok {
+		log.Fatal("Environment variable SISYPHUS_DIRS not set.")
+	}
+	dirsSplit := strings.Split(dirsRaw, ",")
+
+	var maildirs []sisyphus.Maildir
+	for i := 0; i < len(dirsSplit); i++ {
+		maildirs = append(maildirs, sisyphus.Maildir(dirsSplit[i]))
+	}
+
+	// Create missing Maildirs
+	err := sisyphus.LoadMaildirs(maildirs)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"err": err,
+		}).Fatal("Cannot load maildirs")
+	}
+
+	// Check duration configuration and set it to default value if
+	// not set
+	_, ok = os.LookupEnv("SISYPHUS_DURATION")
+	if !ok {
+		log.Info("Environment variable SISYPHUS_DURATION not set. Setting default value to 24h.")
+		os.Setenv("SISYPHUS_DURATION", "24h")
+	}
+
+	return maildirs
+
 }
