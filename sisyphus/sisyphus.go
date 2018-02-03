@@ -48,7 +48,9 @@ func main() {
   SISYPHUS_DIRS:     Comma-separated list of maildirs,
                      e.g. ./Maildir,/home/JohnDoe/Maildir
 
-  SISYPHUS_DURATION: Interval between learning periods, e.g. 12h
+  SISYPHUS_DURATION: Interval between learning periods, e.g. 12h. Default is set to 24h.
+
+  SISYPHUS_DRY_RUN : If set, sisyphus will not move any mails around.
 			`,
 		}
 	}
@@ -143,8 +145,11 @@ COPYRIGHT:
 						case event := <-watcher.Events:
 							if event.Op&fsnotify.Create == fsnotify.Create {
 								path := strings.Split(event.Name, "/new/")
+
+								_, dryRun := os.LookupEnv("SISYPHUS_DRY_RUN")
 								m := sisyphus.Mail{
-									Key: path[1],
+									Key:    path[1],
+									DryRun: dryRun,
 								}
 
 								err = m.Classify(dbs[sisyphus.Maildir(path[0])], sisyphus.Maildir(path[0]))

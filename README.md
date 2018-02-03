@@ -57,24 +57,21 @@ can put in your `$PATH`. (You can also take a look at `make install` to install
 for you.)
 
 ## Usage
-First, set the environment variables necessary for operation:
+First, set the environment variable necessary for operation:
 ```
 $ setenv SISYPHUS_DIRS PATHTOMAILDIR
-$ setenv SISYPHUS_DURATION 24h
 ```
 or
 ```
 $ export SISYPHUS_DIRS=PATHTOMAILDIR
-$ export SISYPHUS_DURATION=24h
 ```
 or for Windows
 ```
 $ set SISYPHUS_DIRS=PATHTOMAILDIR
-$ set SISYPHUS_DURATION=24h
 ```
 
-
-Sisyphus help can be started by running
+For all other configuration options, please consult the help. It can
+be started by running
 ```
 $ sisyphus help
 ```

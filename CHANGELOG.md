@@ -1,3 +1,21 @@
+# Release 1.2.0
+## Added
+- SISYPHUS_DRY_RUN flag to allow dry runs without moving files. In
+  fact, it does create missing folders, the database, learns, and
+  classifies mails. But, sisyphus does not move files between
+  folders. (#8)
+
+## Changed
+- 
+
+## Fixed
+- Do not require config to get to help (#7)
+
+## Known Issues
+- There seems to be an issue with quotedprintable not properly reading in
+  malformed mails. Currently, such is likely to pass the filter.
+
+
 # Release 1.1.1
 ## Added
 -

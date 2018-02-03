@@ -174,13 +174,21 @@ func (m *Mail) Classify(db *bolt.DB, dir Maildir) (err error) {
 
 	// Move mail around if junk.
 	if junk {
-		err = os.Rename(filepath.Join(string(dir), "new", m.Key), filepath.Join(string(dir), ".Junk", "cur", m.Key))
-		if err != nil {
-			return err
+		if !m.DryRun {
+			err = os.Rename(filepath.Join(string(dir), "new", m.Key), filepath.Join(string(dir), ".Junk", "cur", m.Key))
+			if err != nil {
+				return err
+			}
 		}
+
+		var dryRun string
+		if m.DryRun {
+			dryRun = "-- dry run (nothing happened to this mail!)"
+		}
+
 		log.WithFields(log.Fields{
 			"mail": m.Key,
-		}).Info("Moved to Junk folder")
+		}).Info("Moved to Junk folder" + dryRun)
 	}
 
 	err = m.Unload(dir)

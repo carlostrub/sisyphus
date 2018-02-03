@@ -27,6 +27,7 @@ type Mail struct {
 	Key           string
 	Subject, Body *string
 	Junk, New     bool
+	DryRun        bool
 }
 
 // CreateDirs creates all the required dirs -- if not already there.
