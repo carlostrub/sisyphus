@@ -6,7 +6,7 @@
   folders. (#8)
 
 ## Changed
-- 
+- Use dep instead of glide to handle dependencies (#10)
 
 ## Fixed
 - Do not require config to get to help (#7)
