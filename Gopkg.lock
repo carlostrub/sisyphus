@@ -139,9 +139,10 @@
   version = "v1.20.0"
 
 [[projects]]
+  branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "1875d0a70c90e57f11972aefd42276df65e895b9"
+  revision = "5119cf507ed5294cc409c092980c7497ee5d6fd2"
 
 [[projects]]
   branch = "master"
@@ -151,7 +152,7 @@
     "html/atom",
     "html/charset"
   ]
-  revision = "2fb46b16b8dda405028c50f7c7f0f9dd1fa6bfb1"
+  revision = "f5dfe339be1d06f81b22525fe34671ee7d2c8904"
 
 [[projects]]
   branch = "master"
@@ -184,7 +185,7 @@
     "transform",
     "unicode/cldr"
   ]
-  revision = "e19ae1496984b1c655b8044a65c0300a3c878dd3"
+  revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
 
 [[projects]]
   branch = "v2"
