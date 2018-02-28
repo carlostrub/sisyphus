@@ -1,0 +1,74 @@
+
+Sisyphus
+How to store 50 000 mails in 10MB to fight Spammers
+1 Mar 2018
+Tags: sisyphus, spam, junk, mail
+
+Carlo Strub
+economist, gopher, rustacean, FreeBSD developer
+cs@carlostrub.ch
+cs@FreeBSD.org
+https://carlostrub.ch
+https://github.com/carlostrub
+
+
+* Junk Mail
+
+What is it?
+
+- Mail we do not want to have in our mailbox.
+- The same sender might sometimes be in either category.
+
+How to fight it?
+
+- Block lists, e.g. Spamhaus, etc.
+- Sophisticated filters, e.g. SpamAssassin
+- Greylisting, tarpit, and other exotic punishments
+
+* Sisyphus
+
+- requires zero configuration, neither on the server nor on the client
+- works with any MTA and any client
+- learns about your preferences based on all messages in your inbox and your junk folder
+- can handle multiple mail accounts with independent junk mail preferences
+- requires minimal resources, e.g. learning over 50 000 mails and keeping track of roughly 90 000 words requires only 10MB of storage
+- BSD licensed
+
+* How it works — Bayes' Rule
+
+.image bayes.png
+
+* It's all about counters
+
+- All needed probabilities can be calculated using counters
+- But counters are costly in general (storage complexity proportional to number of elements)
+- What if we learn a mail twice?
+
+* HyperLogLog Algorithm
+
+- Hashes of a stream of data has interesting properties regarding cardinality:
+  1) number of leading zeroes yields estimate on lower bound (bit-pattern observables)
+  2) smallest values yield estimate on cardinality (order statistics observables)
+- Two consequences for Sisyphus:
+  1) we can count all words in all mails on very small space
+  2) we do not have to check whether we already learned a mail
+
+
+* Implementation
+- Pure go
+- Database: bolt (stores sisyphus.db in Maildir)
+- Learns all mails in Maildir
+- Classifies new mail, triggered by FSNotify
+- Dependencies:
+  github.com/boltdb/boltdb
+  github.com/carlostrub/maildir
+  github.com/fsnotify/fsnotify
+  github.com/gonum/stat
+  github.com/kennygrant/sanitize
+  github.com/retailnext/hllpp
+  github.com/sirupsen/logrus
+  github.com/urfave/cli
+- Principles: 12factor App, semantic versioning
+
+* API
+.link https://godoc.org/github.com/carlostrub/sisyphus
