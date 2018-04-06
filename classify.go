@@ -1,8 +1,10 @@
 package sisyphus
 
 import (
+	"math/rand"
 	"os"
 	"path/filepath"
+	"time"
 
 	log "github.com/sirupsen/logrus"
 
@@ -201,6 +203,26 @@ func (m *Mail) Classify(db *bolt.DB, dir Maildir) (err error) {
 // but this is typically not needed.
 func Junk(db *bolt.DB, wordlist []string) (junk bool, prob float64, err error) {
 	var probabilities []float64
+
+	// If the wordlist is too long, let us only select a random sample
+	// for analysis. This prevents cheating by adding lots of good text
+	// to a Junk mail
+	if len(wordlist) > 50 {
+		wordlistTemp := make(map[string]interface{})
+
+		rand.Seed(time.Now().UnixNano())
+
+		for len(wordlistTemp) < 50 {
+			wordlistTemp[wordlist[rand.Intn(len(wordlist)-1)]] = nil
+
+		}
+
+		var wordlistTempSlice []string
+		for key, _ := range wordlistTemp {
+			wordlistTempSlice = append(wordlistTempSlice, key)
+		}
+		wordlist = wordlistTempSlice
+	}
 
 	// initial value should be no junk
 	prob = 1.0

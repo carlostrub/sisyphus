@@ -225,18 +225,14 @@ func wordlist(s string) (l []string, err error) {
 		}
 	}
 
-	// only the first 200 words count
-	maxWords := int(math.Min(200, float64(len(clean))))
+	// only the first 1000 words count
+	maxWords := int(math.Min(1000, float64(len(clean))))
 	for i := 0; i < maxWords; i++ {
 		w := clean[i]
 		list[w]++
 	}
 
-	for word, count := range list {
-		if count > 10 {
-			continue
-		}
-
+	for word := range list {
 		l = append(l, word)
 	}
 
