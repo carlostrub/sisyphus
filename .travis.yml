@@ -1,19 +1,18 @@
 language: go
 
 go:
-  - 1.9.x
+  - 1.10.x
   - master
 
 cache:
   directories:
   - $GOPATH/src
-  - $HOME/.glide/cache
 
 install:
   - go get -u github.com/golang/dep/cmd/dep 
   - dep ensure
-  - cd vendor/github.com/onsi/gomega && go install && cd -
-  - cd vendor/github.com/onsi/ginkgo/ginkgo && go install && cd -
+  - go get -u github.com/onsi/ginkgo/ginkgo 
+  - go get -u github.com/onsi/gomega/... 
 
 script:
   - ginkgo -r --randomizeAllSpecs --randomizeSuites --race
