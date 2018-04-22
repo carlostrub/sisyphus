@@ -218,7 +218,7 @@ func Junk(db *bolt.DB, wordlist []string) (junk bool, prob float64, err error) {
 		}
 
 		var wordlistTempSlice []string
-		for key, _ := range wordlistTemp {
+		for key := range wordlistTemp {
 			wordlistTempSlice = append(wordlistTempSlice, key)
 		}
 		wordlist = wordlistTempSlice
