@@ -59,7 +59,7 @@
 
 [[constraint]]
   name = "github.com/sirupsen/logrus"
-  version = "1.1.0"
+  version = "1.2.0"
 
 [[constraint]]
   name = "github.com/urfave/cli"
