@@ -20,6 +20,7 @@ following features:
 [![Documentation](https://readthedocs.org/projects/sisyphus/badge/?version=latest)](http://sisyphus.readthedocs.org/en/latest/?badge=latest)
 [![Codebeat](https://codebeat.co/badges/64615809-e3c4-4267-a049-eaec20ad63b5)](https://codebeat.co/projects/github-com-carlostrub-sisyphus-master)
 [![Coverage](https://gocover.io/_badge/github.com/carlostrub/sisyphus?0 "Coverage")](http://gocover.io/github.com/carlostrub/sisyphus)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sisyphus&metric=alert_status)](https://sonarcloud.io/dashboard?id=sisyphus)
 
 ## How it works
 Sisyphus analyzes each mail in the inbox and the junk folder and uses its
