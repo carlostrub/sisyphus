@@ -11,7 +11,6 @@ cache:
 addons:
   sonarcloud:
     organization: "319"
-    projectKey: "sisyphus"
 
 install:
   - go get -u github.com/golang/dep/cmd/dep 
