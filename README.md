@@ -28,7 +28,7 @@ subject and text to improve the learning algorithm. Whenever a new mail arrives
 in the `Maildir/new` directory, Sisyphus classifies this mail based on its
 content. Junk mails are then moved automatically to the `Maildir/.Junk`
 directory, while good mails are left untouched. See the following [blog
-post](http://carlostrub.ch/code/security/sisyphus/) on a rather non-technical
+post](https://www.carlostrub.ch/code/security/sisyphus) on a rather non-technical
 explanation.
 
 Technically, Sisyphus applies a classic [Bayesian Update
